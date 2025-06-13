@@ -1,62 +1,19 @@
 "use client";
 import { useLang } from '@/components/LanguageContext';
 import { texts } from '@/components/i18n';
+import { companies } from '@/common_resource';
+import { Company } from '@/models/company';
 
-const companies = [
-  {
-    logo: 'img/sample/trophy.png',
-    nameJa: '株式会社NTTドコモ',
-    nameEn: 'NTT DOCOMO',
-    year: '2024',
-  },
-  {
-    logo: 'img/sample/blockchain.png',
-    nameJa: 'ソフトバンク株式会社',
-    nameEn: 'SoftBank Corp.',
-    year: '2023',
-  },
-  {
-    logo: 'img/sample/network.png',
-    nameJa: '楽天モバイル株式会社',
-    nameEn: 'Rakuten Mobile, Inc.',
-    year: '2023',
-  },
-  {
-    logo: 'img/sample/lidar.png',
-    nameJa: '富士通株式会社',
-    nameEn: 'Fujitsu Limited',
-    year: '2022',
-  },
-  {
-    logo: 'img/sample/hero.png',
-    nameJa: 'キーエンス株式会社',
-    nameEn: 'Keyence Corporation',
-    year: '2025',
-  },
-  {
-    logo: 'img/sample/opencampus.png',
-    nameJa: 'KDDI株式会社',
-    nameEn: 'KDDI Corporation',
-    year: '2024',
-  },
-  {
-    logo: 'img/sample/orientation.png',
-    nameJa: 'パナソニックホールディングス株式会社',
-    nameEn: 'Panasonic Holdings Corporation',
-    year: '2023',
-  },
-];
-
-// sort by year desc
-const sorted = [...companies].sort((a,b)=>b.year.localeCompare(a.year));
+// sort by year desc (numeric)
+const sorted = [...companies].sort((a,b)=>b.year - a.year);
 
 // Group by year
-const grouped: Record<string, typeof companies> = {} as any;
+const grouped: Record<number, Company[]> = {} as any;
 sorted.forEach(c=>{
   if(!grouped[c.year]) grouped[c.year]=[];
   grouped[c.year].push(c);
 });
-const years = Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
+const years = Object.keys(grouped).sort((a,b)=>Number(b)-Number(a));
 
 export default function CareerPage() {
   const { lang } = useLang();
@@ -74,7 +31,7 @@ export default function CareerPage() {
           {years.map((y)=>(
             <li key={y} className="space-y-6">
               <h3 className="font-bold text-lg text-accent mb-2">{y}</h3>
-              {grouped[y].map((c)=>(
+              {grouped[Number(y)].map((c)=>(
                 <div key={c.nameEn} className="relative flex items-center gap-6">
                   <span className="absolute -left-3.5 w-7 h-7 rounded-full overflow-hidden shadow-md bg-white dark:bg-gray-800 flex items-center justify-center">
                     <img src={c.logo} alt={c.nameEn} className="w-full h-full object-cover" />

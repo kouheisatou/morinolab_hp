@@ -65,10 +65,10 @@ const Publications = () => {
     return year === selectedYear
   }
 
+  // Normalize authors array (string or Member) into comma-separated string
   const formatAuthors = (authors: any[]) =>
     authors
-      .filter(Boolean)
-      .map((a) => (lang === 'ja' ? a.name : a.nameEnglish || a.name))
+      .map((a) => (typeof a === 'string' ? a : (lang === 'ja' ? a.name : a.nameEnglish || a.name)))
       .join(', ')
 
   const getTitle = (p: any) =>
@@ -76,28 +76,8 @@ const Publications = () => {
 
   const getDate = (p: any) => (lang === 'ja' ? p.dateJa || '' : p.dateEn || '')
 
-  // Pool of sample images for random selection
-  const sampleImages = [
-    'img/sample/lidar.png',
-    'img/sample/blockchain.png',
-    'img/sample/opencampus.png',
-    'img/sample/network.png',
-    'img/sample/ethernet.png',
-    'img/sample/medal.png',
-    'img/sample/trophy.png',
-    'img/sample/citation.png',
-    'img/sample/hero.png',
-  ] as const
-
-  const getImageForPub = (p: any) => {
-    // Use publication id (or title) hash to deterministically choose an image
-    const key = p.id || p.titleEn || p.titleJa || Math.random()
-    let hash = 0
-    const str = String(key)
-    for (let i = 0; i < str.length; i++) hash = (hash + str.charCodeAt(i)) % 2147483647
-    const idx = hash % sampleImages.length
-    return sampleImages[idx]
-  }
+  // Fallback when imagePath is not provided
+  const getFallbackImage = () => 'img/noimage_paper.png'
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -161,10 +141,15 @@ const Publications = () => {
           <div className="pub-grid">
             {grouped[year].map((p) => (
               <div key={p.id} className="pub-card">
-                <img src={getImageForPub(p)} alt={getTitle(p)} />
+                <img src={p.imagePath ?? getFallbackImage()} alt={getTitle(p)} />
                 <div className="pub-meta">
                   <span className="pub-title">{getTitle(p)}</span>
-                  <span className="pub-date">{getDate(p)}</span>
+                  <span className="pub-authors text-sm text-gray-700 dark:text-gray-300">
+                    {formatAuthors(p.authors)}
+                  </span>
+                  <span className="pub-date text-sm text-gray-500 dark:text-gray-400">
+                    {getDate(p)}
+                  </span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {p.tags.map((t: Tag) => (
                       <span key={t.name_english} className="tag-badge">

@@ -2,6 +2,11 @@
 
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
+import { themes } from '@/common_resource'
+import { newsItems } from '@/common_resource'
+import { Theme } from '@/models/theme'
+import { NewsItem } from '@/models/news'
+import { useState } from 'react'
 
 interface Entry {
   date: string;
@@ -12,106 +17,23 @@ interface Entry {
 export default function HomePage() {
   const { lang } = useLang();
   const t = texts(lang).home;
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
 
-  const announcements: Entry[] = [
-    {
-      date: "2025-06-01",
-      text: lang === "ja" ? "オープンキャンパス開催のお知らせ" : "Open Campus Announcement",
-      img: "img/sample/opencampus.png",
-    },
-    {
-      date: "2025-05-20",
-      text: lang === "ja" ? "B4配属説明会のお知らせ" : "Orientation for New B4 Students",
-      img: "img/sample/orientation.png",
-    },
-  ];
-
-  const updates: Entry[] = [
-    {
-      date: "2025-05-10",
-      text: lang === "ja" ? "研究室HPをリニューアルしました" : "Lab website renewed",
-    },
-    {
-      date: "2025-04-01",
-      text: lang === "ja" ? "2025年度メンバー情報を更新" : "Updated members for 2025",
-    },
-  ];
-
-  const awards = [
-    {
-      img: 'img/sample/citation.png',
-      text:
-        lang === 'ja'
-          ? 'IPSJ ITS 研究会 優秀発表賞 (2025.04) – 石川佳奈穂(M2)'
-          : 'Best Presentation Award at IPSJ ITS (Apr 2025) – Kanaho Ishikawa (M2)',
-    },
-    {
-      img: 'img/sample/medal.png',
-      text:
-        lang === 'ja'
-          ? '芝浦工業大学 研究テーマ更新表彰 (2023.11)'
-          : 'Research Theme Recognition by SIT (Nov 2023)',
-    },
-  ] as const;
-
-  // Awards converted to news-like entries with date extraction
-  const awardsNews = awards.map((a) => {
-    const match = a.text.match(/[0-9]{4}\.[0-9]{2}/);
-    const date = match ? match[0].replace('.', '-') : '2000-01';
-    return { date, text: a.text, img: a.img } as Entry;
-  });
-
-  const themes = [
-    {
-      img: "img/sample/network.png",
-      title: lang === "ja" ? "自律分散ネットワーク" : "Autonomous Distributed Networks",
-      desc:
-        lang === "ja"
-          ? "ユーザ参加型のマルチホップ無線 LAN による自律分散ネットワーク制御について研究しています。"
-          : "We study autonomous control of multi-hop wireless LAN formed by user devices.",
-    },
-    {
-      img: "img/sample/blockchain.png",
-      title: lang === "ja" ? "ブロックチェーン決済チャネル" : "Blockchain Payment Channels",
-      desc:
-        lang === "ja"
-          ? "Lightning Network などのオフチェーン決済チャネルによる高速・低手数料トランザクションを研究。"
-          : "Exploring high-speed, low-fee transactions with off-chain payment channels such as the Lightning Network.",
-    },
-    {
-      img: "img/sample/lidar.png",
-      title: lang === "ja" ? "3次元点群センシング" : "3D Point-Cloud Sensing",
-      desc:
-        lang === "ja"
-          ? "LiDAR を用いた屋内外環境の高精度 3D 点群センシングとクラウド連携処理を行います。"
-          : "High-precision 3D point-cloud sensing with LiDAR and cloud-based processing for indoor/outdoor environments.",
-    },
-  ];
-
-  const sampleImagesForNews = [
-    'img/sample/opencampus.png',
-    'img/sample/orientation.png',
-    'img/sample/network.png',
-    'img/sample/blockchain.png',
-    'img/sample/lidar.png',
-    'img/sample/hero.png',
-  ] as const;
-
-  const withImage = (e: Entry, idx: number): Entry =>
-    e.img
-      ? e
-      : { ...e, img: sampleImagesForNews[idx % sampleImagesForNews.length] };
-
-  const news = [...announcements, ...updates, ...awardsNews]
+  // Convert NewsItem objects to localized Entry objects
+  const news = [...newsItems]
+    .map((n: NewsItem): Entry => ({
+      date: n.date,
+      text: lang === 'ja' ? n.textJa : n.textEn,
+      img: n.img,
+    }))
     .sort((a, b) => (a.date < b.date ? 1 : -1))
     .map((item, idx) => {
-      const base = withImage(item, idx);
       // Generate description if not provided
       const desc =
         lang === 'ja'
-          ? `${base.text} に関する詳細な情報です。`
-          : `More details about: ${base.text}.`;
-      return { ...base, desc } as Entry & { desc: string };
+          ? `${item.text} に関する詳細な情報です。`
+          : `More details about: ${item.text}.`;
+      return { ...item, desc } as Entry & { desc: string };
     });
 
   /* ==================== LAYOUT ==================== */
@@ -142,21 +64,25 @@ export default function HomePage() {
           {t.researchTitle}
         </h2>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {themes.map((th) => (
-            <div key={th.title} className="theme-card flex flex-col" style={{ padding: 0 }}>
-              <img
-                src={th.img}
-                alt={th.title}
-                className="w-full h-40 object-cover rounded-t-[var(--radius)]"
-              />
-              <div className="p-4 flex-1 flex flex-col">
-                <span className="font-semibold mb-1">{th.title}</span>
-                <p className="text-sm text-gray-600 dark:text-gray-300 flex-1">
-                  {th.desc}
-                </p>
+          {themes.map((th: Theme) => {
+            const title = lang === 'ja' ? th.titleJa : th.titleEn;
+            const desc = lang === 'ja' ? th.descJa : th.descEn;
+            return (
+              <div key={th.id} className="theme-card flex flex-col" style={{ padding: 0 }}>
+                <img
+                  src={th.img}
+                  alt={title}
+                  className="w-full h-40 object-cover rounded-t-[var(--radius)]"
+                />
+                <div className="p-4 flex-1 flex flex-col">
+                  <span className="font-semibold mb-1">{title}</span>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 flex-1">
+                    {desc}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </section>
 
@@ -213,7 +139,66 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Awards section removed as merged into news */}
+      {/* 5️⃣ CONTACT */}
+      <section className="px-4" id="contact">
+        <h2 className="text-2xl font-bold text-center mb-8">
+          {lang === 'ja' ? 'お問い合わせ' : 'Contact'}
+        </h2>
+        <form
+          className="max-w-xl mx-auto space-y-4 neu-container p-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            alert(lang === 'ja' ? '送信ありがとうございました！' : 'Thank you for your message!');
+            // TODO: send data to backend API
+          }}
+        >
+          <div className="flex flex-col gap-1">
+            <label htmlFor="name" className="text-sm font-medium">
+              {lang === 'ja' ? 'お名前' : 'Name'}
+            </label>
+            <input
+              id="name"
+              type="text"
+              required
+              className="px-3 py-2 border rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="email" className="text-sm font-medium">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              className="px-3 py-2 border rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="message" className="text-sm font-medium">
+              {lang === 'ja' ? 'メッセージ' : 'Message'}
+            </label>
+            <textarea
+              id="message"
+              rows={4}
+              required
+              className="px-3 py-2 border rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={form.message}
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+          >
+            {lang === 'ja' ? '送信' : 'Send'}
+          </button>
+        </form>
+      </section>
     </div>
   );
 } 
