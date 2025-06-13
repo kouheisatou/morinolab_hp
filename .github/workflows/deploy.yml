@@ -37,6 +37,9 @@ jobs:
         run: |
           npm run build
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
       # "out" ディレクトリを Pages アーティファクトとしてアップロード
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -57,4 +60,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v3 
+        uses: actions/deploy-pages@v4 
