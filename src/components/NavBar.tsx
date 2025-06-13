@@ -15,8 +15,8 @@ const NavBar = () => {
 
   const links = [
     { path: "/home", label: t.Home },
-    { path: "/access", label: t.Access },
     { path: "/members", label: t.Members },
+    { path: "/access", label: t.Access },
     { path: "/publications", label: t.Publications },
     { path: "/class", label: t.Class },
     { path: "/career", label: t.Career },

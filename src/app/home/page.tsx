@@ -42,18 +42,25 @@ export default function HomePage() {
   return (
     <div className="space-y-20">
       {/* 1️⃣ HERO */}
-      <header className="relative h-[60vh] rounded-[var(--radius)] overflow-hidden">
+      <header className="relative w-full rounded-[var(--radius)] overflow-hidden">
+        {/* Hero background image */}
         <img
-          src="img/sample/hero.png"
-          alt="Lab hero"
-          className="absolute inset-0 w-full h-full object-cover"
+          src="img/lab-group2023.png"
+          alt="Lab group photo 2023"
+          className="w-full h-auto object-contain"
         />
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-6">
-          <p className="text-4xl sm:text-5xl font-extrabold mb-4 drop-shadow">
+
+        {/* Gradient overlay – covers entire image height dynamically */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
+
+        {/* Hero copy – absolute at the bottom so it doesn't hide faces */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-start text-white px-6 pb-10 sm:px-10">
+          <p className="text-3xl sm:text-5xl font-extrabold mb-2 drop-shadow-lg">
             {t.title}
           </p>
-          <p className="max-w-2xl text-base sm:text-lg mb-6">{t.body}</p>
+          <p className="max-w-2xl text-sm sm:text-lg leading-relaxed drop-shadow">
+            {t.body}
+          </p>
           {/* CTA if needed */}
         </div>
       </header>

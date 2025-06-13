@@ -24,6 +24,7 @@ const getGradeLabel = (
 
 const Members = () => {
   const { lang } = useLang();
+  const t = texts(lang).home;
   const title = texts(lang).members.title;
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -75,65 +76,111 @@ const Members = () => {
 
   return (
     <div className="members-page">
-      <img
-        src="img/lab-group2023.png"
-        alt="Lab group"
-        className="lab-group-photo"
-      />
-      <h1>{title}</h1>
+      <header className="relative w-full rounded-[var(--radius)] overflow-hidden mb-18">
+        {/* Hero background image */}
+        <img
+          src="img/lab-group2023.png"
+          alt="Lab group photo 2023"
+          className="w-full h-auto object-contain"
+        />
 
-      {/* Tag Filter */}
-      <div className="filter-row">
-        <span className="filter-label">
-          {lang === "ja" ? "絞り込み" : "Filter"}
-        </span>
-        <button
-          className={`tag-chip ${selectedTags.length === 0 ? "selected" : ""}`}
-          onClick={() => setSelectedTags([])}
-        >
-          All
-        </button>
-        {allTags.map((tagObj) => (
+        {/* Gradient overlay – covers entire image height dynamically */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
+
+        {/* Hero copy – absolute at the bottom so it doesn't hide faces */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-start text-white px-6 pb-10 sm:px-10">
+          <p className="text-3xl sm:text-5xl font-extrabold mb-2 drop-shadow-lg">
+            {t.title}
+          </p>
+          <p className="max-w-2xl text-sm sm:text-lg leading-relaxed drop-shadow">
+            {t.body}
+          </p>
+          {/* CTA if needed */}
+        </div>
+      </header>
+
+      <div className="px-6 sm:px-10">
+        <h1 className="text-3xl font-bold mb-5">{title}</h1>
+
+        {/* Tag Filter */}
+        <div className="filter-row">
+          <span className="filter-label">
+            {lang === "ja" ? "絞り込み" : "Filter"}
+          </span>
           <button
-            key={tagObj.name_english}
-            className={`tag-chip ${selectedTags.includes(tagObj.name_english) ? "selected" : ""}`}
-            onClick={() => {
-              setSelectedTags((prev) => {
-                if (prev.includes(tagObj.name_english)) {
-                  return prev.filter((t) => t !== tagObj.name_english);
-                } else {
-                  return [...prev, tagObj.name_english];
-                }
-              });
-            }}
+            className={`tag-chip ${selectedTags.length === 0 ? "selected" : ""}`}
+            onClick={() => setSelectedTags([])}
           >
-            {tagLabel(tagObj, lang)}
+            All
           </button>
-        ))}
-      </div>
+          {allTags.map((tagObj) => (
+            <button
+              key={tagObj.name_english}
+              className={`tag-chip ${selectedTags.includes(tagObj.name_english) ? "selected" : ""}`}
+              onClick={() => {
+                setSelectedTags((prev) => {
+                  if (prev.includes(tagObj.name_english)) {
+                    return prev.filter((t) => t !== tagObj.name_english);
+                  } else {
+                    return [...prev, tagObj.name_english];
+                  }
+                });
+              }}
+            >
+              {tagLabel(tagObj, lang)}
+            </button>
+          ))}
+        </div>
 
-      <h2 className="section-title">Faculty</h2>
-      <ul className="members-grid">
-        {faculty.map((m) => (
-          <li key={m.id} className="member-row">
-            {m.img && <img src={m.img} alt={m.name} className="member-photo" />}
-            <div>
-              <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
-              <div className="member-desc">
-                {lang === "ja" ? m.desc : m.descEnglish}
+        <h2 className="section-title">Faculty</h2>
+        <ul className="members-grid">
+          {faculty.map((m) => (
+            <li key={m.id} className="member-row">
+              {m.img && <img src={m.img} alt={m.name} className="member-photo" />}
+              <div>
+                <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
+                <div className="member-desc">
+                  {lang === "ja" ? m.desc : m.descEnglish}
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
 
-      {/* New categorized sections */}
-      {["M2", "M1", "B4", "B3"].map((grade) =>
-        categoryMap[grade] && categoryMap[grade].length > 0 ? (
-          <div key={grade}>
-            <h2 className="section-title">{grade}</h2>
+        {/* New categorized sections */}
+        {["M2", "M1", "B4", "B3"].map((grade) =>
+          categoryMap[grade] && categoryMap[grade].length > 0 ? (
+            <div key={grade}>
+              <h2 className="section-title">{grade}</h2>
+              <ul className="members-grid">
+                {categoryMap[grade].map((m) => (
+                  <li key={m.id}>
+                    <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {m.tags.map((t) => (
+                        <span key={t.name_english} className="tag-badge">
+                          {tagLabel(t, lang)}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="member-desc">
+                      {lang === "ja" ? m.desc : m.descEnglish}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null,
+        )}
+
+        {/* Alumni Section */}
+        {filteredAlumni.length > 0 && (
+          <>
+            <h2 className="section-title">
+              {lang === "ja" ? "卒業生" : "Alumni"}
+            </h2>
             <ul className="members-grid">
-              {categoryMap[grade].map((m) => (
+              {filteredAlumni.map((m) => (
                 <li key={m.id}>
                   <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
                   <div className="flex flex-wrap gap-1 mt-1">
@@ -144,42 +191,16 @@ const Members = () => {
                     ))}
                   </div>
                   <div className="member-desc">
-                    {lang === "ja" ? m.desc : m.descEnglish}
+                    {lang === "ja"
+                      ? `${m.gradYear}年 ${m.master ? "院卒" : "学部卒"} / ${m.desc}`
+                      : `${m.gradYear} ${m.master ? "Master grad." : "Bachelor grad."} / ${m.descEnglish}`}
                   </div>
                 </li>
               ))}
             </ul>
-          </div>
-        ) : null,
-      )}
-
-      {/* Alumni Section */}
-      {filteredAlumni.length > 0 && (
-        <>
-          <h2 className="section-title">
-            {lang === "ja" ? "卒業生" : "Alumni"}
-          </h2>
-          <ul className="members-grid">
-            {filteredAlumni.map((m) => (
-              <li key={m.id}>
-                <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {m.tags.map((t) => (
-                    <span key={t.name_english} className="tag-badge">
-                      {tagLabel(t, lang)}
-                    </span>
-                  ))}
-                </div>
-                <div className="member-desc">
-                  {lang === "ja"
-                    ? `${m.gradYear}年 ${m.master ? "院卒" : "学部卒"} / ${m.desc}`
-                    : `${m.gradYear} ${m.master ? "Master grad." : "Bachelor grad."} / ${m.descEnglish}`}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
