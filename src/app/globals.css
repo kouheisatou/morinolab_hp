@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import "./neumorphism.css";
+
+/* Removed Next.js default palette so that neumorphism.css controls colors */
+body {
+  margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
