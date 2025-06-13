@@ -29,13 +29,13 @@ export default function HomePage() {
       }),
     )
     .sort((a, b) => (a.date < b.date ? 1 : -1))
-    .map((item, idx) => {
+    .map((item) => {
       // Generate description if not provided
-      const desc =
+      const descText =
         lang === "ja"
           ? `${item.text} に関する詳細な情報です。`
           : `More details about: ${item.text}.`;
-      return { ...item, desc } as Entry & { desc: string };
+      return { ...item, desc: descText } as Entry & { desc: string };
     });
 
   /* ==================== LAYOUT ==================== */
@@ -115,14 +115,14 @@ export default function HomePage() {
               {(() => {
                 const parts = n.text.split("–");
                 const title = parts[0]?.trim() || n.text;
-                const desc = parts.slice(1).join("–").trim();
+                const descText = parts.slice(1).join("–").trim();
                 return (
                   <div className="flex flex-col gap-1 p-3 text-xs sm:text-sm flex-1">
                     <span className="font-semibold leading-snug text-sm">
                       {title}
                     </span>
                     <span className="text-[10px] text-gray-500">{n.date}</span>
-                    {n.desc && (
+                    {descText && (
                       <p
                         className="text-sm text-gray-600 dark:text-gray-300"
                         style={{
@@ -132,7 +132,7 @@ export default function HomePage() {
                           overflow: "hidden",
                         }}
                       >
-                        {n.desc}
+                        {descText}
                       </p>
                     )}
                   </div>

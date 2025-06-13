@@ -4,6 +4,8 @@ import { texts } from "@/components/i18n";
 import { publications, TAGS } from "@/common_resource";
 import { Tag } from "@/models/tag";
 import { useMemo, useState } from "react";
+import { Publication } from "@/models/publication";
+import { Member } from "@/models/member";
 
 const Publications = () => {
   const { lang } = useLang();
@@ -13,7 +15,7 @@ const Publications = () => {
   const tagLabel = (tag: Tag) => (lang === "ja" ? tag.name : tag.name_english);
 
   // Infer tags from title / publication name
-  const inferTags = (p: any): Tag[] => {
+  const inferTags = (p: Publication): Tag[] => {
     const text = (
       (p.titleJa || "") +
       (p.titleEn || "") +
@@ -33,10 +35,11 @@ const Publications = () => {
     return res;
   };
 
-  // Memoized enriched publication list
-  const enriched = useMemo(
+  type PubWithTags = Publication & { tags: Tag[] };
+
+  const enriched: PubWithTags[] = useMemo(
     () => publications.map((p) => ({ ...p, tags: inferTags(p) })),
-    [publications],
+    [],
   );
 
   // State for tag and year filters
@@ -44,13 +47,13 @@ const Publications = () => {
   const [selectedYear, setSelectedYear] = useState<"all" | number>("all");
   const [showOlder, setShowOlder] = useState(false);
 
-  const filterByTag = (p: any) =>
+  const filterByTag = (p: PubWithTags) =>
     selectedTags.length === 0
       ? true
       : p.tags.some((t: Tag) => selectedTags.includes(t.name_english));
 
   // Group after filtering
-  const grouped: Record<number, typeof enriched> = {};
+  const grouped: Record<number, PubWithTags[]> = {};
   enriched.filter(filterByTag).forEach((p) => {
     if (!grouped[p.fiscalYear]) grouped[p.fiscalYear] = [];
     grouped[p.fiscalYear].push(p);
@@ -61,7 +64,6 @@ const Publications = () => {
     .sort((a, b) => b - a);
 
   const recentYears = years.slice(0, 8);
-  const oldestRecent = recentYears[recentYears.length - 1];
 
   const yearFilterFn = (year: number) => {
     if (selectedYear === "all") return true;
@@ -70,7 +72,7 @@ const Publications = () => {
   };
 
   // Normalize authors array (string or Member) into comma-separated string
-  const formatAuthors = (authors: any[]) =>
+  const formatAuthors = (authors: (string | Member)[]) =>
     authors
       .map((a) =>
         typeof a === "string"
@@ -81,10 +83,10 @@ const Publications = () => {
       )
       .join(", ");
 
-  const getTitle = (p: any) =>
+  const getTitle = (p: Publication) =>
     lang === "ja" ? p.titleJa || p.titleEn : p.titleEn || p.titleJa;
 
-  const getDate = (p: any) => (lang === "ja" ? p.dateJa || "" : p.dateEn || "");
+  const getDate = (p: Publication) => (lang === "ja" ? p.dateJa || "" : p.dateEn || "");
 
   // Fallback when imagePath is not provided
   const getFallbackImage = () => "img/noimage_paper.png";

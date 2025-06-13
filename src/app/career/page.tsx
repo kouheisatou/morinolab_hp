@@ -8,7 +8,7 @@ import { Company } from "@/models/company";
 const sorted = [...companies].sort((a, b) => b.year - a.year);
 
 // Group by year
-const grouped: Record<number, Company[]> = {} as any;
+const grouped: Record<number, Company[]> = {};
 sorted.forEach((c) => {
   if (!grouped[c.year]) grouped[c.year] = [];
   grouped[c.year].push(c);
