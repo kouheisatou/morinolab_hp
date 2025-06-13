@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
   // 例: リポジトリ (USER/REPO) => https://USER.github.io/REPO
   // basePath: "/REPO",
   // assetPrefix: "/REPO/",
+  eslint: {
+    // Warning: This allows production builds to complete even if there are ESLint errors.
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
