@@ -1269,7 +1269,7 @@ export const publications = [
     undefined,
     undefined,
     undefined,
-    "img/sample/lidar.png",
+    "img/lidar.png",
   ),
   new Publication(
     4,
@@ -6118,13 +6118,7 @@ export const companies: Company[] = [
     "Rakuten Mobile, Inc.",
     2023,
   ),
-  new Company(
-    4,
-    "img/sample/lidar.png",
-    "富士通株式会社",
-    "Fujitsu Limited",
-    2022,
-  ),
+  new Company(4, "img/lidar.png", "富士通株式会社", "Fujitsu Limited", 2022),
   new Company(
     5,
     "img/sample/hero.png",
@@ -6168,7 +6162,7 @@ export const lectures: Lecture[] = [
   ),
   new Lecture(
     3,
-    "img/sample/lidar.png",
+    "img/lidar.png",
     "無線通信工学",
     "Wireless Communication Engineering",
     "電波伝搬特性、マルチパスフェージング、アンテナ・ MIMO 技術、セルラネットワーク設計、5G/6G 最新動向など無線通信技術の基礎と応用を詳解する。",
@@ -6180,15 +6174,15 @@ export const lectures: Lecture[] = [
 export const themes: Theme[] = [
   new Theme(
     1,
-    "img/sample/network.png",
-    "自律分散ネットワーク",
+    "img/traffic.png",
+    "交通渋滞緩和",
     "Autonomous Distributed Networks",
     "ユーザ参加型のマルチホップ無線 LAN による自律分散ネットワーク制御について研究しています。",
     "We study autonomous control of multi-hop wireless LAN formed by user devices.",
   ),
   new Theme(
     2,
-    "img/sample/blockchain.png",
+    "img/blockchain.png",
     "ブロックチェーン決済チャネル",
     "Blockchain Payment Channels",
     "Lightning Network などのオフチェーン決済チャネルによる高速・低手数料トランザクションを研究。",
@@ -6196,9 +6190,17 @@ export const themes: Theme[] = [
   ),
   new Theme(
     3,
-    "img/sample/lidar.png",
+    "img/lidar.png",
     "3次元点群センシング",
     "3D Point-Cloud Sensing",
+    "LiDAR を用いた屋内外環境の高精度 3D 点群センシングとクラウド連携処理を行います。",
+    "High-precision 3D point-cloud sensing with LiDAR and cloud-based processing for indoor/outdoor environments.",
+  ),
+  new Theme(
+    4,
+    "img/wificsi.png",
+    "Wi-Fi CSI",
+    "Wi-Fi CSI",
     "LiDAR を用いた屋内外環境の高精度 3D 点群センシングとクラウド連携処理を行います。",
     "High-precision 3D point-cloud sensing with LiDAR and cloud-based processing for indoor/outdoor environments.",
   ),

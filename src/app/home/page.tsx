@@ -8,35 +8,10 @@ import { Theme } from "@/models/theme";
 import { NewsItem } from "@/models/news";
 import { useState } from "react";
 
-interface Entry {
-  date: string;
-  text: string;
-  img?: string;
-}
-
 export default function HomePage() {
   const { lang } = useLang();
   const t = texts(lang).home;
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-
-  // Convert NewsItem objects to localized Entry objects
-  const news = [...newsItems]
-    .map(
-      (n: NewsItem): Entry => ({
-        date: n.date,
-        text: lang === "ja" ? n.textJa : n.textEn,
-        img: n.img,
-      }),
-    )
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
-    .map((item) => {
-      // Generate description if not provided
-      const descText =
-        lang === "ja"
-          ? `${item.text} に関する詳細な情報です。`
-          : `More details about: ${item.text}.`;
-      return { ...item, desc: descText } as Entry & { desc: string };
-    });
 
   /* ==================== LAYOUT ==================== */
   return (
@@ -103,7 +78,7 @@ export default function HomePage() {
           {lang === "ja" ? "ニュース" : "News"}
         </h2>
         <div className="space-y-4">
-          {news.map((n, idx) => (
+          {newsItems.map((n, idx) => (
             <div
               key={n.date + idx}
               className="neu-container flex items-stretch overflow-hidden w-full h-32"
@@ -115,13 +90,13 @@ export default function HomePage() {
               >
                 <img
                   src={n.img}
-                  alt={n.text}
+                  alt={n.textJa}
                   className="w-full h-full object-cover"
                 />
               </div>
               {(() => {
-                const parts = n.text.split("–");
-                const title = parts[0]?.trim() || n.text;
+                const parts = n.textJa.split("–");
+                const title = parts[0]?.trim() || n.textJa;
                 const descText = parts.slice(1).join("–").trim();
                 return (
                   <div className="flex flex-col gap-1 p-3 text-xs sm:text-sm flex-1">

@@ -86,7 +86,8 @@ const Publications = () => {
   const getTitle = (p: Publication) =>
     lang === "ja" ? p.titleJa || p.titleEn : p.titleEn || p.titleJa;
 
-  const getDate = (p: Publication) => (lang === "ja" ? p.dateJa || "" : p.dateEn || "");
+  const getDate = (p: Publication) =>
+    lang === "ja" ? p.dateJa || "" : p.dateEn || "";
 
   // Fallback when imagePath is not provided
   const getFallbackImage = () => "img/noimage_paper.png";

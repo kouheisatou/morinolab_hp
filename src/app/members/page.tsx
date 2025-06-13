@@ -24,7 +24,6 @@ const getGradeLabel = (
 
 const Members = () => {
   const { lang } = useLang();
-  const t = texts(lang).home;
   const title = texts(lang).members.title;
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -76,29 +75,6 @@ const Members = () => {
 
   return (
     <div className="members-page">
-      <header className="relative w-full rounded-[var(--radius)] overflow-hidden mb-18">
-        {/* Hero background image */}
-        <img
-          src="img/lab-group2023.png"
-          alt="Lab group photo 2023"
-          className="w-full h-auto object-contain"
-        />
-
-        {/* Gradient overlay – covers entire image height dynamically */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
-
-        {/* Hero copy – absolute at the bottom so it doesn't hide faces */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-start text-white px-6 pb-10 sm:px-10">
-          <p className="text-3xl sm:text-5xl font-extrabold mb-2 drop-shadow-lg">
-            {t.title}
-          </p>
-          <p className="max-w-2xl text-sm sm:text-lg leading-relaxed drop-shadow">
-            {t.body}
-          </p>
-          {/* CTA if needed */}
-        </div>
-      </header>
-
       <div className="px-6 sm:px-10">
         <h1 className="text-3xl font-bold mb-5">{title}</h1>
 
@@ -136,7 +112,9 @@ const Members = () => {
         <ul className="members-grid">
           {faculty.map((m) => (
             <li key={m.id} className="member-row">
-              {m.img && <img src={m.img} alt={m.name} className="member-photo" />}
+              {m.img && (
+                <img src={m.img} alt={m.name} className="member-photo" />
+              )}
               <div>
                 <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
                 <div className="member-desc">
