@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "export",
+  images: {
+    // GitHub Pages では画像最適化サーバを利用できないため unoptimized を有効にします
+    unoptimized: true,
+  },
+  // GitHub Pages でリポジトリ名がパスに入る場合は以下を調整してください。
+  // 例: リポジトリ (USER/REPO) => https://USER.github.io/REPO
+  // basePath: "/REPO",
+  // assetPrefix: "/REPO/",
 };
 
 export default nextConfig;
