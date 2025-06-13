@@ -1,23 +1,23 @@
-"use client";
-import { useLang } from '@/components/LanguageContext';
-import { texts } from '@/components/i18n';
-import { companies } from '@/common_resource';
-import { Company } from '@/models/company';
+'use client'
+import { useLang } from '@/components/LanguageContext'
+import { texts } from '@/components/i18n'
+import { companies } from '@/common_resource'
+import { Company } from '@/models/company'
 
 // sort by year desc (numeric)
-const sorted = [...companies].sort((a,b)=>b.year - a.year);
+const sorted = [...companies].sort((a, b) => b.year - a.year)
 
 // Group by year
-const grouped: Record<number, Company[]> = {} as any;
-sorted.forEach(c=>{
-  if(!grouped[c.year]) grouped[c.year]=[];
-  grouped[c.year].push(c);
-});
-const years = Object.keys(grouped).sort((a,b)=>Number(b)-Number(a));
+const grouped: Record<number, Company[]> = {} as any
+sorted.forEach((c) => {
+  if (!grouped[c.year]) grouped[c.year] = []
+  grouped[c.year].push(c)
+})
+const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a))
 
 export default function CareerPage() {
-  const { lang } = useLang();
-  const title = texts(lang).career.title;
+  const { lang } = useLang()
+  const title = texts(lang).career.title
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -28,18 +28,25 @@ export default function CareerPage() {
         <span className="absolute left-4 top-0 h-full w-0.5 bg-gray-300 dark:bg-gray-700" />
 
         <ul className="space-y-10">
-          {years.map((y)=>(
+          {years.map((y) => (
             <li key={y} className="space-y-6">
               <h3 className="font-bold text-lg text-accent mb-2">{y}</h3>
-              {grouped[Number(y)].map((c)=>(
-                <div key={c.nameEn} className="relative flex items-center gap-6">
+              {grouped[Number(y)].map((c) => (
+                <div
+                  key={c.nameEn}
+                  className="relative flex items-center gap-6"
+                >
                   <span className="absolute -left-3.5 w-7 h-7 rounded-full overflow-hidden shadow-md bg-white dark:bg-gray-800 flex items-center justify-center">
-                    <img src={c.logo} alt={c.nameEn} className="w-full h-full object-cover" />
+                    <img
+                      src={c.logo}
+                      alt={c.nameEn}
+                      className="w-full h-full object-cover"
+                    />
                   </span>
 
                   <div className="neu-container flex-1 p-4">
                     <p className="font-semibold mb-1">
-                      {lang==='ja'?c.nameJa:c.nameEn}
+                      {lang === 'ja' ? c.nameJa : c.nameEn}
                     </p>
                   </div>
                 </div>
@@ -49,5 +56,5 @@ export default function CareerPage() {
         </ul>
       </div>
     </div>
-  );
-} 
+  )
+}

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import { useLang } from '@/components/LanguageContext'
 import { texts } from '@/components/i18n'
 import { lectures } from '@/common_resource'
@@ -8,9 +8,9 @@ const ClassPage = () => {
   const title = texts(lang).class.title
 
   const introTextJa =
-    '森野研究室では、ネットワーク技術から IoT・無線通信まで、モバイル通信システムを支える幅広い講義を開講しています。各講義は理論だけでなく実践的な演習を通じて理解を深める構成となっています。';
+    '森野研究室では、ネットワーク技術から IoT・無線通信まで、モバイル通信システムを支える幅広い講義を開講しています。各講義は理論だけでなく実践的な演習を通じて理解を深める構成となっています。'
   const introTextEn =
-    'Morino Laboratory offers a broad range of courses covering mobile communication systems from networking fundamentals to IoT and wireless technologies. Each course combines theory with hands-on sessions to deepen understanding.';
+    'Morino Laboratory offers a broad range of courses covering mobile communication systems from networking fundamentals to IoT and wireless technologies. Each course combines theory with hands-on sessions to deepen understanding.'
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -64,4 +64,4 @@ const ClassPage = () => {
   )
 }
 
-export default ClassPage 
+export default ClassPage

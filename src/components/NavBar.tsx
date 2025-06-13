@@ -1,15 +1,15 @@
-"use client";
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useLang } from '@/components/LanguageContext';
-import type { Lang } from '@/components/LanguageContext';
-import { texts } from '@/components/i18n';
-import { useState } from 'react';
+'use client'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useLang } from '@/components/LanguageContext'
+import type { Lang } from '@/components/LanguageContext'
+import { texts } from '@/components/i18n'
+import { useState } from 'react'
 
 const NavBar = () => {
   const { lang, setLanguage } = useLang()
   const t = texts(lang).navbar
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   const [open, setOpen] = useState(false)
 
@@ -71,4 +71,4 @@ const NavBar = () => {
   )
 }
 
-export default NavBar 
+export default NavBar

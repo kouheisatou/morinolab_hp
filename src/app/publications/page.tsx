@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import { useLang } from '@/components/LanguageContext'
 import { texts } from '@/components/i18n'
 import { publications, TAGS } from '@/common_resource'
@@ -23,17 +23,21 @@ const Publications = () => {
 
     const res: Tag[] = []
     if (/lidar|点群/.test(text)) res.push(TAGS.find((t) => t === TAGS[0])!) // LiDAR
-    if (/blockchain|ペイメント|channel/.test(text)) res.push(TAGS.find((t) => t === TAGS[1])!)
+    if (/blockchain|ペイメント|channel/.test(text))
+      res.push(TAGS.find((t) => t === TAGS[1])!)
     if (/crowd|人数/.test(text)) res.push(TAGS.find((t) => t === TAGS[2])!)
-    if (/v2x|vehicle|車両|車々|vehicular/.test(text)) res.push(TAGS.find((t) => t === TAGS[3])!)
+    if (/v2x|vehicle|車両|車々|vehicular/.test(text))
+      res.push(TAGS.find((t) => t === TAGS[3])!)
     if (/wifi|wi-fi|csi/.test(text)) res.push(TAGS.find((t) => t === TAGS[4])!)
     if (res.length === 0) res.push(TAGS.find((t) => t === TAGS[5])!)
     return res
   }
 
   // Memoized enriched publication list
-  const enriched = useMemo(() =>
-    publications.map((p) => ({ ...p, tags: inferTags(p) })), [publications])
+  const enriched = useMemo(
+    () => publications.map((p) => ({ ...p, tags: inferTags(p) })),
+    [publications]
+  )
 
   // State for tag and year filters
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -68,7 +72,13 @@ const Publications = () => {
   // Normalize authors array (string or Member) into comma-separated string
   const formatAuthors = (authors: any[]) =>
     authors
-      .map((a) => (typeof a === 'string' ? a : (lang === 'ja' ? a.name : a.nameEnglish || a.name)))
+      .map((a) =>
+        typeof a === 'string'
+          ? a
+          : lang === 'ja'
+            ? a.name
+            : a.nameEnglish || a.name
+      )
       .join(', ')
 
   const getTitle = (p: any) =>
@@ -85,7 +95,9 @@ const Publications = () => {
 
       {/* Tag filter */}
       <div className="filter-row">
-        <span className="filter-label">{lang === 'ja' ? 'テーマ' : 'Thema'}</span>
+        <span className="filter-label">
+          {lang === 'ja' ? 'テーマ' : 'Thema'}
+        </span>
         <button
           className={`tag-chip ${selectedTags.length === 0 ? 'selected' : ''}`}
           onClick={() => setSelectedTags([])}
@@ -115,8 +127,8 @@ const Publications = () => {
         <button
           className={`tag-chip ${selectedYear === 'all' ? 'selected' : ''}`}
           onClick={() => {
-            setSelectedYear('all');
-            setShowOlder(false);
+            setSelectedYear('all')
+            setShowOlder(false)
           }}
         >
           All
@@ -124,10 +136,10 @@ const Publications = () => {
         {recentYears.map((y, idx) => (
           <button
             key={y}
-            className={`tag-chip ${selectedYear === y && (idx !== recentYears.length -1 ? !showOlder : true) ? 'selected' : ''}`}
+            className={`tag-chip ${selectedYear === y && (idx !== recentYears.length - 1 ? !showOlder : true) ? 'selected' : ''}`}
             onClick={() => {
-              setSelectedYear(y);
-              setShowOlder(idx === recentYears.length - 1);
+              setSelectedYear(y)
+              setShowOlder(idx === recentYears.length - 1)
             }}
           >
             {idx === recentYears.length - 1 ? `${y}~以前` : y}
@@ -141,7 +153,10 @@ const Publications = () => {
           <div className="pub-grid">
             {grouped[year].map((p) => (
               <div key={p.id} className="pub-card">
-                <img src={p.imagePath ?? getFallbackImage()} alt={getTitle(p)} />
+                <img
+                  src={p.imagePath ?? getFallbackImage()}
+                  alt={getTitle(p)}
+                />
                 <div className="pub-meta">
                   <span className="pub-title">{getTitle(p)}</span>
                   <span className="pub-authors text-sm text-gray-700 dark:text-gray-300">
@@ -167,4 +182,4 @@ const Publications = () => {
   )
 }
 
-export default Publications 
+export default Publications

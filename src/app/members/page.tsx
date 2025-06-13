@@ -1,15 +1,14 @@
-"use client";
-import { TAGS, TAG_OTHER, currentYear, members} from '@/common_resource';
+'use client'
+import { TAGS, TAG_OTHER, currentYear, members } from '@/common_resource'
 import { useLang } from '@/components/LanguageContext'
 import { texts } from '@/components/i18n'
-import { Member } from '@/models/member';
-import { Tag } from '@/models/tag';
+import { Member } from '@/models/member'
+import { Tag } from '@/models/tag'
 import { useMemo, useState } from 'react'
 
-
-
 // Helper to get tag display label
-const tagLabel = (tag: Tag, lang: 'ja' | 'en') => (lang === 'ja' ? tag.name : tag.name_english)
+const tagLabel = (tag: Tag, lang: 'ja' | 'en') =>
+  lang === 'ja' ? tag.name : tag.name_english
 
 // Compute grade label from years since admission
 const getGradeLabel = (
@@ -31,17 +30,27 @@ const Members = () => {
 
   // Faculty as Member array for bilingual support
   const faculty: Member[] = [
-    new Member(0, '森野 博章', '教授', 'Hiroaki Morino', 'Professor', 2000, 'img/morino.jpg', [TAG_OTHER], 0, false, true, false),
+    new Member(
+      0,
+      '森野 博章',
+      '教授',
+      'Hiroaki Morino',
+      'Professor',
+      2000,
+      'img/morino.jpg',
+      [TAG_OTHER],
+      0,
+      false,
+      true,
+      false
+    ),
   ]
 
   const alumniMembers: Member[] = members.filter((m) => m.graduated)
 
   const currentStudents: Member[] = members.filter((m) => !m.graduated)
 
-  const allTags = useMemo(
-    () => TAGS,
-    []
-  )
+  const allTags = useMemo(() => TAGS, [])
 
   const filterFn = (m: Member) =>
     selectedTags.length === 0
@@ -66,12 +75,18 @@ const Members = () => {
 
   return (
     <div className="members-page">
-      <img src="img/lab-group2023.png" alt="Lab group" className="lab-group-photo" />
+      <img
+        src="img/lab-group2023.png"
+        alt="Lab group"
+        className="lab-group-photo"
+      />
       <h1>{title}</h1>
 
       {/* Tag Filter */}
       <div className="filter-row">
-        <span className="filter-label">{lang==='ja' ? '絞り込み' : 'Filter'}</span>
+        <span className="filter-label">
+          {lang === 'ja' ? '絞り込み' : 'Filter'}
+        </span>
         <button
           className={`tag-chip ${selectedTags.length === 0 ? 'selected' : ''}`}
           onClick={() => setSelectedTags([])}
@@ -103,22 +118,24 @@ const Members = () => {
           <li key={m.id} className="member-row">
             {m.img && <img src={m.img} alt={m.name} className="member-photo" />}
             <div>
-              <strong>{lang==='ja' ? m.name : m.nameEnglish}</strong>
-              <div className="member-desc">{lang==='ja' ? m.desc : m.descEnglish}</div>
+              <strong>{lang === 'ja' ? m.name : m.nameEnglish}</strong>
+              <div className="member-desc">
+                {lang === 'ja' ? m.desc : m.descEnglish}
+              </div>
             </div>
           </li>
         ))}
       </ul>
 
       {/* New categorized sections */}
-      {['M2', 'M1', 'B4', 'B3'].map((grade) => (
+      {['M2', 'M1', 'B4', 'B3'].map((grade) =>
         categoryMap[grade] && categoryMap[grade].length > 0 ? (
           <div key={grade}>
             <h2 className="section-title">{grade}</h2>
             <ul className="members-grid">
               {categoryMap[grade].map((m) => (
                 <li key={m.id}>
-                  <strong>{lang==='ja'?m.name:m.nameEnglish}</strong>
+                  <strong>{lang === 'ja' ? m.name : m.nameEnglish}</strong>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {m.tags.map((t) => (
                       <span key={t.name_english} className="tag-badge">
@@ -126,22 +143,26 @@ const Members = () => {
                       </span>
                     ))}
                   </div>
-                  <div className="member-desc">{lang==='ja'?m.desc:m.descEnglish}</div>
+                  <div className="member-desc">
+                    {lang === 'ja' ? m.desc : m.descEnglish}
+                  </div>
                 </li>
               ))}
             </ul>
           </div>
         ) : null
-      ))}
+      )}
 
       {/* Alumni Section */}
       {filteredAlumni.length > 0 && (
         <>
-          <h2 className="section-title">{lang==='ja' ? '卒業生' : 'Alumni'}</h2>
+          <h2 className="section-title">
+            {lang === 'ja' ? '卒業生' : 'Alumni'}
+          </h2>
           <ul className="members-grid">
             {filteredAlumni.map((m) => (
               <li key={m.id}>
-                <strong>{lang==='ja'?m.name:m.nameEnglish}</strong>
+                <strong>{lang === 'ja' ? m.name : m.nameEnglish}</strong>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {m.tags.map((t) => (
                     <span key={t.name_english} className="tag-badge">
@@ -150,7 +171,7 @@ const Members = () => {
                   ))}
                 </div>
                 <div className="member-desc">
-                  {lang==='ja'
+                  {lang === 'ja'
                     ? `${m.gradYear}年 ${m.master ? '院卒' : '学部卒'} / ${m.desc}`
                     : `${m.gradYear} ${m.master ? 'Master grad.' : 'Bachelor grad.'} / ${m.descEnglish}`}
                 </div>
@@ -163,4 +184,4 @@ const Members = () => {
   )
 }
 
-export default Members 
+export default Members

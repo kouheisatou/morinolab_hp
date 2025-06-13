@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "./neumorphism.css";
+@import 'tailwindcss';
+@import './neumorphism.css';
 
 /* Removed Next.js default palette so that neumorphism.css controls colors */
 body {
@@ -45,13 +45,21 @@ body {
 }
 
 @keyframes fadeInOpacity {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeOutOpacity {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .fade-in {

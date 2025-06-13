@@ -12,7 +12,7 @@ export class Theme {
     titleJa: string,
     titleEn: string,
     descJa: string,
-    descEn: string,
+    descEn: string
   ) {
     this.id = id
     this.img = img
@@ -21,4 +21,4 @@ export class Theme {
     this.descJa = descJa
     this.descEn = descEn
   }
-} 
+}

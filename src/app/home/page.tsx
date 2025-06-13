@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { useLang } from "@/components/LanguageContext";
-import { texts } from "@/components/i18n";
+import { useLang } from '@/components/LanguageContext'
+import { texts } from '@/components/i18n'
 import { themes } from '@/common_resource'
 import { newsItems } from '@/common_resource'
 import { Theme } from '@/models/theme'
@@ -9,32 +9,34 @@ import { NewsItem } from '@/models/news'
 import { useState } from 'react'
 
 interface Entry {
-  date: string;
-  text: string;
-  img?: string;
+  date: string
+  text: string
+  img?: string
 }
 
 export default function HomePage() {
-  const { lang } = useLang();
-  const t = texts(lang).home;
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const { lang } = useLang()
+  const t = texts(lang).home
+  const [form, setForm] = useState({ name: '', email: '', message: '' })
 
   // Convert NewsItem objects to localized Entry objects
   const news = [...newsItems]
-    .map((n: NewsItem): Entry => ({
-      date: n.date,
-      text: lang === 'ja' ? n.textJa : n.textEn,
-      img: n.img,
-    }))
+    .map(
+      (n: NewsItem): Entry => ({
+        date: n.date,
+        text: lang === 'ja' ? n.textJa : n.textEn,
+        img: n.img,
+      })
+    )
     .sort((a, b) => (a.date < b.date ? 1 : -1))
     .map((item, idx) => {
       // Generate description if not provided
       const desc =
         lang === 'ja'
           ? `${item.text} に関する詳細な情報です。`
-          : `More details about: ${item.text}.`;
-      return { ...item, desc } as Entry & { desc: string };
-    });
+          : `More details about: ${item.text}.`
+      return { ...item, desc } as Entry & { desc: string }
+    })
 
   /* ==================== LAYOUT ==================== */
   return (
@@ -51,9 +53,7 @@ export default function HomePage() {
           <p className="text-4xl sm:text-5xl font-extrabold mb-4 drop-shadow">
             {t.title}
           </p>
-          <p className="max-w-2xl text-base sm:text-lg mb-6">
-            {t.body}
-          </p>
+          <p className="max-w-2xl text-base sm:text-lg mb-6">{t.body}</p>
           {/* CTA if needed */}
         </div>
       </header>
@@ -65,10 +65,14 @@ export default function HomePage() {
         </h2>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {themes.map((th: Theme) => {
-            const title = lang === 'ja' ? th.titleJa : th.titleEn;
-            const desc = lang === 'ja' ? th.descJa : th.descEn;
+            const title = lang === 'ja' ? th.titleJa : th.titleEn
+            const desc = lang === 'ja' ? th.descJa : th.descEn
             return (
-              <div key={th.id} className="theme-card flex flex-col" style={{ padding: 0 }}>
+              <div
+                key={th.id}
+                className="theme-card flex flex-col"
+                style={{ padding: 0 }}
+              >
                 <img
                   src={th.img}
                   alt={title}
@@ -109,9 +113,9 @@ export default function HomePage() {
                 />
               </div>
               {(() => {
-                const parts = n.text.split('–');
-                const title = parts[0]?.trim() || n.text;
-                const desc = parts.slice(1).join('–').trim();
+                const parts = n.text.split('–')
+                const title = parts[0]?.trim() || n.text
+                const desc = parts.slice(1).join('–').trim()
                 return (
                   <div className="flex flex-col gap-1 p-3 text-xs sm:text-sm flex-1">
                     <span className="font-semibold leading-snug text-sm">
@@ -132,7 +136,7 @@ export default function HomePage() {
                       </p>
                     )}
                   </div>
-                );
+                )
               })()}
             </div>
           ))}
@@ -147,8 +151,12 @@ export default function HomePage() {
         <form
           className="max-w-xl mx-auto space-y-4 neu-container p-6"
           onSubmit={(e) => {
-            e.preventDefault();
-            alert(lang === 'ja' ? '送信ありがとうございました！' : 'Thank you for your message!');
+            e.preventDefault()
+            alert(
+              lang === 'ja'
+                ? '送信ありがとうございました！'
+                : 'Thank you for your message!'
+            )
             // TODO: send data to backend API
           }}
         >
@@ -200,5 +208,5 @@ export default function HomePage() {
         </form>
       </section>
     </div>
-  );
-} 
+  )
+}

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
@@ -36,4 +36,4 @@ export const useLang = () => {
   const ctx = useContext(LanguageContext)
   if (!ctx) throw new Error('useLang must be within LanguageProvider')
   return ctx
-} 
+}

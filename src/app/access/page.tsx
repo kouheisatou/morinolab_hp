@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import { useLang } from '@/components/LanguageContext'
 import { texts } from '@/components/i18n'
 import { useState, useEffect } from 'react'
@@ -52,20 +52,22 @@ const Access = () => {
             <p>Shibaura Institute of Technology, Toyosu Campus</p>
             <p>Room 12-I-32, 12F Research Bldg.</p>
             <p>3-7-5 Toyosu, Koto-ku, Tokyo 135-8548 Japan</p>
-            <p className="mt-1">7 min walk from Toyosu Station (Tokyo Metro Yurakucho Line)</p>
+            <p className="mt-1">
+              7 min walk from Toyosu Station (Tokyo Metro Yurakucho Line)
+            </p>
           </>
         )}
       </div>
-        <iframe
-          title="SIT Toyosu Campus Map"
-          src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12966.674931045814!2d139.7845958!3d35.6605325!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x601889a07930e2f9%3A0x62e41ee20b961991!2z6Iqd5rWm5bel5qWt5aSn5a2mIOixiua0suOCreODo-ODs-ODkeOCuQ!5e0!3m2!1sja!2sjp!4v1749751447357!5m2!1sja!2sjp"
-          width="100%"
-          height="450"
-          style={{ border: 0 }}
-          allowFullScreen={true}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        />
+      <iframe
+        title="SIT Toyosu Campus Map"
+        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12966.674931045814!2d139.7845958!3d35.6605325!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x601889a07930e2f9%3A0x62e41ee20b961991!2z6Iqd5rWm5bel5qWt5aSn5a2mIOixiua0suOCreODo-ODs-ODkeOCuQ!5e0!3m2!1sja!2sjp!4v1749751447357!5m2!1sja!2sjp"
+        width="100%"
+        height="450"
+        style={{ border: 0 }}
+        allowFullScreen={true}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
 
       <div className="access-img-grid">
         {gallery.map((g) => (
@@ -99,4 +101,4 @@ const Access = () => {
   )
 }
 
-export default Access 
+export default Access

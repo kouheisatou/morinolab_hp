@@ -10,7 +10,7 @@ export class NewsItem {
     date: string,
     textJa: string,
     textEn: string,
-    img?: string,
+    img?: string
   ) {
     this.id = id
     this.date = date
@@ -18,4 +18,4 @@ export class NewsItem {
     this.textEn = textEn
     this.img = img
   }
-} 
+}
