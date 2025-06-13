@@ -36,7 +36,6 @@ jobs:
       - name: Build Next.js static site
         run: |
           npm run build
-          npx next export
 
       # "out" ディレクトリを Pages アーティファクトとしてアップロード
       - name: Upload Pages artifact
