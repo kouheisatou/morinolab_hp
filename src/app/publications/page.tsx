@@ -35,8 +35,10 @@ const Publications = () => {
   const enriched = useMemo(() =>
     publications.map((p) => ({ ...p, tags: inferTags(p) })), [publications])
 
-  // State for selected tags
+  // State for tag and year filters
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [selectedYear, setSelectedYear] = useState<'all' | number>('all')
+  const [showOlder, setShowOlder] = useState(false)
 
   const filterByTag = (p: any) =>
     selectedTags.length === 0
@@ -54,6 +56,15 @@ const Publications = () => {
     .map(Number)
     .sort((a, b) => b - a)
 
+  const recentYears = years.slice(0, 8)
+  const oldestRecent = recentYears[recentYears.length - 1]
+
+  const yearFilterFn = (year: number) => {
+    if (selectedYear === 'all') return true
+    if (showOlder) return year <= (selectedYear as number)
+    return year === selectedYear
+  }
+
   const formatAuthors = (authors: any[]) =>
     authors
       .filter(Boolean)
@@ -65,20 +76,27 @@ const Publications = () => {
 
   const getDate = (p: any) => (lang === 'ja' ? p.dateJa || '' : p.dateEn || '')
 
-  // Map tag to Unsplash keyword
-  const tagImageMap: Record<string, string> = {
-    LiDAR: 'lidar',
-    Blockchain: 'blockchain',
-    Crowd: 'crowd',
-    V2X: 'vehicle',
-    WiFi: 'wifi',
-    Other: 'research',
-  }
+  // Pool of sample images for random selection
+  const sampleImages = [
+    'img/sample/lidar.png',
+    'img/sample/blockchain.png',
+    'img/sample/opencampus.png',
+    'img/sample/network.png',
+    'img/sample/ethernet.png',
+    'img/sample/medal.png',
+    'img/sample/trophy.png',
+    'img/sample/citation.png',
+    'img/sample/hero.png',
+  ] as const
 
   const getImageForPub = (p: any) => {
-    const firstTag = p.tags[0] as Tag
-    const keyword = tagImageMap[firstTag.name_english] || 'research'
-    return `https://source.unsplash.com/400x300?${keyword}`
+    // Use publication id (or title) hash to deterministically choose an image
+    const key = p.id || p.titleEn || p.titleJa || Math.random()
+    let hash = 0
+    const str = String(key)
+    for (let i = 0; i < str.length; i++) hash = (hash + str.charCodeAt(i)) % 2147483647
+    const idx = hash % sampleImages.length
+    return sampleImages[idx]
   }
 
   return (
@@ -87,7 +105,7 @@ const Publications = () => {
 
       {/* Tag filter */}
       <div className="filter-row">
-        <span className="filter-label">{lang === 'ja' ? '絞り込み' : 'Filter'}</span>
+        <span className="filter-label">{lang === 'ja' ? 'テーマ' : 'Thema'}</span>
         <button
           className={`tag-chip ${selectedTags.length === 0 ? 'selected' : ''}`}
           onClick={() => setSelectedTags([])}
@@ -111,7 +129,33 @@ const Publications = () => {
         ))}
       </div>
 
-      {years.map((year) => (
+      {/* Year filter */}
+      <div className="filter-row mt-4">
+        <span className="filter-label">{lang === 'ja' ? '年度' : 'Year'}</span>
+        <button
+          className={`tag-chip ${selectedYear === 'all' ? 'selected' : ''}`}
+          onClick={() => {
+            setSelectedYear('all');
+            setShowOlder(false);
+          }}
+        >
+          All
+        </button>
+        {recentYears.map((y, idx) => (
+          <button
+            key={y}
+            className={`tag-chip ${selectedYear === y && (idx !== recentYears.length -1 ? !showOlder : true) ? 'selected' : ''}`}
+            onClick={() => {
+              setSelectedYear(y);
+              setShowOlder(idx === recentYears.length - 1);
+            }}
+          >
+            {idx === recentYears.length - 1 ? `${y}~以前` : y}
+          </button>
+        ))}
+      </div>
+
+      {years.filter(yearFilterFn).map((year) => (
         <div key={year} className="mb-10">
           <h2 className="section-title">{year}</h2>
           <div className="pub-grid">

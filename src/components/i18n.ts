@@ -15,16 +15,18 @@ type Texts = {
   publications: { title: string }
   class: { title: string }
   awards: { title: string }
+  career: { title: string }
 }
 
 const en: Texts = {
   navbar: {
-    Home: 'Home',
+    Home: 'Morino Lab',
     Access: 'Access',
     Members: 'Members',
     Research: 'Research',
     Publications: 'Publications',
     Class: 'Class',
+    Career: 'Careers',
     Awards: 'Awards',
     Language: 'Language',
     Toggle: '日本語',
@@ -51,16 +53,18 @@ const en: Texts = {
   publications: { title: 'Publications' },
   class: { title: 'Classes / Lectures' },
   awards: { title: 'Awards' },
+  career: { title: 'Employment Destinations' },
 }
 
 const ja: Texts = {
   navbar: {
-    Home: 'トップ',
+    Home: '森野研究室',
     Access: 'アクセス',
     Members: 'メンバー',
     Research: '研究内容',
     Publications: '論文',
     Class: '講義',
+    Career: '就職先',
     Awards: '受賞',
     Language: 'Language',
     Toggle: 'English',
@@ -87,6 +91,7 @@ const ja: Texts = {
   publications: { title: '論文' },
   class: { title: '講義' },
   awards: { title: '受賞' },
+  career: { title: '就職先' },
 }
 
 export const texts = (lang: Lang) => (lang === 'ja' ? ja : en) 
