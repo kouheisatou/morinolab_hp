@@ -1,42 +1,42 @@
-'use client'
+"use client";
 
-import { useLang } from '@/components/LanguageContext'
-import { texts } from '@/components/i18n'
-import { themes } from '@/common_resource'
-import { newsItems } from '@/common_resource'
-import { Theme } from '@/models/theme'
-import { NewsItem } from '@/models/news'
-import { useState } from 'react'
+import { useLang } from "@/components/LanguageContext";
+import { texts } from "@/components/i18n";
+import { themes } from "@/common_resource";
+import { newsItems } from "@/common_resource";
+import { Theme } from "@/models/theme";
+import { NewsItem } from "@/models/news";
+import { useState } from "react";
 
 interface Entry {
-  date: string
-  text: string
-  img?: string
+  date: string;
+  text: string;
+  img?: string;
 }
 
 export default function HomePage() {
-  const { lang } = useLang()
-  const t = texts(lang).home
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const { lang } = useLang();
+  const t = texts(lang).home;
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
 
   // Convert NewsItem objects to localized Entry objects
   const news = [...newsItems]
     .map(
       (n: NewsItem): Entry => ({
         date: n.date,
-        text: lang === 'ja' ? n.textJa : n.textEn,
+        text: lang === "ja" ? n.textJa : n.textEn,
         img: n.img,
-      })
+      }),
     )
     .sort((a, b) => (a.date < b.date ? 1 : -1))
     .map((item, idx) => {
       // Generate description if not provided
       const desc =
-        lang === 'ja'
+        lang === "ja"
           ? `${item.text} に関する詳細な情報です。`
-          : `More details about: ${item.text}.`
-      return { ...item, desc } as Entry & { desc: string }
-    })
+          : `More details about: ${item.text}.`;
+      return { ...item, desc } as Entry & { desc: string };
+    });
 
   /* ==================== LAYOUT ==================== */
   return (
@@ -65,8 +65,8 @@ export default function HomePage() {
         </h2>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {themes.map((th: Theme) => {
-            const title = lang === 'ja' ? th.titleJa : th.titleEn
-            const desc = lang === 'ja' ? th.descJa : th.descEn
+            const title = lang === "ja" ? th.titleJa : th.titleEn;
+            const desc = lang === "ja" ? th.descJa : th.descEn;
             return (
               <div
                 key={th.id}
@@ -85,7 +85,7 @@ export default function HomePage() {
                   </p>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       </section>
@@ -93,7 +93,7 @@ export default function HomePage() {
       {/* 4️⃣ NEWS (Unified) */}
       <section className="px-4" id="news">
         <h2 className="text-2xl font-bold text-center mb-8">
-          {lang === 'ja' ? 'ニュース' : 'News'}
+          {lang === "ja" ? "ニュース" : "News"}
         </h2>
         <div className="space-y-4">
           {news.map((n, idx) => (
@@ -104,7 +104,7 @@ export default function HomePage() {
             >
               <div
                 className="flex-none rounded-l-[var(--radius)] overflow-hidden"
-                style={{ flexBasis: '20%', height: '100%' }}
+                style={{ flexBasis: "20%", height: "100%" }}
               >
                 <img
                   src={n.img}
@@ -113,9 +113,9 @@ export default function HomePage() {
                 />
               </div>
               {(() => {
-                const parts = n.text.split('–')
-                const title = parts[0]?.trim() || n.text
-                const desc = parts.slice(1).join('–').trim()
+                const parts = n.text.split("–");
+                const title = parts[0]?.trim() || n.text;
+                const desc = parts.slice(1).join("–").trim();
                 return (
                   <div className="flex flex-col gap-1 p-3 text-xs sm:text-sm flex-1">
                     <span className="font-semibold leading-snug text-sm">
@@ -126,17 +126,17 @@ export default function HomePage() {
                       <p
                         className="text-sm text-gray-600 dark:text-gray-300"
                         style={{
-                          display: '-webkit-box',
+                          display: "-webkit-box",
                           WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
                         }}
                       >
                         {n.desc}
                       </p>
                     )}
                   </div>
-                )
+                );
               })()}
             </div>
           ))}
@@ -146,23 +146,23 @@ export default function HomePage() {
       {/* 5️⃣ CONTACT */}
       <section className="px-4" id="contact">
         <h2 className="text-2xl font-bold text-center mb-8">
-          {lang === 'ja' ? 'お問い合わせ' : 'Contact'}
+          {lang === "ja" ? "お問い合わせ" : "Contact"}
         </h2>
         <form
           className="max-w-xl mx-auto space-y-4 neu-container p-6"
           onSubmit={(e) => {
-            e.preventDefault()
+            e.preventDefault();
             alert(
-              lang === 'ja'
-                ? '送信ありがとうございました！'
-                : 'Thank you for your message!'
-            )
+              lang === "ja"
+                ? "送信ありがとうございました！"
+                : "Thank you for your message!",
+            );
             // TODO: send data to backend API
           }}
         >
           <div className="flex flex-col gap-1">
             <label htmlFor="name" className="text-sm font-medium">
-              {lang === 'ja' ? 'お名前' : 'Name'}
+              {lang === "ja" ? "お名前" : "Name"}
             </label>
             <input
               id="name"
@@ -188,7 +188,7 @@ export default function HomePage() {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="message" className="text-sm font-medium">
-              {lang === 'ja' ? 'メッセージ' : 'Message'}
+              {lang === "ja" ? "メッセージ" : "Message"}
             </label>
             <textarea
               id="message"
@@ -203,10 +203,10 @@ export default function HomePage() {
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
           >
-            {lang === 'ja' ? '送信' : 'Send'}
+            {lang === "ja" ? "送信" : "Send"}
           </button>
         </form>
       </section>
     </div>
-  )
+  );
 }

@@ -1,23 +1,23 @@
-'use client'
-import { useLang } from '@/components/LanguageContext'
-import { texts } from '@/components/i18n'
-import { companies } from '@/common_resource'
-import { Company } from '@/models/company'
+"use client";
+import { useLang } from "@/components/LanguageContext";
+import { texts } from "@/components/i18n";
+import { companies } from "@/common_resource";
+import { Company } from "@/models/company";
 
 // sort by year desc (numeric)
-const sorted = [...companies].sort((a, b) => b.year - a.year)
+const sorted = [...companies].sort((a, b) => b.year - a.year);
 
 // Group by year
-const grouped: Record<number, Company[]> = {} as any
+const grouped: Record<number, Company[]> = {} as any;
 sorted.forEach((c) => {
-  if (!grouped[c.year]) grouped[c.year] = []
-  grouped[c.year].push(c)
-})
-const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a))
+  if (!grouped[c.year]) grouped[c.year] = [];
+  grouped[c.year].push(c);
+});
+const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a));
 
 export default function CareerPage() {
-  const { lang } = useLang()
-  const title = texts(lang).career.title
+  const { lang } = useLang();
+  const title = texts(lang).career.title;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -46,7 +46,7 @@ export default function CareerPage() {
 
                   <div className="neu-container flex-1 p-4">
                     <p className="font-semibold mb-1">
-                      {lang === 'ja' ? c.nameJa : c.nameEn}
+                      {lang === "ja" ? c.nameJa : c.nameEn}
                     </p>
                   </div>
                 </div>
@@ -56,5 +56,5 @@ export default function CareerPage() {
         </ul>
       </div>
     </div>
-  )
+  );
 }

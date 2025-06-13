@@ -1,47 +1,47 @@
-'use client'
-import { useLang } from '@/components/LanguageContext'
-import { texts } from '@/components/i18n'
-import { useState, useEffect } from 'react'
+"use client";
+import { useLang } from "@/components/LanguageContext";
+import { texts } from "@/components/i18n";
+import { useState, useEffect } from "react";
 
 const Access = () => {
-  const { lang } = useLang()
-  const t = texts(lang).access
-  const [selectedImg, setSelectedImg] = useState<string | null>(null)
-  const [closing, setClosing] = useState(false)
+  const { lang } = useLang();
+  const t = texts(lang).access;
+  const [selectedImg, setSelectedImg] = useState<string | null>(null);
+  const [closing, setClosing] = useState(false);
 
   const gallery = [
     {
-      src: 'img/abm00022184.png',
-      alt: lang === 'ja' ? '豊洲キャンパス外観' : 'Toyosu campus overview',
+      src: "img/abm00022184.png",
+      alt: lang === "ja" ? "豊洲キャンパス外観" : "Toyosu campus overview",
     },
     {
-      src: 'img/toyosu_map.gif',
-      alt: lang === 'ja' ? '豊洲キャンパスマップ' : 'Toyosu campus map',
+      src: "img/toyosu_map.gif",
+      alt: lang === "ja" ? "豊洲キャンパスマップ" : "Toyosu campus map",
     },
-  ]
+  ];
 
   // Close popup on Escape key
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') startClose()
-    }
-    if (selectedImg) document.addEventListener('keydown', handleKey)
-    return () => document.removeEventListener('keydown', handleKey)
-  }, [selectedImg])
+      if (e.key === "Escape") startClose();
+    };
+    if (selectedImg) document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [selectedImg]);
 
   const startClose = () => {
-    setClosing(true)
+    setClosing(true);
     setTimeout(() => {
-      setSelectedImg(null)
-      setClosing(false)
-    }, 300) // match animation duration
-  }
+      setSelectedImg(null);
+      setClosing(false);
+    }, 300); // match animation duration
+  };
 
   return (
     <div>
       <h1>{t.title}</h1>
       <div className="space-y-1 mb-6 text-sm sm:text-base leading-6">
-        {lang === 'ja' ? (
+        {lang === "ja" ? (
           <>
             <p>〒135-8548 東京都江東区豊洲3-7-5</p>
             <p>芝浦工業大学 豊洲キャンパス 研究棟12階 12-I-32</p>
@@ -83,22 +83,22 @@ const Access = () => {
 
       {selectedImg && (
         <div
-          className={`${closing ? 'fade-out' : 'fade-in'} fixed inset-0 bg-black/70 flex items-center justify-center z-50`}
+          className={`${closing ? "fade-out" : "fade-in"} fixed inset-0 bg-black/70 flex items-center justify-center z-50`}
           onClick={startClose}
         >
           <img
             src={selectedImg}
             alt="popup"
-            className={`${closing ? 'fade-out' : 'fade-in'} max-w-4xl w-[90%] h-auto shadow-lg`}
+            className={`${closing ? "fade-out" : "fade-in"} max-w-4xl w-[90%] h-auto shadow-lg`}
             onClick={(e) => {
-              e.stopPropagation()
+              e.stopPropagation();
               // no action on image click
             }}
           />
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Access
+export default Access;

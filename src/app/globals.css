@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import './neumorphism.css';
+@import "tailwindcss";
+@import "./neumorphism.css";
 
 /* Removed Next.js default palette so that neumorphism.css controls colors */
 body {

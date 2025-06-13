@@ -1,16 +1,16 @@
-'use client'
-import { useLang } from '@/components/LanguageContext'
-import { texts } from '@/components/i18n'
-import { lectures } from '@/common_resource'
+"use client";
+import { useLang } from "@/components/LanguageContext";
+import { texts } from "@/components/i18n";
+import { lectures } from "@/common_resource";
 
 const ClassPage = () => {
-  const { lang } = useLang()
-  const title = texts(lang).class.title
+  const { lang } = useLang();
+  const title = texts(lang).class.title;
 
   const introTextJa =
-    '森野研究室では、ネットワーク技術から IoT・無線通信まで、モバイル通信システムを支える幅広い講義を開講しています。各講義は理論だけでなく実践的な演習を通じて理解を深める構成となっています。'
+    "森野研究室では、ネットワーク技術から IoT・無線通信まで、モバイル通信システムを支える幅広い講義を開講しています。各講義は理論だけでなく実践的な演習を通じて理解を深める構成となっています。";
   const introTextEn =
-    'Morino Laboratory offers a broad range of courses covering mobile communication systems from networking fundamentals to IoT and wireless technologies. Each course combines theory with hands-on sessions to deepen understanding.'
+    "Morino Laboratory offers a broad range of courses covering mobile communication systems from networking fundamentals to IoT and wireless technologies. Each course combines theory with hands-on sessions to deepen understanding.";
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -24,7 +24,7 @@ const ClassPage = () => {
           className="w-full h-48 object-cover rounded-[var(--radius)] mb-4"
         />
         <p className="text-sm sm:text-base leading-relaxed text-gray-700 dark:text-gray-300">
-          {lang === 'ja' ? introTextJa : introTextEn}
+          {lang === "ja" ? introTextJa : introTextEn}
         </p>
       </section>
 
@@ -37,31 +37,31 @@ const ClassPage = () => {
           >
             <img
               src={lec.img}
-              alt={lang === 'ja' ? lec.titleJa : lec.titleEn}
+              alt={lang === "ja" ? lec.titleJa : lec.titleEn}
               className="object-cover w-[20%] h-full rounded-l-[var(--radius)] flex-none"
-              style={{ flexBasis: '20%' }}
+              style={{ flexBasis: "20%" }}
             />
             <div className="flex flex-col gap-2 p-4 flex-1">
               <span className="font-semibold text-lg">
-                {lang === 'ja' ? lec.titleJa : lec.titleEn}
+                {lang === "ja" ? lec.titleJa : lec.titleEn}
               </span>
               <p
                 className="text-sm text-gray-600 dark:text-gray-300"
                 style={{
-                  display: '-webkit-box',
+                  display: "-webkit-box",
                   WebkitLineClamp: 4,
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
                 }}
               >
-                {lang === 'ja' ? lec.descJa : lec.descEn}
+                {lang === "ja" ? lec.descJa : lec.descEn}
               </p>
             </div>
           </div>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ClassPage
+export default ClassPage;

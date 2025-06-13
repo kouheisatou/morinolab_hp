@@ -1,93 +1,93 @@
-'use client'
-import { useLang } from '@/components/LanguageContext'
-import { texts } from '@/components/i18n'
-import { publications, TAGS } from '@/common_resource'
-import { Tag } from '@/models/tag'
-import { useMemo, useState } from 'react'
+"use client";
+import { useLang } from "@/components/LanguageContext";
+import { texts } from "@/components/i18n";
+import { publications, TAGS } from "@/common_resource";
+import { Tag } from "@/models/tag";
+import { useMemo, useState } from "react";
 
 const Publications = () => {
-  const { lang } = useLang()
-  const title = texts(lang).publications.title
+  const { lang } = useLang();
+  const title = texts(lang).publications.title;
 
   // Local helper to get tag display label
-  const tagLabel = (tag: Tag) => (lang === 'ja' ? tag.name : tag.name_english)
+  const tagLabel = (tag: Tag) => (lang === "ja" ? tag.name : tag.name_english);
 
   // Infer tags from title / publication name
   const inferTags = (p: any): Tag[] => {
     const text = (
-      (p.titleJa || '') +
-      (p.titleEn || '') +
-      (p.publicationNameJa || '') +
-      (p.publicationNameEn || '')
-    ).toLowerCase()
+      (p.titleJa || "") +
+      (p.titleEn || "") +
+      (p.publicationNameJa || "") +
+      (p.publicationNameEn || "")
+    ).toLowerCase();
 
-    const res: Tag[] = []
-    if (/lidar|点群/.test(text)) res.push(TAGS.find((t) => t === TAGS[0])!) // LiDAR
+    const res: Tag[] = [];
+    if (/lidar|点群/.test(text)) res.push(TAGS.find((t) => t === TAGS[0])!); // LiDAR
     if (/blockchain|ペイメント|channel/.test(text))
-      res.push(TAGS.find((t) => t === TAGS[1])!)
-    if (/crowd|人数/.test(text)) res.push(TAGS.find((t) => t === TAGS[2])!)
+      res.push(TAGS.find((t) => t === TAGS[1])!);
+    if (/crowd|人数/.test(text)) res.push(TAGS.find((t) => t === TAGS[2])!);
     if (/v2x|vehicle|車両|車々|vehicular/.test(text))
-      res.push(TAGS.find((t) => t === TAGS[3])!)
-    if (/wifi|wi-fi|csi/.test(text)) res.push(TAGS.find((t) => t === TAGS[4])!)
-    if (res.length === 0) res.push(TAGS.find((t) => t === TAGS[5])!)
-    return res
-  }
+      res.push(TAGS.find((t) => t === TAGS[3])!);
+    if (/wifi|wi-fi|csi/.test(text)) res.push(TAGS.find((t) => t === TAGS[4])!);
+    if (res.length === 0) res.push(TAGS.find((t) => t === TAGS[5])!);
+    return res;
+  };
 
   // Memoized enriched publication list
   const enriched = useMemo(
     () => publications.map((p) => ({ ...p, tags: inferTags(p) })),
-    [publications]
-  )
+    [publications],
+  );
 
   // State for tag and year filters
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [selectedYear, setSelectedYear] = useState<'all' | number>('all')
-  const [showOlder, setShowOlder] = useState(false)
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedYear, setSelectedYear] = useState<"all" | number>("all");
+  const [showOlder, setShowOlder] = useState(false);
 
   const filterByTag = (p: any) =>
     selectedTags.length === 0
       ? true
-      : p.tags.some((t: Tag) => selectedTags.includes(t.name_english))
+      : p.tags.some((t: Tag) => selectedTags.includes(t.name_english));
 
   // Group after filtering
-  const grouped: Record<number, typeof enriched> = {}
+  const grouped: Record<number, typeof enriched> = {};
   enriched.filter(filterByTag).forEach((p) => {
-    if (!grouped[p.fiscalYear]) grouped[p.fiscalYear] = []
-    grouped[p.fiscalYear].push(p)
-  })
+    if (!grouped[p.fiscalYear]) grouped[p.fiscalYear] = [];
+    grouped[p.fiscalYear].push(p);
+  });
 
   const years = Object.keys(grouped)
     .map(Number)
-    .sort((a, b) => b - a)
+    .sort((a, b) => b - a);
 
-  const recentYears = years.slice(0, 8)
-  const oldestRecent = recentYears[recentYears.length - 1]
+  const recentYears = years.slice(0, 8);
+  const oldestRecent = recentYears[recentYears.length - 1];
 
   const yearFilterFn = (year: number) => {
-    if (selectedYear === 'all') return true
-    if (showOlder) return year <= (selectedYear as number)
-    return year === selectedYear
-  }
+    if (selectedYear === "all") return true;
+    if (showOlder) return year <= (selectedYear as number);
+    return year === selectedYear;
+  };
 
   // Normalize authors array (string or Member) into comma-separated string
   const formatAuthors = (authors: any[]) =>
     authors
       .map((a) =>
-        typeof a === 'string'
+        typeof a === "string"
           ? a
-          : lang === 'ja'
+          : lang === "ja"
             ? a.name
-            : a.nameEnglish || a.name
+            : a.nameEnglish || a.name,
       )
-      .join(', ')
+      .join(", ");
 
   const getTitle = (p: any) =>
-    lang === 'ja' ? p.titleJa || p.titleEn : p.titleEn || p.titleJa
+    lang === "ja" ? p.titleJa || p.titleEn : p.titleEn || p.titleJa;
 
-  const getDate = (p: any) => (lang === 'ja' ? p.dateJa || '' : p.dateEn || '')
+  const getDate = (p: any) => (lang === "ja" ? p.dateJa || "" : p.dateEn || "");
 
   // Fallback when imagePath is not provided
-  const getFallbackImage = () => 'img/noimage_paper.png'
+  const getFallbackImage = () => "img/noimage_paper.png";
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -96,10 +96,10 @@ const Publications = () => {
       {/* Tag filter */}
       <div className="filter-row">
         <span className="filter-label">
-          {lang === 'ja' ? 'テーマ' : 'Thema'}
+          {lang === "ja" ? "テーマ" : "Thema"}
         </span>
         <button
-          className={`tag-chip ${selectedTags.length === 0 ? 'selected' : ''}`}
+          className={`tag-chip ${selectedTags.length === 0 ? "selected" : ""}`}
           onClick={() => setSelectedTags([])}
         >
           All
@@ -107,12 +107,12 @@ const Publications = () => {
         {TAGS.map((t) => (
           <button
             key={t.name_english}
-            className={`tag-chip ${selectedTags.includes(t.name_english) ? 'selected' : ''}`}
+            className={`tag-chip ${selectedTags.includes(t.name_english) ? "selected" : ""}`}
             onClick={() =>
               setSelectedTags((prev) =>
                 prev.includes(t.name_english)
                   ? prev.filter((x) => x !== t.name_english)
-                  : [...prev, t.name_english]
+                  : [...prev, t.name_english],
               )
             }
           >
@@ -123,12 +123,12 @@ const Publications = () => {
 
       {/* Year filter */}
       <div className="filter-row mt-4">
-        <span className="filter-label">{lang === 'ja' ? '年度' : 'Year'}</span>
+        <span className="filter-label">{lang === "ja" ? "年度" : "Year"}</span>
         <button
-          className={`tag-chip ${selectedYear === 'all' ? 'selected' : ''}`}
+          className={`tag-chip ${selectedYear === "all" ? "selected" : ""}`}
           onClick={() => {
-            setSelectedYear('all')
-            setShowOlder(false)
+            setSelectedYear("all");
+            setShowOlder(false);
           }}
         >
           All
@@ -136,10 +136,10 @@ const Publications = () => {
         {recentYears.map((y, idx) => (
           <button
             key={y}
-            className={`tag-chip ${selectedYear === y && (idx !== recentYears.length - 1 ? !showOlder : true) ? 'selected' : ''}`}
+            className={`tag-chip ${selectedYear === y && (idx !== recentYears.length - 1 ? !showOlder : true) ? "selected" : ""}`}
             onClick={() => {
-              setSelectedYear(y)
-              setShowOlder(idx === recentYears.length - 1)
+              setSelectedYear(y);
+              setShowOlder(idx === recentYears.length - 1);
             }}
           >
             {idx === recentYears.length - 1 ? `${y}~以前` : y}
@@ -179,7 +179,7 @@ const Publications = () => {
         </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default Publications
+export default Publications;
