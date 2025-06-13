@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
   },
   // GitHub Pages でリポジトリ名がパスに入る場合は以下を調整してください。
   // 例: リポジトリ (USER/REPO) => https://USER.github.io/REPO
-  // basePath: "/REPO",
-  // assetPrefix: "/REPO/",
+  basePath: "/morinolab_hp",
+  assetPrefix: "/morinolab_hp/",
   eslint: {
     // Warning: This allows production builds to complete even if there are ESLint errors.
     ignoreDuringBuilds: true,
