@@ -23,8 +23,8 @@ const Access = () => {
       </div>
 
       <div className="access-img-grid">
-        <img src="/img/abm00022184.png" alt="Toyosu campus overview" className="access-img" />
-        <img src="/img/toyosu_map.gif" alt="Toyosu campus map" className="access-img" />
+        <img src="img/abm00022184.png" alt="Toyosu campus overview" className="access-img" />
+        <img src="img/toyosu_map.gif" alt="Toyosu campus map" className="access-img" />
       </div>
     </div>
   )

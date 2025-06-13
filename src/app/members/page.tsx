@@ -31,7 +31,7 @@ const Members = () => {
 
   // Faculty as Member array for bilingual support
   const faculty: Member[] = [
-    new Member(0, '森野 博章', '教授', 'Hiroaki Morino', 'Professor', 2000, '/img/morino.jpg', [TAG_OTHER], 0, false, true, false),
+    new Member(0, '森野 博章', '教授', 'Hiroaki Morino', 'Professor', 2000, 'img/morino.jpg', [TAG_OTHER], 0, false, true, false),
   ]
 
   const alumniMembers: Member[] = members.filter((m) => m.graduated)
@@ -66,7 +66,7 @@ const Members = () => {
 
   return (
     <div className="members-page">
-      <img src="/img/lab-group2023.png" alt="Lab group" className="lab-group-photo" />
+      <img src="img/lab-group2023.png" alt="Lab group" className="lab-group-photo" />
       <h1>{title}</h1>
 
       {/* Tag Filter */}

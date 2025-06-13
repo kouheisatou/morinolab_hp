@@ -14,7 +14,7 @@ const NavBar = () => {
   const [open, setOpen] = useState(false)
 
   const links = [
-    { path: '/', label: t.Home },
+    { path: '/home', label: t.Home },
     { path: '/access', label: t.Access },
     { path: '/members', label: t.Members },
     { path: '/research', label: t.Research },
