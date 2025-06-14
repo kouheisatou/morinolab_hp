@@ -6,30 +6,56 @@ import { themes } from "@/common_resource";
 import { newsItems } from "@/common_resource";
 import { Theme } from "@/models/theme";
 import { NewsItem } from "@/models/news";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function HomePage() {
   const { lang } = useLang();
   const t = texts(lang).home;
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
+  /* hero overlay visibility logic */
+  const headerRef = useRef<HTMLDivElement>(null);
+  const copyRef = useRef<HTMLDivElement>(null);
+  const [showOverlay, setShowOverlay] = useState(true);
+
+  const recalc = () => {
+    if (!headerRef.current || !copyRef.current) return;
+    const h = headerRef.current.offsetHeight;
+    const ch = copyRef.current.offsetHeight;
+    if (h === 0) return;
+    setShowOverlay(ch / h <= 0.3);
+  };
+
+  useEffect(() => {
+    recalc();
+    window.addEventListener("resize", recalc);
+    return () => window.removeEventListener("resize", recalc);
+  }, []);
+
   /* ==================== LAYOUT ==================== */
   return (
     <div className="space-y-20">
       {/* 1️⃣ HERO */}
-      <header className="relative w-full rounded-[var(--radius)] overflow-hidden">
+      <header
+        ref={headerRef}
+        className="relative w-full rounded-[var(--radius)] overflow-hidden"
+      >
         {/* Hero background image */}
         <img
           src="img/lab-group2023.png"
           alt="Lab group photo 2023"
           className="w-full h-auto object-contain"
+          onLoad={recalc}
         />
 
         {/* Gradient overlay – covers entire image height dynamically */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
 
         {/* Hero copy – absolute at the bottom so it doesn't hide faces */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-start text-white px-6 pb-10 sm:px-10">
+        <div
+          ref={copyRef}
+          className={`absolute bottom-0 left-0 right-0 z-10 flex flex-col items-start text-white px-6 pb-10 sm:px-10 transition-opacity ${showOverlay ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        >
           <p className="text-3xl sm:text-5xl font-extrabold mb-2 drop-shadow-lg">
             {t.title}
           </p>
@@ -39,6 +65,14 @@ export default function HomePage() {
           {/* CTA if needed */}
         </div>
       </header>
+
+      {/* Fallback copy below hero when overlay hidden */}
+      {!showOverlay && (
+        <div className="px-4 mt-4" id="hero-copy-fallback">
+          <p className="text-3xl sm:text-5xl font-extrabold mb-2">{t.title}</p>
+          <p className="max-w-2xl text-sm sm:text-lg leading-relaxed mx-auto">{t.body}</p>
+        </div>
+      )}
 
       {/* 3️⃣ RESEARCH THEMES */}
       <section className="px-4" id="research">
