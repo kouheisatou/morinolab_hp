@@ -40,9 +40,11 @@ const Members = () => {
       "img/morino.jpg",
       [TAG_OTHER],
       0,
-      false,
-      true,
-      false,
+      false, // graduated
+      true,  // master
+      false, // bachelor
+      undefined, // gradYear
+      undefined, // url
     ),
   ];
 

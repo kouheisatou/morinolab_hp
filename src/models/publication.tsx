@@ -19,7 +19,7 @@ export class Publication {
   notesJa?: string; // 備考や受賞（日本語）
   notesEn?: string; // 備考や受賞（英語）
   imagePath?: string; // 画像パス
-  url?: string; // 論文URL
+  url?: string; // 詳細ページ
 
   constructor(
     id: number,

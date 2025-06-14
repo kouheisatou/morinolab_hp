@@ -1,0 +1,3 @@
+id,year,type,authors,titleJa,titleEn,publicationNameJa,publicationNameEn,volume,number,pages,dateJa,dateEn,locationJa,locationEn,notesJa,notesEn,imagePath,url
+1,2024,ジャーナル論文,"佐藤衡平|森野 博章",ペイメントチャネルネットワークにおける送金の秘匿を考慮した中継経路決定手法,,電子情報通信学会論文誌B,,Vol.J108-B,No.03,pp.100-110,2025年3月,Mar 2025,,, , ,=IMAGE("https://dummyimage.com/200x120"),https://docs.google.com/document/d/pub1/
+2,2024,国際会議,"石川華帆|森野 博章",,Reward Design in Vehicular Crowdsensing,,Proc. IEEE ICCE 2025,,,,Jan 2025,Jan. 2025,Kobe,Japan,, ,=IMAGE("https://dummyimage.com/201x120"),https://docs.google.com/document/d/pub2/ 

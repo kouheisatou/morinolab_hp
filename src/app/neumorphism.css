@@ -315,6 +315,11 @@ h1 {
     gap: 0.5rem;
     padding-top: 0.5rem;
   }
+
+  .neu-navbar .neu-link {
+    display: block;
+    width: 100%;
+  }
 }
 
 .neu-button {
@@ -556,8 +561,9 @@ h1 {
   display: none;
 }
 
-/* Responsive: when viewport ≤600px show hamburger & brand, hide links by default */
-@media (max-width: 600px) {
+/* Earlier hamburger breakpoint based on navbar minimum width */
+@media (max-width: 1100) {
+  /* Show hamburger + brand, hide inline links */
   .hamburger {
     display: flex;
     margin-right: 0.5rem;
@@ -587,5 +593,54 @@ h1 {
 
   .neu-navbar.menu-open .brand {
     display: none;
+  }
+
+  /* Stack items full width */
+  .neu-navbar .neu-link,
+  .neu-navbar .neu-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Remove extra margin before language button */
+  .neu-navbar .lang-toggle {
+    margin-left: 0;
+  }
+}
+
+/* Fixed-width for navbar tabs so labels in different languages don't change layout */
+.neu-navbar .neu-link {
+  display: inline-flex; /* allow width to apply and center text */
+  align-items: center;
+  justify-content: center;
+  width: 7.5rem; /* ~128px – tune if necessary */
+  text-align: center;
+}
+
+/* Fixed-width for language toggle button */
+.neu-navbar .neu-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 8rem; /* same as links */
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .neu-navbar .neu-button {
+    display: block;
+    width: 100%;
+  }
+}
+
+/* Larger gap before language toggle on desktop */
+.neu-navbar .lang-toggle {
+  margin-left: 2rem; /* previously auto → now fixed larger gap */
+}
+
+@media (max-width: 600px) {
+  .neu-navbar .lang-toggle {
+    margin-left: 0;
   }
 }

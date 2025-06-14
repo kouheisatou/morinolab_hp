@@ -1,0 +1,3 @@
+id,logo,nameJa,nameEn,year
+1,=IMAGE("https://dummyimage.com/100x50"),株式会社NTTドコモ,NTT DOCOMO,2024
+2,=IMAGE("https://dummyimage.com/100x50"),ソフトバンク株式会社,SoftBank Corp.,2023 

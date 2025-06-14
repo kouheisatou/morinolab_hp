@@ -1,0 +1,3 @@
+id,img,titleJa,titleEn,descJa,descEn,url
+1,=IMAGE("https://dummyimage.com/200x120"),交通渋滞緩和,Traffic Congestion Mitigation,車車間通信による協調制御,Cooperative control using V2X,https://docs.google.com/document/d/theme1/
+2,=IMAGE("https://dummyimage.com/200x120"),3次元点群センシング,3D Point-Cloud Sensing,LiDARを用いた高精度センシング,High-precision LiDAR sensing,https://docs.google.com/document/d/theme2/ 

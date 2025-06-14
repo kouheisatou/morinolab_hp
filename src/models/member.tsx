@@ -15,6 +15,7 @@ export class Member {
   master: boolean; // 在籍または卒業が修士課程
   bachelor: boolean; // 在籍または卒業が学部課程
   gradYear?: number;
+  url?: string;
 
   constructor(
     id: number,
@@ -30,6 +31,7 @@ export class Member {
     master: boolean = false,
     bachelor: boolean = false,
     gradYear?: number,
+    url?: string,
   ) {
     this.id = id;
     this.name = name;
@@ -44,5 +46,6 @@ export class Member {
     this.master = master;
     this.bachelor = bachelor;
     this.gradYear = gradYear;
+    this.url = url;
   }
 }
