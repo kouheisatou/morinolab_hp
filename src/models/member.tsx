@@ -1,5 +1,3 @@
-import { Tag } from "./tag";
-
 export class Member {
   private static _counter = 0;
   id: number;
@@ -8,7 +6,7 @@ export class Member {
   nameEnglish: string;
   descEnglish: string;
   img?: string;
-  tags: Tag[];
+  tag_ids: number[];
   admissionYear: number;
   repeats: number;
   graduated: boolean;
@@ -25,7 +23,7 @@ export class Member {
     descEnglish: string,
     admissionYear: number,
     img?: string,
-    tags: Tag[] = [],
+    tag_ids: number[] = [],
     repeats: number = 0,
     graduated: boolean = false,
     master: boolean = false,
@@ -39,7 +37,7 @@ export class Member {
     this.nameEnglish = nameEnglish;
     this.descEnglish = descEnglish;
     this.img = img;
-    this.tags = tags;
+    this.tag_ids = tag_ids;
     this.admissionYear = admissionYear;
     this.repeats = repeats;
     this.graduated = graduated;

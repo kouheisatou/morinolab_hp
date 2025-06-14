@@ -1,3 +1,3 @@
-id,name,desc,nameEnglish,descEnglish,admissionYear,img,tags,repeats,master,active,graduated,gradYear,url
-1,今村就,Vehicle crowdsensing による道路状況監視の参加インセンティブ設計,Nao Imamura,Incentive design for vehicle crowd-sensing road monitoring,2020,=IMAGE("https://dummyimage.com/120"),Crowd,0,TRUE,TRUE,FALSE,,https://docs.google.com/document/d/member1/
-2,佐々木敦史,WiFi CSI を用いたドア開閉動作時の個人識別,Tsuneyuki Sasaki,Personal identification using WiFi CSI,2020,=IMAGE("https://dummyimage.com/121"),WiFi,0,TRUE,TRUE,FALSE,,https://docs.google.com/document/d/member2/ 
+id,name,desc,nameEnglish,descEnglish,admissionYear,img,tag_ids,repeats,master,active,graduated,gradYear,url
+1,今村就,Vehicle crowdsensing による道路状況監視の参加インセンティブ設計,Nao Imamura,Incentive design for vehicle crowd-sensing road monitoring,2020,=IMAGE("https://dummyimage.com/120"),3,0,TRUE,TRUE,FALSE,,https://docs.google.com/document/d/member1/
+2,佐々木敦史,WiFi CSI を用いたドア開閉動作時の個人識別,Tsuneyuki Sasaki,Personal identification using WiFi CSI,2020,=IMAGE("https://dummyimage.com/121"),5,0,TRUE,TRUE,FALSE,,https://docs.google.com/document/d/member2/ 

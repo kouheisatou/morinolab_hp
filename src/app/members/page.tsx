@@ -1,5 +1,5 @@
 "use client";
-import { TAGS, TAG_OTHER, currentYear, members } from "@/common_resource";
+import { tags, currentYear, members } from "@/common_resource";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
 import { Member } from "@/models/member";
@@ -38,7 +38,7 @@ const Members = () => {
       "Professor",
       2000,
       "img/morino.jpg",
-      [TAG_OTHER],
+      [],
       0,
       false, // graduated
       true, // master
@@ -52,12 +52,16 @@ const Members = () => {
 
   const currentStudents: Member[] = members.filter((m) => !m.graduated);
 
-  const allTags = useMemo(() => TAGS, []);
+  const allTags = useMemo(() => tags, []);
+  const tagIdMap = useMemo(() => new Map(tags.map((t) => [t.id, t])), []);
 
-  const filterFn = (m: Member) =>
-    selectedTags.length === 0
-      ? true
-      : m.tags.some((t) => selectedTags.includes(t.name_english));
+  const filterFn = (m: Member) => {
+    if (selectedTags.length === 0) return true;
+    return m.tag_ids.some((id) => {
+      const t = tagIdMap.get(id);
+      return t ? selectedTags.includes(t.name_english) : false;
+    });
+  };
 
   const filteredStudents = currentStudents.filter(filterFn);
   const filteredAlumni = alumniMembers.filter(filterFn);
@@ -137,11 +141,14 @@ const Members = () => {
                   <li key={m.id}>
                     <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {m.tags.map((t) => (
-                        <span key={t.name_english} className="tag-badge">
-                          {tagLabel(t, lang)}
-                        </span>
-                      ))}
+                      {m.tag_ids.map((id) => {
+                        const t = tagIdMap.get(id);
+                        return t ? (
+                          <span key={t.name_english} className="tag-badge">
+                            {tagLabel(t, lang)}
+                          </span>
+                        ) : null;
+                      })}
                     </div>
                     <div className="member-desc">
                       {lang === "ja" ? m.desc : m.descEnglish}
@@ -164,11 +171,14 @@ const Members = () => {
                 <li key={m.id}>
                   <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {m.tags.map((t) => (
-                      <span key={t.name_english} className="tag-badge">
-                        {tagLabel(t, lang)}
-                      </span>
-                    ))}
+                    {m.tag_ids.map((id) => {
+                      const t = tagIdMap.get(id);
+                      return t ? (
+                        <span key={t.name_english} className="tag-badge">
+                          {tagLabel(t, lang)}
+                        </span>
+                      ) : null;
+                    })}
                   </div>
                   <div className="member-desc">
                     {lang === "ja"

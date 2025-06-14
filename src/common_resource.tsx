@@ -17,13 +17,11 @@ async function loadTags(): Promise<Tag[]> {
     return new Tag(Number(r.id), r.name, r.name_english);
   });
 }
-export const TAGS: Tag[] = await loadTags();
-export const TAG_OTHER: Tag = TAGS.find((t) => t.name_english === "Other")!;
+export const tags: Tag[] = await loadTags();
 
 /* ---------------------------  MEMBERS  ---------------------------- */
 async function loadMembers(): Promise<Member[]> {
   const rows = await fetchObjects("Members");
-  const tagMap = new Map(TAGS.map((t) => [t.name_english, t]));
   const parseBool = (v: string | number | boolean | undefined) => {
     if (typeof v === "boolean") return v;
     if (v === undefined) return false;
@@ -32,10 +30,10 @@ async function loadMembers(): Promise<Member[]> {
   };
   return rows.map((row) => {
     const r = row as Record<string, string>;
-    const tags: Tag[] = (r.tags || "")
-      .split(/[,\s]+/)
-      .map((name: string) => tagMap.get(name))
-      .filter(Boolean) as Tag[];
+    const tag_ids: number[] = (r.tag_ids || "")
+      .split(/[|,\s]+/)
+      .filter(Boolean)
+      .map((id) => Number(id));
 
     return new Member(
       Number(r.id),
@@ -45,11 +43,11 @@ async function loadMembers(): Promise<Member[]> {
       r.descEnglish,
       Number(r.admissionYear),
       r.img || undefined,
-      tags,
+      tag_ids,
       Number(r.repeats ?? 0),
+      parseBool(r.graduated),
       parseBool(r.master),
       parseBool(r.active),
-      parseBool(r.graduated),
       r.gradYear ? Number(r.gradYear) : undefined,
       r.url || undefined,
     );
@@ -66,7 +64,14 @@ async function loadPublications(): Promise<Publication[]> {
       Number(r.id),
       Number(r.year),
       r.type ?? "",
-      (r.authors ?? "").split(/[,、]+/),
+      (r.author_member_ids || "")
+        .split(/[|,\s]+/)
+        .filter(Boolean)
+        .map((id) => Number(id)),
+      (r.tag_ids || "")
+        .split(/[|,\s]+/)
+        .filter(Boolean)
+        .map((id) => Number(id)),
       r.titleJa || undefined,
       r.titleEn || undefined,
       r.publicationNameJa || undefined,
@@ -147,8 +152,8 @@ async function loadNews(): Promise<NewsItem[]> {
     return new NewsItem(
       Number(r.id),
       r.date,
-      r.title_jp,
-      r.title_en,
+      r.title_jp || r.textJa || "",
+      r.title_en || r.textEn || "",
       r.img,
       r.url || undefined,
     );

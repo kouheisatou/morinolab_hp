@@ -1,11 +1,10 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { publications, TAGS } from "@/common_resource";
+import { publications, tags, members } from "@/common_resource";
 import { Tag } from "@/models/tag";
 import { useMemo, useState } from "react";
 import { Publication } from "@/models/publication";
-import { Member } from "@/models/member";
 
 const Publications = () => {
   const { lang } = useLang();
@@ -13,6 +12,9 @@ const Publications = () => {
 
   // Local helper to get tag display label
   const tagLabel = (tag: Tag) => (lang === "ja" ? tag.name : tag.name_english);
+
+  // Build helper maps
+  const memberMap = useMemo(() => new Map(members.map((m) => [m.id, m])), []);
 
   // Infer tags from title / publication name
   const inferTags = (p: Publication): Tag[] => {
@@ -24,14 +26,14 @@ const Publications = () => {
     ).toLowerCase();
 
     const res: Tag[] = [];
-    if (/lidar|点群/.test(text)) res.push(TAGS.find((t) => t === TAGS[0])!); // LiDAR
+    if (/lidar|点群/.test(text)) res.push(tags.find((t) => t === tags[0])!); // LiDAR
     if (/blockchain|ペイメント|channel/.test(text))
-      res.push(TAGS.find((t) => t === TAGS[1])!);
-    if (/crowd|人数/.test(text)) res.push(TAGS.find((t) => t === TAGS[2])!);
+      res.push(tags.find((t) => t === tags[1])!);
+    if (/crowd|人数/.test(text)) res.push(tags.find((t) => t === tags[2])!);
     if (/v2x|vehicle|車両|車々|vehicular/.test(text))
-      res.push(TAGS.find((t) => t === TAGS[3])!);
-    if (/wifi|wi-fi|csi/.test(text)) res.push(TAGS.find((t) => t === TAGS[4])!);
-    if (res.length === 0) res.push(TAGS.find((t) => t === TAGS[5])!);
+      res.push(tags.find((t) => t === tags[3])!);
+    if (/wifi|wi-fi|csi/.test(text)) res.push(tags.find((t) => t === tags[4])!);
+    if (res.length === 0) res.push(tags.find((t) => t === tags[5])!);
     return res;
   };
 
@@ -71,16 +73,14 @@ const Publications = () => {
     return year === selectedYear;
   };
 
-  // Normalize authors array (string or Member) into comma-separated string
-  const formatAuthors = (authors: (string | Member)[]) =>
-    authors
-      .map((a) =>
-        typeof a === "string"
-          ? a
-          : lang === "ja"
-            ? a.name
-            : a.nameEnglish || a.name,
-      )
+  // Format authors list by mapping author_member_ids to Member objects
+  const formatAuthors = (ids: number[]) =>
+    ids
+      .map((id) => {
+        const m = memberMap.get(id);
+        if (!m) return `ID:${id}`;
+        return lang === "ja" ? m.name : m.nameEnglish || m.name;
+      })
       .join(", ");
 
   const getTitle = (p: Publication) =>
@@ -107,7 +107,7 @@ const Publications = () => {
         >
           All
         </button>
-        {TAGS.map((t) => (
+        {tags.map((t) => (
           <button
             key={t.name_english}
             className={`tag-chip ${selectedTags.includes(t.name_english) ? "selected" : ""}`}
@@ -163,7 +163,7 @@ const Publications = () => {
                 <div className="pub-meta">
                   <span className="pub-title">{getTitle(p)}</span>
                   <span className="pub-authors text-sm text-gray-700 dark:text-gray-300">
-                    {formatAuthors(p.authors)}
+                    {formatAuthors(p.author_member_ids)}
                   </span>
                   <span className="pub-date text-sm text-gray-500 dark:text-gray-400">
                     {getDate(p)}
