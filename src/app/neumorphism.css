@@ -250,78 +250,6 @@ h1 {
   color: var(--accent);
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .neu-navbar {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
-  .neu-link {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-
-  .lang-toggle {
-    margin-left: 0;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  main {
-    width: 95%;
-  }
-
-  .site-title {
-    font-size: 1.8rem;
-  }
-
-  .neu-button {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-
-  .theme-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hamburger {
-    display: flex;
-    margin-right: 0.5rem;
-    flex-shrink: 0;
-  }
-
-  .brand {
-    display: block;
-    font-weight: 700;
-    margin-right: auto;
-    color: var(--accent);
-    align-self: center;
-  }
-
-  .neu-navbar .nav-links {
-    display: none;
-    width: 100%;
-  }
-
-  .neu-navbar.menu-open .nav-links {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-    padding-top: 0.5rem;
-  }
-
-  .neu-navbar .neu-link {
-    display: block;
-    width: 100%;
-  }
-}
-
 .neu-button {
   background: var(--bg);
   border: none;
@@ -562,7 +490,7 @@ h1 {
 }
 
 /* Earlier hamburger breakpoint based on navbar minimum width */
-@media (max-width: 1100) {
+@media (max-width: 1100px) {
   /* Show hamburger + brand, hide inline links */
   .hamburger {
     display: flex;
@@ -605,7 +533,8 @@ h1 {
 
   /* Remove extra margin before language button */
   .neu-navbar .lang-toggle {
-    margin-left: 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 }
 
@@ -643,4 +572,81 @@ h1 {
   .neu-navbar .lang-toggle {
     margin-left: 0;
   }
+}
+
+@media (min-width: 1101px) {
+  /* Distribute navbar tabs equally across full width */
+  .neu-navbar .nav-links {
+    gap: 0; /* remove gap so each flex item truly divides space equally */
+    width: 100%;
+  }
+
+  .neu-navbar .neu-link,
+  .neu-navbar .neu-button {
+    flex: 1 1 0;
+    width: auto; /* override earlier fixed width */
+  }
+}
+
+/* Ensure nav items use full width on very small screens (≤600px) overriding any fixed width) */
+@media (max-width: 1100px) {
+  .neu-navbar .neu-link,
+  .neu-navbar .neu-button {
+    width: 100% !important; /* force full-width */
+  }
+}
+
+/* --- Mobile view controlled via JS (.mobile-view class) --- */
+.neu-navbar.mobile-view .hamburger {
+  display: flex;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.neu-navbar.mobile-view .brand {
+  display: block;
+  font-weight: 700;
+  margin-right: auto;
+  color: var(--accent);
+  align-self: center;
+}
+
+.neu-navbar.mobile-view .nav-links {
+  display: none;
+  width: 100%;
+}
+
+.neu-navbar.mobile-view.menu-open .nav-links {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.neu-navbar.mobile-view.menu-open .brand {
+  display: none;
+}
+
+.neu-navbar.mobile-view .neu-link,
+.neu-navbar.mobile-view .neu-button {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.neu-navbar.mobile-view .lang-toggle {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0;
+}
+
+/* Ensure desktop styles apply when not in mobile-view even on narrow screens */
+.neu-navbar:not(.mobile-view) .hamburger,
+.neu-navbar:not(.mobile-view) .brand {
+  display: none;
+}
+
+.neu-navbar:not(.mobile-view) .nav-links {
+  display: flex;
 }

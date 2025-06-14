@@ -6,6 +6,11 @@ import type { Lang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
 import { useState, useEffect } from "react";
 
+// Breakpoint (px) to switch to hamburger view; configurable via NEXT_PUBLIC_NAV_BREAKPOINT.
+const NAV_BREAKPOINT: number = Number(
+  process.env.NEXT_PUBLIC_NAV_BREAKPOINT ?? "1100",
+);
+
 const NavBar = () => {
   const { lang, setLanguage } = useLang();
   const t = texts(lang).navbar;
@@ -15,6 +20,21 @@ const NavBar = () => {
   const [langOpen, setLangOpen] = useState(false);
   // controls hamburger opened/closed
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // track if we are below breakpoint
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  // Update isMobile based on window width
+  useEffect(() => {
+    const check = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth <= NAV_BREAKPOINT);
+      }
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // close dropdown when route changes / menu toggled
   useEffect(() => {
@@ -31,7 +51,9 @@ const NavBar = () => {
   ];
 
   return (
-    <nav className={`neu-navbar ${menuOpen ? "menu-open" : ""}`}>
+    <nav
+      className={`neu-navbar ${menuOpen ? "menu-open" : ""} ${isMobile ? "mobile-view" : ""}`}
+    >
       {/* Hamburger button – visible only on small screens via CSS */}
       <button
         className="neu-icon-btn hamburger"

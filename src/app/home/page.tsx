@@ -7,6 +7,12 @@ import { newsItems } from "@/common_resource";
 import { Theme } from "@/models/theme";
 import { useState, useEffect, useRef } from "react";
 
+// Adjustable ratio: if copy height / image height is below this, overlay text stays on the image. Otherwise text is rendered below.
+// You can override the default 0.3 threshold by defining NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD in .env.local (must start with NEXT_PUBLIC_ to be exposed to the client).
+const HERO_OVERLAY_THRESHOLD: number = Number(
+  process.env.NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD ?? "0.3",
+);
+
 export default function HomePage() {
   const { lang } = useLang();
   const t = texts(lang).home;
@@ -22,7 +28,7 @@ export default function HomePage() {
     const h = headerRef.current.offsetHeight;
     const ch = copyRef.current.offsetHeight;
     if (h === 0) return;
-    setShowOverlay(ch / h <= 0.3);
+    setShowOverlay(ch / h <= HERO_OVERLAY_THRESHOLD);
   };
 
   useEffect(() => {
@@ -53,7 +59,7 @@ export default function HomePage() {
         {/* Hero copy – absolute at the bottom so it doesn't hide faces */}
         <div
           ref={copyRef}
-          className={`absolute bottom-0 left-0 right-0 z-10 flex flex-col items-start text-white px-6 pb-10 sm:px-10 transition-opacity ${showOverlay ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute bottom-0 left-0 right-0 z-10 flex flex-col items-start text-white text-left px-6 pb-10 sm:px-10 transition-opacity ${showOverlay ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
           <p className="text-3xl sm:text-5xl font-extrabold mb-2 drop-shadow-lg">
             {t.title}
@@ -67,9 +73,9 @@ export default function HomePage() {
 
       {/* Fallback copy below hero when overlay hidden */}
       {!showOverlay && (
-        <div className="px-4 mt-4" id="hero-copy-fallback">
+        <div className="px-4 mt-4 text-left" id="hero-copy-fallback">
           <p className="text-3xl sm:text-5xl font-extrabold mb-2">{t.title}</p>
-          <p className="max-w-2xl text-sm sm:text-lg leading-relaxed mx-auto">
+          <p className="max-w-2xl text-sm sm:text-lg leading-relaxed">
             {t.body}
           </p>
         </div>
@@ -91,7 +97,7 @@ export default function HomePage() {
                 style={{ padding: 0 }}
               >
                 <img
-                  src={th.img}
+                  src={th.img || undefined}
                   alt={title}
                   className="w-full h-40 object-cover rounded-t-[var(--radius)]"
                 />
@@ -124,7 +130,7 @@ export default function HomePage() {
                 style={{ flexBasis: "20%", height: "100%" }}
               >
                 <img
-                  src={n.img}
+                  src={n.img || undefined}
                   alt={n.textJa}
                   className="w-full h-full object-cover"
                 />

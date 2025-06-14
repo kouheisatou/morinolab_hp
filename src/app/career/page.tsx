@@ -30,18 +30,22 @@ export default function CareerPage() {
         <ul className="space-y-10">
           {years.map((y) => (
             <li key={y} className="space-y-6">
-              <h3 className="font-bold text-lg text-accent mb-2">{y}</h3>
+              <h3
+                key={`year-${y}`}
+                className="font-bold text-lg text-accent mb-2"
+              >
+                {y}
+              </h3>
               {grouped[Number(y)].map((c) => (
-                <div
-                  key={c.nameEn}
-                  className="relative flex items-center gap-6"
-                >
+                <div key={c.id} className="relative flex items-center gap-6">
                   <span className="absolute -left-3.5 w-7 h-7 rounded-full overflow-hidden shadow-md bg-white dark:bg-gray-800 flex items-center justify-center">
-                    <img
-                      src={c.logo}
-                      alt={c.nameEn}
-                      className="w-full h-full object-cover"
-                    />
+                    {c.logo ? (
+                      <img
+                        src={c.logo}
+                        alt={c.nameEn}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : null}
                   </span>
 
                   <div className="neu-container flex-1 p-4">

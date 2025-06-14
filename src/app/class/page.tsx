@@ -31,16 +31,18 @@ const ClassPage = () => {
       <div className="space-y-8">
         {lectures.map((lec) => (
           <div
-            key={lec.titleJa}
+            key={lec.id}
             className="neu-container flex items-stretch overflow-hidden h-40"
             style={{ padding: 0 }}
           >
-            <img
-              src={lec.img}
-              alt={lang === "ja" ? lec.titleJa : lec.titleEn}
-              className="object-cover w-[20%] h-full rounded-l-[var(--radius)] flex-none"
-              style={{ flexBasis: "20%" }}
-            />
+            {lec.img ? (
+              <img
+                src={lec.img}
+                alt={lang === "ja" ? lec.titleJa : lec.titleEn}
+                className="object-cover w-[20%] h-full rounded-l-[var(--radius)] flex-none"
+                style={{ flexBasis: "20%" }}
+              />
+            ) : null}
             <div className="flex flex-col gap-2 p-4 flex-1">
               <span className="font-semibold text-lg">
                 {lang === "ja" ? lec.titleJa : lec.titleEn}
