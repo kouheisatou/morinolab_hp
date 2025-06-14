@@ -47,4 +47,4 @@ export async function fetchGoogleDocContent(url: string): Promise<DocContent> {
   });
 
   return { paragraphs, images, html };
-} 
+}

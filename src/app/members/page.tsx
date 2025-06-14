@@ -41,7 +41,7 @@ const Members = () => {
       [TAG_OTHER],
       0,
       false, // graduated
-      true,  // master
+      true, // master
       false, // bachelor
       undefined, // gradYear
       undefined, // url

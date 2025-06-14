@@ -17,7 +17,7 @@ const SHEET_ID = process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID;
 
 if (!SHEET_ID) {
   throw new Error(
-    "Environment variable NEXT_PUBLIC_GOOGLE_SHEET_ID is not defined. Please set it to the id portion of your spreadsheet URL."
+    "Environment variable NEXT_PUBLIC_GOOGLE_SHEET_ID is not defined. Please set it to the id portion of your spreadsheet URL.",
   );
 }
 
@@ -39,9 +39,9 @@ async function fetchCsv(sheetName: string): Promise<string> {
  * Fetch a sheet and return it as an array of objects (rows).
  * Each property is coerced to string; consumers are responsible for type casting.
  */
-export async function fetchObjects<T = Record<string, string | number | boolean>>(
-  sheetName: string,
-): Promise<T[]> {
+export async function fetchObjects<
+  T = Record<string, string | number | boolean>,
+>(sheetName: string): Promise<T[]> {
   const csvText = await fetchCsv(sheetName);
   // csv-parse/sync auto-detects line endings and quotes.
   const records: string[][] = parse(csvText, {
@@ -61,11 +61,11 @@ export async function fetchObjects<T = Record<string, string | number | boolean>
   };
 
   return dataRows.map((row) => {
-    const obj: any = {};
+    const obj: Record<string, string | number | boolean> = {};
     headers.forEach((h, idx) => {
       const raw = row[idx] ?? "";
       obj[h] = extractImageUrl(raw);
     });
     return obj as T;
   });
-} 
+}

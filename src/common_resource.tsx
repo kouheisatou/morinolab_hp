@@ -11,22 +11,27 @@ export const currentYear = new Date().getFullYear();
 
 /* -----------------------------  TAGS  ----------------------------- */
 async function loadTags(): Promise<Tag[]> {
-  const rows = await fetchObjects<any>("Tags");
-  return rows.map((r) => ({
-    id: Number(r.id),
-    name: r.name,
-    name_english: r.name_english,
-  }));
+  const rows = await fetchObjects("Tags");
+  return rows.map((row) => {
+    const r = row as Record<string, string>;
+    return new Tag(Number(r.id), r.name, r.name_english);
+  });
 }
 export const TAGS: Tag[] = await loadTags();
 export const TAG_OTHER: Tag = TAGS.find((t) => t.name_english === "Other")!;
 
 /* ---------------------------  MEMBERS  ---------------------------- */
 async function loadMembers(): Promise<Member[]> {
-  const rows = await fetchObjects<any>("Members");
+  const rows = await fetchObjects("Members");
   const tagMap = new Map(TAGS.map((t) => [t.name_english, t]));
-  const parseBool = (v: any) => v === "TRUE" || v === "true" || v === "1";
-  return rows.map((r) => {
+  const parseBool = (v: string | number | boolean | undefined) => {
+    if (typeof v === "boolean") return v;
+    if (v === undefined) return false;
+    const str = String(v).toLowerCase();
+    return str === "true" || str === "1" || str === "yes";
+  };
+  return rows.map((row) => {
+    const r = row as Record<string, string>;
     const tags: Tag[] = (r.tags || "")
       .split(/[,\s]+/)
       .map((name: string) => tagMap.get(name))
@@ -54,12 +59,13 @@ export const members: Member[] = await loadMembers();
 
 /* -------------------------  PUBLICATIONS  ------------------------- */
 async function loadPublications(): Promise<Publication[]> {
-  const rows = await fetchObjects<any>("Publications");
-  return rows.map((r) =>
-  new Publication(
+  const rows = await fetchObjects("Publications");
+  return rows.map((row) => {
+    const r = row as Record<string, string>;
+    return new Publication(
       Number(r.id),
       Number(r.year),
-      r.type,
+      r.type ?? "",
       (r.authors ?? "").split(/[,、]+/),
       r.titleJa || undefined,
       r.titleEn || undefined,
@@ -76,76 +82,76 @@ async function loadPublications(): Promise<Publication[]> {
       r.notesEn || undefined,
       r.imagePath || undefined,
       r.url || undefined,
-    ),
-  );
+    );
+  });
 }
 export const publications: Publication[] = await loadPublications();
 
 /* ----------------------------  CAREER  ---------------------------- */
 async function loadCompanies(): Promise<Company[]> {
-  const rows = await fetchObjects<any>("Companies");
-  return rows.map(
-    (r) =>
-  new Company(
-        Number(r.id),
-        r.logo || r.img,
-        r.name_jp,
-        r.name_en,
-        Number(r.year),
-      ),
-  );
+  const rows = await fetchObjects("Companies");
+  return rows.map((row) => {
+    const r = row as Record<string, string>;
+    return new Company(
+      Number(r.id),
+      r.logo || r.img || "",
+      r.name_jp,
+      r.name_en,
+      Number(r.year),
+    );
+  });
 }
 export const companies: Company[] = await loadCompanies();
 
 /* ----------------------------  CLASS  ----------------------------- */
 async function loadLectures(): Promise<Lecture[]> {
-  const rows = await fetchObjects<any>("Lectures");
-  return rows.map(
-    (r) =>
-  new Lecture(
-        Number(r.id),
-        r.img,
-        r.titleJa,
-        r.titleEn,
-        r.descJa,
-        r.descEn,
-        r.url || undefined,
-      ),
-  );
+  const rows = await fetchObjects("Lectures");
+  return rows.map((row) => {
+    const r = row as Record<string, string>;
+    return new Lecture(
+      Number(r.id),
+      r.img || "",
+      r.titleJa,
+      r.titleEn,
+      r.descJa,
+      r.descEn,
+      r.url || undefined,
+    );
+  });
 }
 export const lectures: Lecture[] = await loadLectures();
 
 /* ----------------------------  THEMES ----------------------------- */
 async function loadThemes(): Promise<Theme[]> {
-  const rows = await fetchObjects<any>("Themes");
-  return rows.map(
-    (r) =>
-  new Theme(
-        Number(r.id),
-        r.img,
-        r.titleJa,
-        r.titleEn,
-        r.descJa,
-        r.descEn,
-        r.url || undefined,
-      ),
-  );
+  const rows = await fetchObjects("Themes");
+  return rows.map((row) => {
+    const r = row as Record<string, string>;
+    return new Theme(
+      Number(r.id),
+      r.img || "",
+      r.titleJa,
+      r.titleEn,
+      r.descJa,
+      r.descEn,
+      r.url || undefined,
+    );
+  });
 }
 export const themes: Theme[] = await loadThemes();
 
 /* -----------------------------  NEWS  ----------------------------- */
 async function loadNews(): Promise<NewsItem[]> {
-  const rows = await fetchObjects<any>("News");
-  return rows.map(
-    (r) =>
-  new NewsItem(
-        Number(r.id),
-        r.date,
-        r.title_jp,
-        r.title_en,
-        r.img,
-        r.url || undefined,
-      ),
-  );
+  const rows = await fetchObjects("News");
+  return rows.map((row) => {
+    const r = row as Record<string, string>;
+    return new NewsItem(
+      Number(r.id),
+      r.date,
+      r.title_jp,
+      r.title_en,
+      r.img,
+      r.url || undefined,
+    );
+  });
 }
-export const newsItems: NewsItem[] = await loadNews(); 
+export const newsItems: NewsItem[] = await loadNews();
