@@ -5,7 +5,6 @@ import { texts } from "@/components/i18n";
 import { themes } from "@/common_resource";
 import { newsItems } from "@/common_resource";
 import { Theme } from "@/models/theme";
-import { NewsItem } from "@/models/news";
 import { useState, useEffect, useRef } from "react";
 
 export default function HomePage() {
@@ -70,7 +69,9 @@ export default function HomePage() {
       {!showOverlay && (
         <div className="px-4 mt-4" id="hero-copy-fallback">
           <p className="text-3xl sm:text-5xl font-extrabold mb-2">{t.title}</p>
-          <p className="max-w-2xl text-sm sm:text-lg leading-relaxed mx-auto">{t.body}</p>
+          <p className="max-w-2xl text-sm sm:text-lg leading-relaxed mx-auto">
+            {t.body}
+          </p>
         </div>
       )}
 
