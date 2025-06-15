@@ -1,10 +1,10 @@
 "use client";
-import { tags, currentYear, members } from "@/common_resource";
+import { tags as tagsData, currentYear, members } from "@/lib/sheetLoader";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
 import { Member } from "@/models/member";
 import { Tag } from "@/models/tag";
-import { useMemo, useState } from "react";
+import { useState, useEffect } from "react";
 
 // Helper to get tag display label
 const tagLabel = (tag: Tag, lang: "ja" | "en") =>
@@ -52,8 +52,17 @@ const Members = () => {
 
   const currentStudents: Member[] = members.filter((m) => !m.graduated);
 
-  const allTags = useMemo(() => tags, []);
-  const tagIdMap = useMemo(() => new Map(tags.map((t) => [t.id, t])), []);
+  // Tags state – start empty to make sure SSR/CSR HTML match
+  const [allTags, setAllTags] = useState<Tag[]>([]);
+  const [tagIdMap, setTagIdMap] = useState<Map<number, Tag>>(new Map());
+
+  // Populate tags after mount – avoids hydration mismatch if server fails to fetch
+  useEffect(() => {
+    if (Array.isArray(tagsData)) {
+      setAllTags(tagsData);
+      setTagIdMap(new Map(tagsData.map((t) => [t.id, t])));
+    }
+  }, []);
 
   const filterFn = (m: Member) => {
     if (selectedTagIds.length === 0) return true;
@@ -178,9 +187,20 @@ const Members = () => {
                     })}
                   </div>
                   <div className="member-desc">
-                    {lang === "ja"
-                      ? `${m.gradYear}年 ${m.master ? "院卒" : "学部卒"} / ${m.desc}`
-                      : `${m.gradYear} ${m.master ? "Master grad." : "Bachelor grad."} / ${m.descEnglish}`}
+                    {(() => {
+                      const yearLabel = m.gradYear
+                        ? `${m.gradYear}${lang === "ja" ? "年" : ""}`
+                        : "";
+                      const degreeLabel = m.master
+                        ? lang === "ja"
+                          ? "院卒"
+                          : "Master grad."
+                        : lang === "ja"
+                          ? "学部卒"
+                          : "Bachelor grad.";
+                      const descText = lang === "ja" ? m.desc : m.descEnglish;
+                      return `${yearLabel ? yearLabel + " " : ""}${degreeLabel} / ${descText}`;
+                    })()}
                   </div>
                 </li>
               ))}

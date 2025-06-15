@@ -1,7 +1,7 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { companies } from "@/common_resource";
+import { companies } from "@/lib/sheetLoader";
 import { Company } from "@/models/company";
 
 // sort by year desc (numeric)

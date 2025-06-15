@@ -2,8 +2,8 @@
 
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { themes } from "@/common_resource";
-import { newsItems } from "@/common_resource";
+import { themes } from "@/lib/sheetLoader";
+import { newsItems } from "@/lib/sheetLoader";
 import { Theme } from "@/models/theme";
 import { useState, useEffect, useRef } from "react";
 

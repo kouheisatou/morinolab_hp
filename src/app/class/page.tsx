@@ -1,7 +1,7 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { lectures } from "@/common_resource";
+import { lectures } from "@/lib/sheetLoader";
 
 const ClassPage = () => {
   const { lang } = useLang();

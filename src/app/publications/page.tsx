@@ -1,23 +1,34 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { publications, tags, members } from "@/common_resource";
+import { publications, tags as tagsData, members } from "@/lib/sheetLoader";
 import { Tag } from "@/models/tag";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Publication } from "@/models/publication";
 
 const Publications = () => {
   const { lang } = useLang();
   const title = texts(lang).publications.title;
 
+  // Tags state – start empty to keep SSR markup deterministic
+  const [allTags, setAllTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    if (Array.isArray(tagsData)) {
+      setAllTags(tagsData);
+    }
+  }, []);
+
   // Local helper to get tag display label
-  const tagLabel = (tag: Tag) => (lang === "ja" ? tag.name : tag.name_english);
+  const tagLabel = (tag: Tag) =>
+    lang === "ja" ? tag.name : tag.name_english;
 
   // Build helper maps
   const memberMap = useMemo(() => new Map(members.map((m) => [m.id, m])), []);
 
-  // Infer tags from title / publication name
+  // Infer tags from title / publication name with robust fallback
   const inferTags = (p: Publication): Tag[] => {
+    // Consolidate searchable text in lower-case
     const text = (
       (p.titleJa || "") +
       (p.titleEn || "") +
@@ -25,16 +36,30 @@ const Publications = () => {
       (p.publicationNameEn || "")
     ).toLowerCase();
 
-    const res: Tag[] = [];
-    if (/lidar|点群/.test(text)) res.push(tags.find((t) => t === tags[0])!); // LiDAR
-    if (/blockchain|ペイメント|channel/.test(text))
-      res.push(tags.find((t) => t === tags[1])!);
-    if (/crowd|人数/.test(text)) res.push(tags.find((t) => t === tags[2])!);
-    if (/v2x|vehicle|車両|車々|vehicular/.test(text))
-      res.push(tags.find((t) => t === tags[3])!);
-    if (/wifi|wi-fi|csi/.test(text)) res.push(tags.find((t) => t === tags[4])!);
-    if (res.length === 0) res.push(tags.find((t) => t === tags[5])!);
-    return res;
+    const result: Tag[] = [];
+
+    // Local helper – add tag only when it actually exists
+    const tryPush = (idx: number) => {
+      if (Array.isArray(tagsData) && tagsData[idx]) result.push(tagsData[idx]);
+    };
+
+    if (/lidar|点群/.test(text)) tryPush(0); // LiDAR
+    if (/blockchain|ペイメント|channel/.test(text)) tryPush(1);
+    if (/crowd|人数/.test(text)) tryPush(2);
+    if (/v2x|vehicle|車両|車々|vehicular/.test(text)) tryPush(3);
+    if (/wifi|wi-fi|csi/.test(text)) tryPush(4);
+
+    // Default tag – "Other" – when no rule matched or tag list is shorter
+    if (result.length === 0) {
+      if (Array.isArray(tagsData) && tagsData[5]) {
+        result.push(tagsData[5]);
+      } else {
+        // Fabricate minimal fallback tag object (id: -1 ensures no collision)
+        result.push(new Tag(-1, lang === "ja" ? "その他" : "Other", "Other"));
+      }
+    }
+
+    return result;
   };
 
   type PubWithTags = Publication & { tags: Tag[] };
@@ -52,7 +77,7 @@ const Publications = () => {
   const filterByTag = (p: PubWithTags) =>
     selectedTagIds.length === 0
       ? true
-      : p.tags.some((t: Tag) => selectedTagIds.includes(t.id));
+      : p.tags.some((t: Tag) => t && selectedTagIds.includes(t.id));
 
   // Group after filtering
   const grouped: Record<number, PubWithTags[]> = {};
@@ -78,7 +103,9 @@ const Publications = () => {
     ids
       .map((id) => {
         const m = memberMap.get(id);
-        if (!m) return `ID:${id}`;
+        if (!m) {
+          return lang === "ja" ? "不明" : "Unknown";
+        }
         return lang === "ja" ? m.name : m.nameEnglish || m.name;
       })
       .join(", ");
@@ -107,7 +134,7 @@ const Publications = () => {
         >
           All
         </button>
-        {tags.map((t) => (
+        {allTags.map((t) => (
           <button
             key={t.id}
             className={`tag-chip ${selectedTagIds.includes(t.id) ? "selected" : ""}`}
@@ -169,7 +196,7 @@ const Publications = () => {
                     {getDate(p)}
                   </span>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {p.tags.map((t: Tag) => (
+                    {p.tags.filter(Boolean).map((t: Tag) => (
                       <span key={t.id} className="tag-badge">
                         {tagLabel(t)}
                       </span>
