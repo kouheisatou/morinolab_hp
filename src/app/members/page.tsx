@@ -57,7 +57,7 @@ const Members = () => {
 
   const filterFn = (m: Member) => {
     if (selectedTags.length === 0) return true;
-    return m.tag_ids.some((id) => {
+    return m.tagIds.some((id) => {
       const t = tagIdMap.get(id);
       return t ? selectedTags.includes(t.name_english) : false;
     });
@@ -141,7 +141,7 @@ const Members = () => {
                   <li key={m.id}>
                     <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {m.tag_ids.map((id) => {
+                      {m.tagIds.map((id) => {
                         const t = tagIdMap.get(id);
                         return t ? (
                           <span key={t.name_english} className="tag-badge">
@@ -171,7 +171,7 @@ const Members = () => {
                 <li key={m.id}>
                   <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {m.tag_ids.map((id) => {
+                    {m.tagIds.map((id) => {
                       const t = tagIdMap.get(id);
                       return t ? (
                         <span key={t.name_english} className="tag-badge">

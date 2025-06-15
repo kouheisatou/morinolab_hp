@@ -6,7 +6,7 @@ export class Member {
   nameEnglish: string;
   descEnglish: string;
   img?: string;
-  tag_ids: number[];
+  tagIds: number[];
   admissionYear: number;
   repeats: number;
   graduated: boolean;
@@ -23,7 +23,7 @@ export class Member {
     descEnglish: string,
     admissionYear: number,
     img?: string,
-    tag_ids: number[] = [],
+    tagIds: number[] = [],
     repeats: number = 0,
     graduated: boolean = false,
     master: boolean = false,
@@ -37,7 +37,7 @@ export class Member {
     this.nameEnglish = nameEnglish;
     this.descEnglish = descEnglish;
     this.img = img;
-    this.tag_ids = tag_ids;
+    this.tagIds = tagIds;
     this.admissionYear = admissionYear;
     this.repeats = repeats;
     this.graduated = graduated;

@@ -30,7 +30,7 @@ async function loadMembers(): Promise<Member[]> {
   };
   return rows.map((row) => {
     const r = row as Record<string, string>;
-    const tag_ids: number[] = (r.tag_ids || "")
+    const tagIds: number[] = (r.tagIds || "")
       .split(/[|,\s]+/)
       .filter(Boolean)
       .map((id) => Number(id));
@@ -43,7 +43,7 @@ async function loadMembers(): Promise<Member[]> {
       r.descEnglish,
       Number(r.admissionYear),
       r.img || undefined,
-      tag_ids,
+      tagIds,
       Number(r.repeats ?? 0),
       parseBool(r.graduated),
       parseBool(r.master),
@@ -64,11 +64,11 @@ async function loadPublications(): Promise<Publication[]> {
       Number(r.id),
       Number(r.year),
       r.type ?? "",
-      (r.author_member_ids || "")
+      (r.authorMemberIds || "")
         .split(/[|,\s]+/)
         .filter(Boolean)
         .map((id) => Number(id)),
-      (r.tag_ids || "")
+      (r.tagIds || "")
         .split(/[|,\s]+/)
         .filter(Boolean)
         .map((id) => Number(id)),

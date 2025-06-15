@@ -4,8 +4,8 @@ export class Publication {
   id: number;
   fiscalYear: number; // 年度（例：2024）
   type: string; // 種別（自由記述：例 "ジャーナル論文"）
-  author_member_ids: number[]; // 著者 Member ID 配列（カンマ区切りリストを数値配列化）
-  tag_ids: number[]; // タグID配列（新）
+  authorMemberIds: number[]; // 著者 Member ID 配列（カンマ区切りリストを数値配列化）
+  tagIds: number[]; // タグID配列（新）
   titleJa?: string; // 題目（日本語）
   titleEn?: string; // 題目（英語）
   publicationNameJa?: string; // 掲載誌・会議名など（日本語）
@@ -26,8 +26,8 @@ export class Publication {
     id: number,
     fiscalYear: number,
     type: string,
-    author_member_ids: number[],
-    tag_ids: number[],
+    authorMemberIds: number[],
+    tagIds: number[],
     titleJa?: string,
     titleEn?: string,
     publicationNameJa?: string,
@@ -47,8 +47,8 @@ export class Publication {
     this.id = id;
     this.fiscalYear = fiscalYear;
     this.type = type;
-    this.author_member_ids = author_member_ids;
-    this.tag_ids = tag_ids;
+    this.authorMemberIds = authorMemberIds;
+    this.tagIds = tagIds;
     this.titleJa = titleJa;
     this.titleEn = titleEn;
     this.publicationNameJa = publicationNameJa;

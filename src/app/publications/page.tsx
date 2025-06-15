@@ -73,7 +73,7 @@ const Publications = () => {
     return year === selectedYear;
   };
 
-  // Format authors list by mapping author_member_ids to Member objects
+  // Format authors list by mapping authorMemberIds to Member objects
   const formatAuthors = (ids: number[]) =>
     ids
       .map((id) => {
@@ -163,7 +163,7 @@ const Publications = () => {
                 <div className="pub-meta">
                   <span className="pub-title">{getTitle(p)}</span>
                   <span className="pub-authors text-sm text-gray-700 dark:text-gray-300">
-                    {formatAuthors(p.author_member_ids)}
+                    {formatAuthors(p.authorMemberIds)}
                   </span>
                   <span className="pub-date text-sm text-gray-500 dark:text-gray-400">
                     {getDate(p)}
