@@ -1,12 +1,20 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { lectures } from "@/app/data";
+import { Lecture } from "@/models/lecture";
 import Link from "next/link";
+import { loadLectures } from "@/app/dataLoader";
+import { useState, useEffect } from "react";
 
-const ClassPage = () => {
+export default function ClassPage() {
   const { lang } = useLang();
   const title = texts(lang).class.title;
+
+  const [lectures, setLectures] = useState<Lecture[]>([]);
+
+  useEffect(() => {
+    loadLectures().then(setLectures);
+  }, []);
 
   const introTextJa =
     "森野研究室では、ネットワーク技術から IoT・無線通信まで、モバイル通信システムを支える幅広い講義を開講しています。各講義は理論だけでなく実践的な演習を通じて理解を深める構成となっています。";
@@ -64,6 +72,4 @@ const ClassPage = () => {
       </div>
     </div>
   );
-};
-
-export default ClassPage;
+}

@@ -4,27 +4,38 @@ import { texts } from "@/components/i18n";
 import { Tag } from "@/models/tag";
 import { useMemo, useState, useEffect } from "react";
 import { Publication } from "@/models/publication";
-import { publications, tagsData, members } from "@/app/data";
 import Link from "next/link";
+import { Member } from "@/models/member";
+import { loadMembers, loadPublications, loadTags } from "../dataLoader";
 
 const Publications = () => {
   const { lang } = useLang();
   const title = texts(lang).publications.title;
 
+  const [publications, setPublications] = useState<Publication[]>([]);
+  const [tagsData, setTagsData] = useState<Tag[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+
+  useEffect(() => {
+    loadPublications().then(setPublications);
+    loadTags().then(setTagsData);
+    loadMembers().then(setMembers);
+  }, []);
+
   // Tags state – start empty to keep SSR markup deterministic
   const [allTags, setAllTags] = useState<Tag[]>([]);
 
   useEffect(() => {
-    if (Array.isArray(tagsData)) {
+    if (tagsData.length > 0) {
       setAllTags(tagsData);
     }
-  }, []);
+  }, [tagsData]);
 
   // Local helper to get tag display label
   const tagLabel = (tag: Tag) => (lang === "ja" ? tag.name : tag.name_english);
 
   // Build helper maps
-  const memberMap = useMemo(() => new Map(members.map((m) => [m.id, m])), []);
+  const memberMap = useMemo(() => new Map(members.map((m) => [m.id, m])), [members]);
 
   // Infer tags from title / publication name with robust fallback
   const inferTags = (p: Publication): Tag[] => {
@@ -66,7 +77,7 @@ const Publications = () => {
 
   const enriched: PubWithTags[] = useMemo(
     () => publications.map((p) => ({ ...p, tags: inferTags(p) })),
-    [],
+    [publications, tagsData],
   );
 
   // State for tag and year filters (use tag.id for reliability)

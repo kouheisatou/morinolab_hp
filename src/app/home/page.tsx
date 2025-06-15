@@ -3,9 +3,10 @@
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
 import { Theme } from "@/models/theme";
+import { NewsItem } from "@/models/news";
 import { useState, useEffect, useRef } from "react";
-import { themes, newsItems } from "@/app/data";
 import Link from "next/link";
+import { loadNews, loadThemes } from "@/app/dataLoader";
 
 // Adjustable ratio: if copy height / image height is below this, overlay text stays on the image. Otherwise text is rendered below.
 // You can override the default 0.3 threshold by defining NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD in .env.local (must start with NEXT_PUBLIC_ to be exposed to the client).
@@ -17,6 +18,14 @@ export default function HomePage() {
   const { lang } = useLang();
   const t = texts(lang).home;
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+
+  const [themes, setThemes] = useState<Theme[]>([]);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+
+  useEffect(() => {
+    loadThemes().then(setThemes);
+    loadNews().then(setNewsItems);
+  }, []);
 
   /* hero overlay visibility logic */
   const headerRef = useRef<HTMLDivElement>(null);

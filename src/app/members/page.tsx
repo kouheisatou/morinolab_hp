@@ -4,8 +4,8 @@ import { texts } from "@/components/i18n";
 import { Member } from "@/models/member";
 import { Tag } from "@/models/tag";
 import { useState, useEffect } from "react";
-import { members, tagsData, currentYear } from "@/app/data";
 import { useRouter } from "next/navigation";
+import { loadMembers, loadTags } from "../dataLoader";
 
 // Helper to get tag display label
 const tagLabel = (tag: Tag, lang: "ja" | "en") =>
@@ -18,7 +18,7 @@ const getGradeLabel = (
   graduated = false,
 ): string => {
   if (graduated) return "Alumni";
-  const diff = currentYear - admissionYear + repeats;
+  const diff = new Date().getFullYear() - admissionYear + repeats;
   const map = ["B1", "B2", "B3", "B4", "M1", "M2", "D1", "D2", "D3"];
   return diff >= 0 && diff < map.length ? map[diff] : "Unknown";
 };
@@ -49,6 +49,14 @@ const Members = () => {
     ),
   ];
 
+  const [members, setMembers] = useState<Member[]>([]);
+  const [tagsData, setTagsData] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    loadMembers().then(setMembers);
+    loadTags().then(setTagsData);
+  }, []);
+
   const alumniMembers: Member[] = members.filter((m) => m.graduated);
 
   const currentStudents: Member[] = members.filter((m) => !m.graduated);
@@ -59,11 +67,11 @@ const Members = () => {
 
   // Populate tags after mount – avoids hydration mismatch if server fails to fetch
   useEffect(() => {
-    if (Array.isArray(tagsData)) {
+    if (tagsData.length > 0) {
       setAllTags(tagsData);
-      setTagIdMap(new Map(tagsData.map((t) => [t.id, t])));
+      setTagIdMap(new Map(tagsData.map((t) => [Number(t.id), t])));
     }
-  }, []);
+  }, [tagsData]);
 
   const filterFn = (m: Member) => {
     if (selectedTagIds.length === 0) return true;

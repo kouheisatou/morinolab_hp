@@ -2,7 +2,6 @@
 
 import fs from "fs";
 import path from "path";
-import { themes, newsItems, members, publications, lectures } from "@/app/data";
 import ArticleDetailBody from "@/components/ArticleDetailBody";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -15,20 +14,6 @@ export const generateStaticParams = () => {
   const CONTENT_ROOT = path.join(process.cwd(), "contents", "articles");
 
   const params: { type: string; id: string }[] = [];
-
-  // 1) IDs from data arrays --------------------------------------------------
-  const push = (type: string, id: number | string) => {
-    params.push({ type, id: String(id) });
-  };
-
-  themes.forEach((t) => push("theme", t.id));
-  newsItems.forEach((n) => push("news", n.id));
-  members.forEach((m) => push("member", m.id));
-  publications.forEach((p) => push("publication", p.id));
-  lectures.forEach((l) => push("lecture", l.id));
-
-  // Manually include professor (id 0) used only in members/page.tsx
-  push("member", 0);
 
   try {
     const types = fs

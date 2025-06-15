@@ -2,22 +2,29 @@
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
 import { Company } from "@/models/company";
-import { companies } from "@/app/data";
-
-// sort by year desc (numeric)
-const sorted = [...companies].sort((a, b) => b.year - a.year);
-
-// Group by year
-const grouped: Record<number, Company[]> = {};
-sorted.forEach((c) => {
-  if (!grouped[c.year]) grouped[c.year] = [];
-  grouped[c.year].push(c);
-});
-const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a));
+import { loadCompanies } from "@/app/dataLoader";
+import { useState, useEffect } from "react";
 
 export default function CareerPage() {
   const { lang } = useLang();
   const title = texts(lang).career.title;
+
+  const [companies, setCompanies] = useState<Company[]>([]);
+
+  useEffect(() => {
+    loadCompanies().then(setCompanies);
+  }, []);
+
+  // sort by year desc (numeric)
+  const sorted = [...companies].sort((a, b) => b.year - a.year);
+
+  // Group by year
+  const grouped: Record<number, Company[]> = {};
+  sorted.forEach((c) => {
+    if (!grouped[c.year]) grouped[c.year] = [];
+    grouped[c.year].push(c);
+  });
+  const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a));
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
