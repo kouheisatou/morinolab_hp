@@ -94,6 +94,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Ensure the latest commits (including any pushed by earlier jobs in this run) are present
+      - name: Pull latest commits
+        run: |
+          git config --global --add safe.directory "*"
+          git pull --ff-only
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
