@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-eslint:
+  eslint:
     name: Run ESLint
     runs-on: ubuntu-latest
 
