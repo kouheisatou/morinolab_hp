@@ -35,7 +35,6 @@ jobs:
       - name: Generate .env.local
         run: |
           cat <<'EOF' > .env
-          NEXT_PUBLIC_GOOGLE_SHEET_ID=1-Q8ocKcpUKaehp5pQJxHHzUFbf3QmLv0YWmRfx0eObY
           NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD=0.4
           NEXT_PUBLIC_NAV_BREAKPOINT=1100
           EOF
