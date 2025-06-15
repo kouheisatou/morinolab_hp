@@ -1,11 +1,12 @@
 name: Generate contents on push
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
       - main
-  permissions:
-    contents: write
 
 jobs:
   generate_contents:
@@ -24,7 +25,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -38,7 +39,7 @@ jobs:
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
         with:
-          add: 'public/generated_contents'
-          message: 'chore: update generated contents'
+          add: "public/generated_contents"
+          message: "chore: update generated contents"
           default_author: github_actions
-          github_token: ${{ secrets.GITHUB_TOKEN }} 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
