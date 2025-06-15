@@ -61,7 +61,18 @@ jobs:
 
       - name: Generate contents
         run: |
-          python src/scripts/gen_contents.py --excel-path contents/data.xlsx
+          python src/scripts/gen_contents_db.py --excel-path contents/data.xlsx
+
+      # Convert all .docx articles into standalone HTML files for detail pages
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+
+      - name: Generate article HTML files
+        run: |
+          chmod +x src/scripts/gen_articles.sh
+          src/scripts/gen_articles.sh
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
