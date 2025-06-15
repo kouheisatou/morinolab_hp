@@ -33,17 +33,15 @@ for TYPE in "${CONTENT_TYPES[@]}"; do
 
     echo "  • Converting ${DOCX_FILE} -> ${OUTPUT_DIR}/article.html"
 
-    # Convert the .docx file to standalone HTML while extracting embedded media (images)
-    # The resulting article.html can be loaded directly by the browser.
-    {
-      cd "${OUTPUT_DIR}"
-      pandoc "${DOCX_FILE}" \
-            --from docx \
-            --to html \
-            --standalone \
-            --extract-media="." \
-            --output "${OUTPUT_DIR}/article.html"
-    }
+    CUR_DIR="$(pwd)"
+    cd "${OUTPUT_DIR}"
+    pandoc "${DOCX_FILE}" \
+          --from docx \
+          --to html \
+          --standalone \
+          --extract-media="." \
+          --output "article.html"
+    cd "${CUR_DIR}"
   done
   shopt -u nullglob
 
