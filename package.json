@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "generate:contents": "python3 scripts/gen_contents_db.py",
+    "generate:contents": "python3 scripts/gen_contents_db.py --excel-path contents/contents_db.xlsx",
     "build": "npm run generate:contents && next build",
     "start": "next start",
     "lint": "next lint",
