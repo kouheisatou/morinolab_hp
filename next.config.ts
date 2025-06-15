@@ -1,17 +1,19 @@
 import type { NextConfig } from "next";
 
+// Get base prefix from environment (e.g., "/morinolab_hp").
+// IMPORTANT: Use NEXT_PUBLIC_ prefix so it is available on the client as well.
+const BASE_PREFIX = process.env.NEXT_PUBLIC_BASE_PREFIX ?? "";
+
 const nextConfig: NextConfig = {
   output: "export",
   images: {
-    // GitHub Pages では画像最適化サーバを利用できないため unoptimized を有効にします
     unoptimized: true,
   },
-  // GitHub Pages でリポジトリ名がパスに入る場合は以下を調整してください。
-  // 例: リポジトリ (USER/REPO) => https://USER.github.io/REPO
-  basePath: "/morinolab_hp",
-  assetPrefix: "/morinolab_hp/",
+  // basePath must start with "/" and have no trailing slash when defined.
+  basePath: BASE_PREFIX || undefined,
+  // assetPrefix often has a trailing slash – only set when we have a prefix.
+  assetPrefix: BASE_PREFIX ? `${BASE_PREFIX}/` : undefined,
   eslint: {
-    // Warning: This allows production builds to complete even if there are ESLint errors.
     ignoreDuringBuilds: true,
   },
 };

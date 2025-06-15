@@ -93,6 +93,7 @@ jobs:
           cat <<'EOF' > .env
           NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD=0.4
           NEXT_PUBLIC_NAV_BREAKPOINT=1100
+          NEXT_PUBLIC_BASE_PREFIX="/morinolab_hp"
           EOF
 
       # Next.js をエクスポートモードでビルド

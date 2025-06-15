@@ -1,10 +1,10 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { publications, tags as tagsData, members } from "@/lib/notionLoader";
 import { Tag } from "@/models/tag";
 import { useMemo, useState, useEffect } from "react";
 import { Publication } from "@/models/publication";
+import { publications, tagsData, members } from "@/app/data";
 
 const Publications = () => {
   const { lang } = useLang();

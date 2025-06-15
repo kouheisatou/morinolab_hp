@@ -1,10 +1,10 @@
 "use client";
-import { tags as tagsData, currentYear, members } from "@/lib/notionLoader";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
 import { Member } from "@/models/member";
 import { Tag } from "@/models/tag";
 import { useState, useEffect } from "react";
+import { members, tagsData, currentYear } from "@/app/data";
 
 // Helper to get tag display label
 const tagLabel = (tag: Tag, lang: "ja" | "en") =>

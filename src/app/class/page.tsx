@@ -1,7 +1,7 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { lectures } from "@/lib/notionLoader";
+import { lectures } from "@/app/data";
 
 const ClassPage = () => {
   const { lang } = useLang();

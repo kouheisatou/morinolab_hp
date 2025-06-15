@@ -2,14 +2,14 @@
 
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { themes, newsItems } from "@/lib/notionLoader";
 import { Theme } from "@/models/theme";
 import { useState, useEffect, useRef } from "react";
+import { themes, newsItems } from "@/app/data";
 
 // Adjustable ratio: if copy height / image height is below this, overlay text stays on the image. Otherwise text is rendered below.
 // You can override the default 0.3 threshold by defining NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD in .env.local (must start with NEXT_PUBLIC_ to be exposed to the client).
 const HERO_OVERLAY_THRESHOLD: number = Number(
-  process.env.NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD ?? "0.3",
+  process.env.NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD ?? "0.4",
 );
 
 export default function HomePage() {

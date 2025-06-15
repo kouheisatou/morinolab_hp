@@ -1,8 +1,8 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { companies } from "@/lib/notionLoader";
 import { Company } from "@/models/company";
+import { companies } from "@/app/data";
 
 // sort by year desc (numeric)
 const sorted = [...companies].sort((a, b) => b.year - a.year);
