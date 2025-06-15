@@ -31,9 +31,10 @@ async function loadMembers(): Promise<Member[]> {
   return rows.map((row) => {
     const r = row as Record<string, string>;
     const tagIds: number[] = (r.tagIds || "")
-      .split(/[|,\s]+/)
+      .split(",")
       .filter(Boolean)
-      .map((id) => Number(id));
+      .map((id) => Number(id.trim()))
+      .filter((id): id is number => !isNaN(id));
 
     return new Member(
       Number(r.id),
