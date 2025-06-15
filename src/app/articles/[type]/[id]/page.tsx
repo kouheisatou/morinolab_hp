@@ -53,15 +53,12 @@ export const generateStaticParams = () => {
   return Array.from(unique.values());
 };
 
-interface PageProps {
-  params: {
-    type: string;
-    id: string;
-  };
-}
-
-export default async function ArticleDetailPage({ params }: PageProps) {
-  const { type, id } = await Promise.resolve(params);
+export default async function ArticleDetailPage({
+  params,
+}: {
+  params: Promise<{ type: string; id: string }>;
+}) {
+  const { type, id } = await params;
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <Breadcrumbs type={type} id={id} />
