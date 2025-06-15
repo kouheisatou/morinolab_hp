@@ -100,8 +100,8 @@ async function loadCompanies(): Promise<Company[]> {
     return new Company(
       Number(r.id),
       r.logo || r.img || "",
-      r.name_jp,
-      r.name_en,
+      r.nameJa,
+      r.nameEn,
       Number(r.year),
     );
   });

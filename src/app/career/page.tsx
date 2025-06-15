@@ -50,7 +50,11 @@ export default function CareerPage() {
 
                   <div className="neu-container flex-1 p-4">
                     <p className="font-semibold mb-1">
-                      {lang === "ja" ? c.nameJa : c.nameEn}
+                      {
+                        lang === "ja"
+                          ? c.nameJa || c.nameEn // fallback to EN if JP missing
+                          : c.nameEn || c.nameJa // fallback to JP if EN missing
+                      }
                     </p>
                   </div>
                 </div>
