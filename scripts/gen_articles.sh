@@ -39,6 +39,7 @@ for TYPE in "${CONTENT_TYPES[@]}"; do
            --from docx \
            --to html \
            --standalone \
+           --extract-media="./" \
            --output "${OUTPUT_DIR}/article.html"
   done
   shopt -u nullglob
