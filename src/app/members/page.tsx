@@ -26,7 +26,7 @@ const Members = () => {
   const { lang } = useLang();
   const title = texts(lang).members.title;
 
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
 
   // Faculty as Member array for bilingual support
   const faculty: Member[] = [
@@ -56,11 +56,8 @@ const Members = () => {
   const tagIdMap = useMemo(() => new Map(tags.map((t) => [t.id, t])), []);
 
   const filterFn = (m: Member) => {
-    if (selectedTags.length === 0) return true;
-    return m.tagIds.some((id) => {
-      const t = tagIdMap.get(id);
-      return t ? selectedTags.includes(t.name_english) : false;
-    });
+    if (selectedTagIds.length === 0) return true;
+    return m.tagIds.some((id) => selectedTagIds.includes(id));
   };
 
   const filteredStudents = currentStudents.filter(filterFn);
@@ -90,21 +87,21 @@ const Members = () => {
             {lang === "ja" ? "絞り込み" : "Filter"}
           </span>
           <button
-            className={`tag-chip ${selectedTags.length === 0 ? "selected" : ""}`}
-            onClick={() => setSelectedTags([])}
+            className={`tag-chip ${selectedTagIds.length === 0 ? "selected" : ""}`}
+            onClick={() => setSelectedTagIds([])}
           >
             All
           </button>
           {allTags.map((tagObj) => (
             <button
               key={tagObj.id}
-              className={`tag-chip ${selectedTags.includes(tagObj.name_english) ? "selected" : ""}`}
+              className={`tag-chip ${selectedTagIds.includes(tagObj.id) ? "selected" : ""}`}
               onClick={() => {
-                setSelectedTags((prev) => {
-                  if (prev.includes(tagObj.name_english)) {
-                    return prev.filter((t) => t !== tagObj.name_english);
+                setSelectedTagIds((prev) => {
+                  if (prev.includes(tagObj.id)) {
+                    return prev.filter((t) => t !== tagObj.id);
                   } else {
-                    return [...prev, tagObj.name_english];
+                    return [...prev, tagObj.id];
                   }
                 });
               }}

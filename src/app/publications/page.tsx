@@ -44,15 +44,15 @@ const Publications = () => {
     [],
   );
 
-  // State for tag and year filters
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  // State for tag and year filters (use tag.id for reliability)
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [selectedYear, setSelectedYear] = useState<"all" | number>("all");
   const [showOlder, setShowOlder] = useState(false);
 
   const filterByTag = (p: PubWithTags) =>
-    selectedTags.length === 0
+    selectedTagIds.length === 0
       ? true
-      : p.tags.some((t: Tag) => selectedTags.includes(t.name_english));
+      : p.tags.some((t: Tag) => selectedTagIds.includes(t.id));
 
   // Group after filtering
   const grouped: Record<number, PubWithTags[]> = {};
@@ -102,20 +102,20 @@ const Publications = () => {
           {lang === "ja" ? "テーマ" : "Thema"}
         </span>
         <button
-          className={`tag-chip ${selectedTags.length === 0 ? "selected" : ""}`}
-          onClick={() => setSelectedTags([])}
+          className={`tag-chip ${selectedTagIds.length === 0 ? "selected" : ""}`}
+          onClick={() => setSelectedTagIds([])}
         >
           All
         </button>
         {tags.map((t) => (
           <button
             key={t.id}
-            className={`tag-chip ${selectedTags.includes(t.name_english) ? "selected" : ""}`}
+            className={`tag-chip ${selectedTagIds.includes(t.id) ? "selected" : ""}`}
             onClick={() =>
-              setSelectedTags((prev) =>
-                prev.includes(t.name_english)
-                  ? prev.filter((x) => x !== t.name_english)
-                  : [...prev, t.name_english],
+              setSelectedTagIds((prev) =>
+                prev.includes(t.id)
+                  ? prev.filter((x) => x !== t.id)
+                  : [...prev, t.id],
               )
             }
           >
