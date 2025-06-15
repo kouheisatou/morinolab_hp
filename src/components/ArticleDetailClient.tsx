@@ -10,7 +10,7 @@ interface ArticleDetailClientProps {
 /**
  * Client-side component that fetches the pre-generated HTML for an article and renders it.
  *
- * The HTML is generated ahead of time by `src/scripts/generate_contents.sh` and placed under:
+ * The HTML is generated ahead of time by `scripts/gen_contents_db.sh` and placed under:
  *   public/generated_contents/{type}/{id}/article.html
  */
 export default function ArticleDetailClient({

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "generate:contents": "bash src/scripts/generate_contents.sh",
+    "generate:contents": "bash scripts/gen_contents_db.sh",
     "build": "npm run generate:contents && next build",
     "start": "next start",
     "lint": "next lint",
