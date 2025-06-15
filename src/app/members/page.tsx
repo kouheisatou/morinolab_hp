@@ -97,7 +97,7 @@ const Members = () => {
           </button>
           {allTags.map((tagObj) => (
             <button
-              key={tagObj.name_english}
+              key={tagObj.id}
               className={`tag-chip ${selectedTags.includes(tagObj.name_english) ? "selected" : ""}`}
               onClick={() => {
                 setSelectedTags((prev) => {
@@ -144,7 +144,7 @@ const Members = () => {
                       {m.tagIds.map((id) => {
                         const t = tagIdMap.get(id);
                         return t ? (
-                          <span key={t.name_english} className="tag-badge">
+                          <span key={t.id} className="tag-badge">
                             {tagLabel(t, lang)}
                           </span>
                         ) : null;
@@ -174,7 +174,7 @@ const Members = () => {
                     {m.tagIds.map((id) => {
                       const t = tagIdMap.get(id);
                       return t ? (
-                        <span key={t.name_english} className="tag-badge">
+                        <span key={t.id} className="tag-badge">
                           {tagLabel(t, lang)}
                         </span>
                       ) : null;

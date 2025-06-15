@@ -109,7 +109,7 @@ const Publications = () => {
         </button>
         {tags.map((t) => (
           <button
-            key={t.name_english}
+            key={t.id}
             className={`tag-chip ${selectedTags.includes(t.name_english) ? "selected" : ""}`}
             onClick={() =>
               setSelectedTags((prev) =>
@@ -170,7 +170,7 @@ const Publications = () => {
                   </span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {p.tags.map((t: Tag) => (
-                      <span key={t.name_english} className="tag-badge">
+                      <span key={t.id} className="tag-badge">
                         {tagLabel(t)}
                       </span>
                     ))}
