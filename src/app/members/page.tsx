@@ -1,5 +1,5 @@
 "use client";
-import { tags as tagsData, currentYear, members } from "@/lib/sheetLoader";
+import { tags as tagsData, currentYear, members } from "@/lib/notionLoader";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
 import { Member } from "@/models/member";
@@ -124,8 +124,8 @@ const Members = () => {
         <ul className="members-grid">
           {faculty.map((m) => (
             <li key={m.id} className="member-row">
-              {m.img && (
-                <img src={m.img} alt={m.name} className="member-photo" />
+              {m.thumbnail && (
+                <img src={m.thumbnail} alt={m.name} className="member-photo" />
               )}
               <div>
                 <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>

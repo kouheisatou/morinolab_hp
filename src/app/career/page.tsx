@@ -1,7 +1,7 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { companies } from "@/lib/sheetLoader";
+import { companies } from "@/lib/notionLoader";
 import { Company } from "@/models/company";
 
 // sort by year desc (numeric)
@@ -41,7 +41,7 @@ export default function CareerPage() {
                   <span className="absolute -left-3.5 w-7 h-7 rounded-full overflow-hidden shadow-md bg-white dark:bg-gray-800 flex items-center justify-center">
                     {(() => {
                       // Extract URL when cell contains Google Sheets IMAGE formula
-                      let logoSrc = c.logo;
+                      let logoSrc = c.thumbnail;
                       const m = logoSrc.match(/^=IMAGE\(["']?(.+?)["']?\)$/i);
                       if (m) {
                         logoSrc = m[1];

@@ -3,7 +3,7 @@ export class NewsItem {
   date: string; // YYYY-MM-DD
   textJa: string;
   textEn: string;
-  img?: string;
+  thumbnail?: string;
   url?: string;
 
   constructor(
@@ -11,14 +11,14 @@ export class NewsItem {
     date: string,
     textJa: string,
     textEn: string,
-    img?: string,
+    thumbnail?: string,
     url?: string,
   ) {
     this.id = id;
     this.date = date;
     this.textJa = textJa;
     this.textEn = textEn;
-    this.img = img;
+    this.thumbnail = thumbnail;
     this.url = url;
   }
 }

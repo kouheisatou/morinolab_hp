@@ -19,7 +19,7 @@ export class Publication {
   locationEn?: string; // 開催地（英語）
   notesJa?: string; // 備考や受賞（日本語）
   notesEn?: string; // 備考や受賞（英語）
-  imagePath?: string; // 画像パス
+  thumbnail?: string; // サムネイル画像パス
   url?: string; // 詳細ページ
 
   constructor(
@@ -41,7 +41,7 @@ export class Publication {
     locationEn?: string,
     notesJa?: string,
     notesEn?: string,
-    imagePath?: string,
+    thumbnail?: string,
     url?: string,
   ) {
     this.id = id;
@@ -62,7 +62,7 @@ export class Publication {
     this.locationEn = locationEn;
     this.notesJa = notesJa;
     this.notesEn = notesEn;
-    this.imagePath = imagePath;
+    this.thumbnail = thumbnail;
     this.url = url;
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { lectures } from "@/lib/sheetLoader";
+import { lectures } from "@/lib/notionLoader";
 
 const ClassPage = () => {
   const { lang } = useLang();
@@ -19,7 +19,7 @@ const ClassPage = () => {
       {/* Intro section */}
       <section className="mb-10">
         <img
-          src="img/sample/orientation.png"
+          src="img/lecture.png"
           alt="Class overview"
           className="w-full h-48 object-cover rounded-[var(--radius)] mb-4"
         />
@@ -36,7 +36,7 @@ const ClassPage = () => {
             style={{ padding: 0 }}
           >
             <img
-              src={lec.img || "img/noimage_lectures.png"}
+              src={lec.thumbnail || "img/noimage_lectures.png"}
               alt={lang === "ja" ? lec.titleJa : lec.titleEn}
               className="object-cover w-[20%] h-full rounded-l-[var(--radius)] flex-none"
               style={{ flexBasis: "20%" }}

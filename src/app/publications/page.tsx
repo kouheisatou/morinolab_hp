@@ -1,7 +1,7 @@
 "use client";
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
-import { publications, tags as tagsData, members } from "@/lib/sheetLoader";
+import { publications, tags as tagsData, members } from "@/lib/notionLoader";
 import { Tag } from "@/models/tag";
 import { useMemo, useState, useEffect } from "react";
 import { Publication } from "@/models/publication";
@@ -115,7 +115,7 @@ const Publications = () => {
   const getDate = (p: Publication) =>
     lang === "ja" ? p.dateJa || "" : p.dateEn || "";
 
-  // Fallback when imagePath is not provided
+  // Fallback when thumbnail is not provided
   const getFallbackImage = () => "img/noimage_publication.png";
 
   return (
@@ -183,7 +183,7 @@ const Publications = () => {
             {grouped[year].map((p) => (
               <div key={p.id} className="pub-card">
                 <img
-                  src={p.imagePath || getFallbackImage()}
+                  src={p.thumbnail || getFallbackImage()}
                   alt={getTitle(p)}
                 />
                 <div className="pub-meta">

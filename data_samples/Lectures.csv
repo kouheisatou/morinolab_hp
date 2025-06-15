@@ -1,3 +1,0 @@
-id,img,titleJa,titleEn,descJa,descEn,url
-1,=IMAGE("https://dummyimage.com/200x120"),情報ネットワーキング,Information Networking,OSI参照モデルからSDNまで学ぶ,Learn OSI to SDN comprehensively,https://docs.google.com/document/d/lecture1/
-2,=IMAGE("https://dummyimage.com/200x120"),IoT システム,IoT Systems,センサノード設計からクラウドまで,Workflow from sensor node to cloud,https://docs.google.com/document/d/lecture2/ 
