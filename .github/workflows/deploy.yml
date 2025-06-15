@@ -7,7 +7,7 @@ on:
 
 # GitHub Pages への書き込みと OIDC が必要
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -61,7 +61,7 @@ jobs:
 
       - name: Generate contents
         run: |
-          python src/scripts/gen_contents_db.py --excel-path contents/data.xlsx
+          python src/scripts/gen_contents_db.py --excel-path contents/contents_db.xlsx
 
       # Convert all .docx articles into standalone HTML files for detail pages
       - name: Install Pandoc
