@@ -113,6 +113,10 @@ body {
 
 .neu-link:hover {
   color: var(--accent);
+  background: var(--bg);
+  box-shadow:
+    inset 4px 4px 8px var(--shadow-dark),
+    inset -4px -4px 8px var(--shadow-light);
 }
 
 .neu-link.active {
@@ -649,4 +653,85 @@ h1 {
 
 .neu-navbar:not(.mobile-view) .nav-links {
   display: flex;
+}
+
+/* Add interactive neumorphic card variant */
+.clickable-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clickable-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    4px 4px 8px var(--shadow-dark),
+    -4px -4px 8px var(--shadow-light);
+}
+
+.clickable-card:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 4px 4px 8px var(--shadow-dark),
+    inset -4px -4px 8px var(--shadow-light);
+}
+
+/* Article detail typography */
+.article-body {
+  max-width: 100%;
+  line-height: 1.7;
+  color: #333;
+}
+
+.article-body h1,
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+  font-weight: 700;
+  color: var(--accent);
+  margin: 2rem 0 1rem;
+}
+
+.article-body h1 {
+  font-size: 2rem;
+}
+.article-body h2 {
+  font-size: 1.5rem;
+}
+.article-body h3 {
+  font-size: 1.25rem;
+}
+.article-body h4 {
+  font-size: 1.1rem;
+}
+
+.article-body p {
+  margin: 0 0 1rem;
+}
+
+.article-body ul,
+.article-body ol {
+  margin: 0 0 1rem 1.5rem;
+  padding: 0;
+}
+
+.article-body ul {
+  list-style-type: disc;
+}
+
+.article-body ol {
+  list-style-type: decimal;
+}
+
+.article-body li {
+  margin-bottom: 0.4rem;
+}
+
+.article-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  box-shadow:
+    4px 4px 8px var(--shadow-dark),
+    -4px -4px 8px var(--shadow-light);
+  margin: 1.5rem 0;
 }

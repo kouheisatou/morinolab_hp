@@ -5,6 +5,7 @@ import { Tag } from "@/models/tag";
 import { useMemo, useState, useEffect } from "react";
 import { Publication } from "@/models/publication";
 import { publications, tagsData, members } from "@/app/data";
+import Link from "next/link";
 
 const Publications = () => {
   const { lang } = useLang();
@@ -181,7 +182,11 @@ const Publications = () => {
           <h2 className="section-title">{year}</h2>
           <div className="pub-grid">
             {grouped[year].map((p) => (
-              <div key={p.id} className="pub-card">
+              <Link
+                key={p.id}
+                href={`/articles/publication/${p.id}`}
+                className="pub-card clickable-card"
+              >
                 <img
                   src={p.thumbnail || getFallbackImage()}
                   alt={getTitle(p)}
@@ -202,7 +207,7 @@ const Publications = () => {
                     ))}
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

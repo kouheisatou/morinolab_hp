@@ -2,6 +2,7 @@
 import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
 import { lectures } from "@/app/data";
+import Link from "next/link";
 
 const ClassPage = () => {
   const { lang } = useLang();
@@ -30,9 +31,10 @@ const ClassPage = () => {
 
       <div className="space-y-8">
         {lectures.map((lec) => (
-          <div
+          <Link
             key={lec.id}
-            className="neu-container flex items-stretch overflow-hidden h-40"
+            href={`/articles/lecture/${lec.id}`}
+            className="neu-container clickable-card flex items-stretch overflow-hidden h-40"
             style={{ padding: 0 }}
           >
             <img
@@ -57,7 +59,7 @@ const ClassPage = () => {
                 {lang === "ja" ? lec.descJa : lec.descEn}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

@@ -5,6 +5,7 @@ import { Member } from "@/models/member";
 import { Tag } from "@/models/tag";
 import { useState, useEffect } from "react";
 import { members, tagsData, currentYear } from "@/app/data";
+import { useRouter } from "next/navigation";
 
 // Helper to get tag display label
 const tagLabel = (tag: Tag, lang: "ja" | "en") =>
@@ -85,6 +86,8 @@ const Members = () => {
 
   const categoryMap = categorize(filteredStudents);
 
+  const router = useRouter();
+
   return (
     <div className="members-page">
       <div className="px-6 sm:px-10">
@@ -123,7 +126,13 @@ const Members = () => {
         <h2 className="section-title">Faculty</h2>
         <ul className="members-grid">
           {faculty.map((m) => (
-            <li key={m.id} className="member-row">
+            <li
+              key={m.id}
+              className="member-row clickable-card neu-container p-4"
+              onClick={() => router.push(`/articles/member/${m.id}`)}
+              role="link"
+              tabIndex={0}
+            >
               {m.thumbnail && (
                 <img src={m.thumbnail} alt={m.name} className="member-photo" />
               )}
@@ -144,7 +153,13 @@ const Members = () => {
               <h2 className="section-title">{grade}</h2>
               <ul className="members-grid">
                 {categoryMap[grade].map((m) => (
-                  <li key={m.id}>
+                  <li
+                    key={m.id}
+                    className="clickable-card neu-container p-4 flex flex-col gap-1"
+                    onClick={() => router.push(`/articles/member/${m.id}`)}
+                    role="link"
+                    tabIndex={0}
+                  >
                     <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {m.tagIds.map((id) => {
@@ -174,7 +189,13 @@ const Members = () => {
             </h2>
             <ul className="members-grid">
               {filteredAlumni.map((m) => (
-                <li key={m.id}>
+                <li
+                  key={m.id}
+                  className="clickable-card neu-container p-4 flex flex-col gap-1"
+                  onClick={() => router.push(`/articles/member/${m.id}`)}
+                  role="link"
+                  tabIndex={0}
+                >
                   <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {m.tagIds.map((id) => {

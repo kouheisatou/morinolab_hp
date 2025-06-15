@@ -50,6 +50,23 @@ const NavBar = () => {
     { path: "/career", label: t.Career },
   ];
 
+  // When in `/articles/{type}/{id}` detail page, determine which nav tab to highlight.
+  const normalizePath = (p: string): string => p.replace(/#.*$/, "");
+
+  let activeAlias: string | null = null;
+  if (pathname.startsWith("/articles/")) {
+    const parts = pathname.split("/");
+    const type = parts[2] ?? "";
+    const map: Record<string, string> = {
+      theme: "/home",
+      news: "/home",
+      member: "/members",
+      publication: "/publications",
+      lecture: "/class",
+    };
+    activeAlias = map[type] ?? null;
+  }
+
   return (
     <nav
       className={`neu-navbar ${menuOpen ? "menu-open" : ""} ${isMobile ? "mobile-view" : ""}`}
@@ -68,16 +85,22 @@ const NavBar = () => {
 
       {/* Links & language toggle wrapper */}
       <div className="nav-links">
-        {links.map(({ path, label }) => (
-          <Link
-            key={path}
-            href={path}
-            className={pathname === path ? "neu-link active" : "neu-link"}
-            onClick={() => setMenuOpen(false)}
-          >
-            {label}
-          </Link>
-        ))}
+        {links.map(({ path, label }) => {
+          const isActive =
+            pathname === path ||
+            activeAlias === path ||
+            normalizePath(pathname) === path;
+          return (
+            <Link
+              key={path}
+              href={path}
+              className={isActive ? "neu-link active" : "neu-link"}
+              onClick={() => setMenuOpen(false)}
+            >
+              {label}
+            </Link>
+          );
+        })}
         <div className="lang-dropdown lang-toggle">
           <button
             className="neu-button"

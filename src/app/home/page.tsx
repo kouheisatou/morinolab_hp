@@ -5,6 +5,7 @@ import { texts } from "@/components/i18n";
 import { Theme } from "@/models/theme";
 import { useState, useEffect, useRef } from "react";
 import { themes, newsItems } from "@/app/data";
+import Link from "next/link";
 
 // Adjustable ratio: if copy height / image height is below this, overlay text stays on the image. Otherwise text is rendered below.
 // You can override the default 0.3 threshold by defining NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD in .env.local (must start with NEXT_PUBLIC_ to be exposed to the client).
@@ -90,9 +91,10 @@ export default function HomePage() {
             const title = lang === "ja" ? th.titleJa : th.titleEn;
             const desc = lang === "ja" ? th.descJa : th.descEn;
             return (
-              <div
+              <Link
                 key={th.id}
-                className="theme-card flex flex-col"
+                href={`/articles/theme/${th.id}`}
+                className="theme-card clickable-card flex flex-col"
                 style={{ padding: 0 }}
               >
                 <img
@@ -106,7 +108,7 @@ export default function HomePage() {
                     {desc}
                   </p>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
@@ -119,9 +121,10 @@ export default function HomePage() {
         </h2>
         <div className="space-y-4">
           {newsItems.map((n, idx) => (
-            <div
-              key={n.date + idx}
-              className="neu-container flex items-stretch overflow-hidden w-full h-32"
+            <Link
+              key={n.id ?? idx}
+              href={`/articles/news/${n.id}`}
+              className="neu-container clickable-card flex items-stretch overflow-hidden w-full h-32"
               style={{ padding: 0 }}
             >
               <div
@@ -160,7 +163,7 @@ export default function HomePage() {
                   </div>
                 );
               })()}
-            </div>
+            </Link>
           ))}
         </div>
       </section>
