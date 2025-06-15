@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "generate:contents": "python3 scripts/gen_contents_db.py --excel-path contents/contents_db.xlsx",
-    "build": "npm run generate:contents && next build",
+    "generate_contents": "python3 scripts/gen_contents_db.py --excel-path contents/contents_db.xlsx; bash scripts/gen_articles.sh",
+    "validate_contents": "python3 scripts/validate_contents_db.py",
+    "build": "npm run generate_contents && npm run validate_contents && next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write ."
