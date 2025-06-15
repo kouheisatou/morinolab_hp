@@ -35,11 +35,12 @@ for TYPE in "${CONTENT_TYPES[@]}"; do
 
     # Convert the .docx file to standalone HTML while extracting embedded media (images)
     # The resulting article.html can be loaded directly by the browser.
+    cd "${OUTPUT_DIR}"
     pandoc "${DOCX_FILE}" \
            --from docx \
            --to html \
            --standalone \
-           --extract-media="${OUTPUT_DIR}" \
+           --extract-media="." \
            --output "${OUTPUT_DIR}/article.html"
   done
   shopt -u nullglob
