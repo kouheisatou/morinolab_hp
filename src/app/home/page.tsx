@@ -97,7 +97,7 @@ export default function HomePage() {
                 style={{ padding: 0 }}
               >
                 <img
-                  src={th.img || undefined}
+                  src={th.img || "img/noimage_theme.png"}
                   alt={title}
                   className="w-full h-40 object-cover rounded-t-[var(--radius)]"
                 />
@@ -130,7 +130,7 @@ export default function HomePage() {
                 style={{ flexBasis: "20%", height: "100%" }}
               >
                 <img
-                  src={n.img || undefined}
+                  src={n.img || "img/noimage_news.png"}
                   alt={n.textJa}
                   className="w-full h-full object-cover"
                 />

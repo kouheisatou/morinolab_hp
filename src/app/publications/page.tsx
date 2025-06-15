@@ -20,8 +20,7 @@ const Publications = () => {
   }, []);
 
   // Local helper to get tag display label
-  const tagLabel = (tag: Tag) =>
-    lang === "ja" ? tag.name : tag.name_english;
+  const tagLabel = (tag: Tag) => (lang === "ja" ? tag.name : tag.name_english);
 
   // Build helper maps
   const memberMap = useMemo(() => new Map(members.map((m) => [m.id, m])), []);
@@ -117,7 +116,7 @@ const Publications = () => {
     lang === "ja" ? p.dateJa || "" : p.dateEn || "";
 
   // Fallback when imagePath is not provided
-  const getFallbackImage = () => "img/noimage_paper.png";
+  const getFallbackImage = () => "img/noimage_publication.png";
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -184,7 +183,7 @@ const Publications = () => {
             {grouped[year].map((p) => (
               <div key={p.id} className="pub-card">
                 <img
-                  src={p.imagePath ?? getFallbackImage()}
+                  src={p.imagePath || getFallbackImage()}
                   alt={getTitle(p)}
                 />
                 <div className="pub-meta">

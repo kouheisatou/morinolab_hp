@@ -39,13 +39,21 @@ export default function CareerPage() {
               {grouped[Number(y)].map((c) => (
                 <div key={c.id} className="relative flex items-center gap-6">
                   <span className="absolute -left-3.5 w-7 h-7 rounded-full overflow-hidden shadow-md bg-white dark:bg-gray-800 flex items-center justify-center">
-                    {c.logo ? (
-                      <img
-                        src={c.logo}
-                        alt={c.nameEn}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : null}
+                    {(() => {
+                      // Extract URL when cell contains Google Sheets IMAGE formula
+                      let logoSrc = c.logo;
+                      const m = logoSrc.match(/^=IMAGE\(["']?(.+?)["']?\)$/i);
+                      if (m) {
+                        logoSrc = m[1];
+                      }
+                      return (
+                        <img
+                          src={logoSrc || "img/noimage_campany.svg"}
+                          alt={c.nameEn}
+                          className="w-full h-full object-cover"
+                        />
+                      );
+                    })()}
                   </span>
 
                   <div className="neu-container flex-1 p-4">
