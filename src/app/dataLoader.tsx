@@ -5,6 +5,7 @@ import { Tag } from "@/models/tag";
 import { Theme } from "@/models/theme";
 import { Lecture } from "@/models/lecture";
 import { Company } from "@/models/company";
+import { MemberType } from "@/models/memberType";
 
 /**
  * Parse a single CSV line respecting quoted fields.
@@ -103,12 +104,16 @@ export async function loadTags(): Promise<Tag[]> {
   return rows.map((r) => new Tag(Number(r.id), r.name, r.name_english));
 }
 
-// Utility helpers -----------------------------------------------------------
-const parseBool = (v: string | undefined): boolean =>
-  ["true", "1", "yes", "y", "True", "TRUE"].includes(
-    (v ?? "").toString().trim(),
-  );
+// ---------------------------------------------------------------------------
+// MemberTypes
+// ---------------------------------------------------------------------------
 
+export async function loadMemberTypes(): Promise<MemberType[]> {
+  const rows = await loadCsv("/generated_contents/memberType/memberType.csv");
+  return rows.map((r) => new MemberType(Number(r.id), r.nameJa, r.nameEn));
+}
+
+// Utility helpers -----------------------------------------------------------
 const parseIdList = (v: string | undefined): number[] =>
   (v ?? "")
     .split(/\s*\|\s*|,|;|\s+/)
@@ -142,15 +147,10 @@ export async function loadMembers(): Promise<Member[]> {
         r.desc,
         r.nameEnglish,
         r.descEnglish,
-        Number(r.admissionYear),
+        Number(r.memberTypeId),
         resolveThumbnail(r.thumbnail, "member") ?? "",
         parseIdList(r.tagIds),
-        Number(r.repeats ?? 0),
-        parseBool(r.graduated),
-        parseBool(r.master),
-        parseBool(r.bachelor),
         r.gradYear ? Number(r.gradYear) : undefined,
-        r.url,
       ),
   );
 }

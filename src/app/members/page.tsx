@@ -3,24 +3,24 @@ import { useLang } from "@/components/LanguageContext";
 import { texts } from "@/components/i18n";
 import { Member } from "@/models/member";
 import { Tag } from "@/models/tag";
+import { MemberType } from "@/models/memberType";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { loadMembers, loadTags } from "../dataLoader";
+import { loadMembers, loadTags, loadMemberTypes } from "../dataLoader";
 
 // Helper to get tag display label
 const tagLabel = (tag: Tag, lang: "ja" | "en") =>
   lang === "ja" ? tag.name : tag.name_english;
 
-// Compute grade label from years since admission
-const getGradeLabel = (
-  admissionYear: number,
-  repeats = 0,
-  graduated = false,
-): string => {
-  if (graduated) return "Alumni";
-  const diff = new Date().getFullYear() - admissionYear + repeats;
-  const map = ["B1", "B2", "B3", "B4", "M1", "M2", "D1", "D2", "D3"];
-  return diff >= 0 && diff < map.length ? map[diff] : "Unknown";
+// Helper to retrieve localized type label (e.g., B4, M1, 卒業生, 教員)
+const getTypeLabelById = (
+  typeId: number,
+  typeMap: Map<number, MemberType>,
+  lang: "ja" | "en",
+) => {
+  const t = typeMap.get(typeId);
+  if (!t) return "Unknown";
+  return lang === "ja" ? t.nameJa : t.nameEn;
 };
 
 const Members = () => {
@@ -29,37 +29,29 @@ const Members = () => {
 
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
 
-  // Faculty as Member array for bilingual support
-  const faculty: Member[] = [
-    new Member(
-      0,
-      "森野 博章",
-      "教授",
-      "Hiroaki Morino",
-      "Professor",
-      2000,
-      "img/morino.jpg",
-      [],
-      0,
-      false, // graduated
-      true, // master
-      false, // bachelor
-      undefined, // gradYear
-      undefined, // url
-    ),
-  ];
-
   const [members, setMembers] = useState<Member[]>([]);
   const [tagsData, setTagsData] = useState<Tag[]>([]);
+  const [memberTypes, setMemberTypes] = useState<MemberType[]>([]);
 
   useEffect(() => {
     loadMembers().then(setMembers);
     loadTags().then(setTagsData);
+    loadMemberTypes().then(setMemberTypes);
   }, []);
 
-  const alumniMembers: Member[] = members.filter((m) => m.graduated);
+  // Map for quick lookup
+  const memberTypeMap = new Map<number, MemberType>(
+    memberTypes.map((t) => [t.id, t]),
+  );
 
-  const currentStudents: Member[] = members.filter((m) => !m.graduated);
+  // Partition members by type label for display
+  const categoryMap = new Map<string, Member[]>();
+  members.forEach((m) => {
+    const label = getTypeLabelById(m.memberTypeId, memberTypeMap, lang);
+    const arr = categoryMap.get(label) ?? [];
+    arr.push(m);
+    categoryMap.set(label, arr);
+  });
 
   // Tags state – start empty to make sure SSR/CSR HTML match
   const [allTags, setAllTags] = useState<Tag[]>([]);
@@ -78,21 +70,33 @@ const Members = () => {
     return m.tagIds.some((id) => selectedTagIds.includes(id));
   };
 
-  const filteredStudents = currentStudents.filter(filterFn);
-  const filteredAlumni = alumniMembers.filter(filterFn);
+  const filteredMembers = members.filter(filterFn);
 
-  // Categorize by grade
-  const categorize = (members: Member[]) => {
-    const map: Record<string, Member[]> = {};
-    members.forEach((m) => {
-      const label = getGradeLabel(m.admissionYear, m.repeats, m.graduated);
-      if (!map[label]) map[label] = [];
-      map[label].push(m);
-    });
-    return map;
-  };
+  // Build category map of filtered members
+  const filteredCategoryMap = new Map<string, Member[]>();
+  filteredMembers.forEach((m) => {
+    const label = getTypeLabelById(m.memberTypeId, memberTypeMap, lang);
+    const arr = filteredCategoryMap.get(label) ?? [];
+    arr.push(m);
+    filteredCategoryMap.set(label, arr);
+  });
 
-  const categoryMap = categorize(filteredStudents);
+  // Build ordering array from memberTypes (ascending ID -> configured order)
+  const orderedCategories = memberTypes
+    .slice()
+    .sort((a, b) => a.id - b.id)
+    .map((t) => (lang === "ja" ? t.nameJa : t.nameEn));
+
+  const categoriesToRender = Array.from(filteredCategoryMap.keys()).sort(
+    (a, b) => {
+      const ia = orderedCategories.indexOf(a);
+      const ib = orderedCategories.indexOf(b);
+      if (ia === -1 && ib === -1) return a.localeCompare(b);
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    },
+  );
 
   const router = useRouter();
 
@@ -131,43 +135,33 @@ const Members = () => {
           ))}
         </div>
 
-        <h2 className="section-title">Faculty</h2>
-        <ul className="members-grid">
-          {faculty.map((m) => (
-            <li
-              key={m.id}
-              className="member-row clickable-card neu-container p-4"
-              onClick={() => router.push(`/articles/member/${m.id}`)}
-              role="link"
-              tabIndex={0}
-            >
-              {m.thumbnail && (
-                <img src={m.thumbnail} alt={m.name} className="member-photo" />
-              )}
-              <div>
-                <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
-                <div className="member-desc">
-                  {lang === "ja" ? m.desc : m.descEnglish}
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+        {/* Faculty members will be displayed via the categorized sections below */}
 
-        {/* New categorized sections */}
-        {["M2", "M1", "B4", "B3"].map((grade) =>
-          categoryMap[grade] && categoryMap[grade].length > 0 ? (
-            <div key={grade}>
-              <h2 className="section-title">{grade}</h2>
-              <ul className="members-grid">
-                {categoryMap[grade].map((m) => (
-                  <li
-                    key={m.id}
-                    className="clickable-card neu-container p-4 flex flex-col gap-1"
-                    onClick={() => router.push(`/articles/member/${m.id}`)}
-                    role="link"
-                    tabIndex={0}
-                  >
+        {/* Categorized sections based on member type */}
+        {categoriesToRender.map((cat) => (
+          <div key={cat}>
+            <h2 className="section-title">{cat}</h2>
+            <ul className="members-grid">
+              {filteredCategoryMap.get(cat)?.map((m) => (
+                <li
+                  key={m.id}
+                  className="clickable-card neu-container p-4 flex items-start gap-4"
+                  onClick={() => router.push(`/articles/member/${m.id}`)}
+                  role="link"
+                  tabIndex={0}
+                >
+                  {m.thumbnail && (
+                    <img
+                      src={m.thumbnail}
+                      alt={
+                        lang === "ja"
+                          ? `${m.name}の写真`
+                          : `${m.nameEnglish}'s photo`
+                      }
+                      className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                    />
+                  )}
+                  <div className="flex flex-col gap-1">
                     <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {m.tagIds.map((id) => {
@@ -182,60 +176,12 @@ const Members = () => {
                     <div className="member-desc">
                       {lang === "ja" ? m.desc : m.descEnglish}
                     </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null,
-        )}
-
-        {/* Alumni Section */}
-        {filteredAlumni.length > 0 && (
-          <>
-            <h2 className="section-title">
-              {lang === "ja" ? "卒業生" : "Alumni"}
-            </h2>
-            <ul className="members-grid">
-              {filteredAlumni.map((m) => (
-                <li
-                  key={m.id}
-                  className="clickable-card neu-container p-4 flex flex-col gap-1"
-                  onClick={() => router.push(`/articles/member/${m.id}`)}
-                  role="link"
-                  tabIndex={0}
-                >
-                  <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {m.tagIds.map((id) => {
-                      const t = tagIdMap.get(id);
-                      return t ? (
-                        <span key={t.id} className="tag-badge">
-                          {tagLabel(t, lang)}
-                        </span>
-                      ) : null;
-                    })}
-                  </div>
-                  <div className="member-desc">
-                    {(() => {
-                      const yearLabel = m.gradYear
-                        ? `${m.gradYear}${lang === "ja" ? "年" : ""}`
-                        : "";
-                      const degreeLabel = m.master
-                        ? lang === "ja"
-                          ? "院卒"
-                          : "Master grad."
-                        : lang === "ja"
-                          ? "学部卒"
-                          : "Bachelor grad.";
-                      const descText = lang === "ja" ? m.desc : m.descEnglish;
-                      return `${yearLabel ? yearLabel + " " : ""}${degreeLabel} / ${descText}`;
-                    })()}
                   </div>
                 </li>
               ))}
             </ul>
-          </>
-        )}
+          </div>
+        ))}
       </div>
     </div>
   );

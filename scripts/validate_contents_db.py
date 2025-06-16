@@ -44,12 +44,13 @@ DATASETS: Dict[str, DatasetCfg] = {
             "desc",
             "nameEnglish",
             "descEnglish",
-            "admissionYear",
+            "memberTypeId",
         ],
         "has_article": True,
         # Columns that reference other datasets in list-string format ("1,2")
         "fk_columns": {
             "tagIds": "tags",
+            "memberTypeId": "memberType",
         },
     },
     "company": {
@@ -85,6 +86,11 @@ DATASETS: Dict[str, DatasetCfg] = {
             "authorMemberIds": "member",
             "tagIds": "tags",
         },
+    },
+    "memberType": {
+        "csv": GENERATED_ROOT / "memberType" / "memberType.csv",
+        "required": ["id", "nameJa", "nameEn"],
+        "has_article": False,
     },
 }
 
