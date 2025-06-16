@@ -1,0 +1,2 @@
+id,name,desc,nameEnglish,descEnglish,thumbnail,tagIds,admissionYear,repeats,graduated,master,bachelor,gradYear,url
+1,山田 太郎,機械学習を専門とする博士課程,Taro Yamada,Doctoral student specializing in machine learning,0fe10e51e0825f37744cf54a912f3f58.jpg,1,2021,0,False,False,True,,https://example.com/members/1
