@@ -101,7 +101,7 @@ async function loadCsv(filePath: string): Promise<Record<string, string>[]> {
 
 export async function loadTags(): Promise<Tag[]> {
   const rows = await loadCsv("/contents/tags/tags.csv");
-  return rows.map((r) => new Tag(Number(r.id), r.name, r.name_english));
+  return rows.map((r) => new Tag(Number(r.id), r.nameJa, r.nameEn));
 }
 
 // ---------------------------------------------------------------------------
@@ -109,7 +109,7 @@ export async function loadTags(): Promise<Tag[]> {
 // ---------------------------------------------------------------------------
 
 export async function loadMemberTypes(): Promise<MemberType[]> {
-  const rows = await loadCsv("/contents/memberType/memberType.csv");
+  const rows = await loadCsv("/contents/membertype/membertype.csv");
   return rows.map((r) => new MemberType(Number(r.id), r.nameJa, r.nameEn));
 }
 
@@ -143,10 +143,10 @@ export async function loadMembers(): Promise<Member[]> {
     (r) =>
       new Member(
         Number(r.id),
-        r.name,
-        r.desc,
-        r.nameEnglish,
-        r.descEnglish,
+        r.nameJa,
+        r.descJa,
+        r.nameEn,
+        r.descEn,
         Number(r.memberTypeId),
         resolveThumbnail(r.thumbnail, "member") ?? "",
         parseIdList(r.tagIds),
@@ -181,8 +181,8 @@ export async function loadThemes(): Promise<Theme[]> {
       new Theme(
         Number(r.id),
         resolveThumbnail(r.thumbnail, "theme") ?? "",
-        r.titleJa,
-        r.titleEn,
+        r.nameJa,
+        r.nameEn,
         r.descJa,
         r.descEn,
       ),
@@ -196,8 +196,8 @@ export async function loadNews(): Promise<NewsItem[]> {
       new NewsItem(
         Number(r.id),
         r.date,
-        r.textJa,
-        r.textEn,
+        r.nameJa,
+        r.nameEn,
         resolveThumbnail(r.thumbnail, "news"),
       ),
   );
@@ -210,8 +210,8 @@ export async function loadLectures(): Promise<Lecture[]> {
       new Lecture(
         Number(r.id),
         resolveThumbnail(r.thumbnail, "lecture") ?? "",
-        r.titleJa,
-        r.titleEn,
+        r.nameJa,
+        r.nameEn,
         r.descJa,
         r.descEn,
       ),

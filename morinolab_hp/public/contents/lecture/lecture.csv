@@ -1,3 +1,3 @@
-id,thumbnail,titleJa,titleEn,descJa,descEn
-1,1.jpg,AI研究最前線,Frontiers in AI Research,AI研究の最新動向について講演,A talk about the latest trends in AI research
-3,3.png,fe,fwe,wf,ef
+id,nameJa,nameEn,thumbnail,descJa,descEn
+1,AI研究最前線,Frontiers in AI Research,1.jpg,AI研究の最新動向について講演,A talk about the latest trends in AI research
+3,fe,fwe,3.png,wf,ef

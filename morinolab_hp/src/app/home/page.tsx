@@ -142,13 +142,14 @@ export default function HomePage() {
               >
                 <img
                   src={n.thumbnail || "img/noimage_news.png"}
-                  alt={n.textJa}
+                  alt={lang === "ja" ? n.textJa : n.textEn}
                   className="w-full h-full object-cover"
                 />
               </div>
               {(() => {
-                const parts = n.textJa.split("–");
-                const title = parts[0]?.trim() || n.textJa;
+                const text = lang === "ja" ? n.textJa : n.textEn;
+                const parts = text.split("–");
+                const title = parts[0]?.trim() || text;
                 const descText = parts.slice(1).join("–").trim();
                 return (
                   <div className="flex flex-col gap-1 p-3 text-xs sm:text-sm flex-1">
