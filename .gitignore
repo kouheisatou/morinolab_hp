@@ -1,3 +1,5 @@
 /morinolab_cms/node_modules/
 /.vscode/
 /.idea/
+# macOS Finder metadata files
+.DS_Store
