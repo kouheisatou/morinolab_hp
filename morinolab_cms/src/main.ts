@@ -293,3 +293,8 @@ ipcMain.handle('resolve-path', (_e, type: string, rel: string) => {
   const abs = path.join(CONTENT_ROOT, type, rel.replace(/^\.\//, ''));
   return 'file://' + abs;
 });
+
+ipcMain.handle('get-font-url', () => {
+  const fontPath = path.join(process.cwd(), 'Sango-JA-CPAL.ttf');
+  return fs.existsSync(fontPath) ? 'file://' + fontPath : null;
+});

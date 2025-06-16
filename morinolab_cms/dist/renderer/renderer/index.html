@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,7 @@
     <style>
       body {
         margin: 0;
-        font-family: "Chicago", "Geneva", sans-serif;
+        font-family: 'Chicago', 'Geneva', sans-serif;
         display: flex;
         height: 100vh;
         background: #c0c0c0; /* classic gray */
@@ -32,6 +32,7 @@
         cursor: pointer;
         font-size: 13px;
         margin: 2px 0; /* vertical margin only to avoid width overflow */
+        position: relative;
       }
       #sidebar button:hover {
         background: #c8c4bc;
@@ -48,6 +49,16 @@
         border: 1px solid #808080;
         border-top-color: #fff;
         border-left-color: #fff;
+      }
+      /* blue bar */
+      #sidebar button.active::after {
+        content: '';
+        position: absolute;
+        top: -1px;
+        bottom: -1px;
+        right: -3px;
+        width: 3px;
+        background: #0000ff;
       }
       #main {
         flex: 1;
@@ -92,7 +103,8 @@
         border-collapse: collapse;
         border: 2px solid #808080;
       }
-      th, td {
+      th,
+      td {
         padding: 4px 8px;
         border: 1px solid #808080;
         border-top-color: #fff;
@@ -161,7 +173,7 @@
       #popupOverlay {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.4);
+        background: rgba(0, 0, 0, 0.4);
         display: none;
         align-items: center;
         justify-content: center;
@@ -175,11 +187,19 @@
         overflow: auto;
         min-width: 300px;
       }
-      #popup h3 { margin-top:0; }
-      #popup .choices { max-height:50vh; overflow:auto; margin-bottom:12px; }
-      #popup button { margin-right:6px; }
-      #popup .choices input[type="checkbox"],
-      #popup .choices input[type="radio"] {
+      #popup h3 {
+        margin-top: 0;
+      }
+      #popup .choices {
+        max-height: 50vh;
+        overflow: auto;
+        margin-bottom: 12px;
+      }
+      #popup button {
+        margin-right: 6px;
+      }
+      #popup .choices input[type='checkbox'],
+      #popup .choices input[type='radio'] {
         appearance: none;
         width: 12px;
         height: 12px;
@@ -190,11 +210,11 @@
         background: #d4d0c8;
         vertical-align: middle;
       }
-      #popup .choices input[type="checkbox"]:checked,
-      #popup .choices input[type="radio"]:checked {
+      #popup .choices input[type='checkbox']:checked,
+      #popup .choices input[type='radio']:checked {
         background: #000080;
       }
-      #popup .choices input[type="radio"] {
+      #popup .choices input[type='radio'] {
         border-radius: 50%;
       }
       .dropdownBtn {
@@ -208,7 +228,9 @@
         cursor: pointer;
         font-size: 12px;
       }
-      .dropdownBtn:hover { background: #c8c4bc; }
+      .dropdownBtn:hover {
+        background: #c8c4bc;
+      }
       .dropdownBtn:active {
         border-top-color: #808080;
         border-left-color: #808080;
@@ -224,7 +246,10 @@
         <button id="addBtn" class="btn add">+ 追加</button>
         <table id="itemsTable">
           <thead>
-            <tr><th>ID</th><th>タイトル</th></tr>
+            <tr>
+              <th>ID</th>
+              <th>タイトル</th>
+            </tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -294,11 +319,17 @@
           tagsChoices = tagsData.rows.map((r) => ({ id: r.id, label: r.name || r.title || r.id }));
           if (currentType === 'member') {
             const memberTypeData = await window.api.getTableData('membertype');
-            memberTypeChoices = memberTypeData.rows.map((r) => ({ id: r.id, label: r.nameJa || r.name || r.title || r.id }));
+            memberTypeChoices = memberTypeData.rows.map((r) => ({
+              id: r.id,
+              label: r.nameJa || r.name || r.title || r.id,
+            }));
           }
           if (currentType === 'publication') {
             const memberData = await window.api.getTableData('member');
-            memberChoices = memberData.rows.map((r)=>({ id: r.id, label: r.nameJa || r.nameEn || r.name || r.id }));
+            memberChoices = memberData.rows.map((r) => ({
+              id: r.id,
+              label: r.nameJa || r.nameEn || r.name || r.id,
+            }));
           }
         }
         const tableData = await window.api.getTableData(currentType);
@@ -306,7 +337,7 @@
         const rows = tableData.rows;
 
         // build header
-        itemsTableHead.innerHTML = '<tr>' + headers.map(h=>`<th>${h}</th>`).join('') + '</tr>';
+        itemsTableHead.innerHTML = '<tr>' + headers.map((h) => `<th>${h}</th>`).join('') + '</tr>';
 
         rows.forEach((row) => {
           const tr = document.createElement('tr');
@@ -320,7 +351,9 @@
             } else if (col === 'thumbnail') {
               const img = document.createElement('img');
               if (row[col]) {
-                window.api.resolvePath(currentType, row[col]).then((url) => (img.src = url + '?' + Date.now()));
+                window.api
+                  .resolvePath(currentType, row[col])
+                  .then((url) => (img.src = url + '?' + Date.now()));
               }
               img.style.width = '60px';
               img.style.height = '60px';
@@ -329,14 +362,16 @@
               img.onclick = async () => {
                 const newPath = await window.api.selectThumbnail(currentType, row['id']);
                 if (newPath) {
-                  window.api.resolvePath(currentType, newPath).then((url) => (img.src = url + '?' + Date.now()));
+                  window.api
+                    .resolvePath(currentType, newPath)
+                    .then((url) => (img.src = url + '?' + Date.now()));
                   window.api.updateCell(currentType, row['id'], 'thumbnail', newPath);
                 }
               };
               td.innerHTML = '';
               td.appendChild(img);
             } else if (currentType === 'member' && col === 'memberTypeId') {
-              const valueName = memberTypeChoices.find((c)=>c.id===row[col])?.label || row[col];
+              const valueName = memberTypeChoices.find((c) => c.id === row[col])?.label || row[col];
               const btn = document.createElement('button');
               btn.className = 'dropdownBtn';
               btn.textContent = valueName + ' ▾';
@@ -346,56 +381,82 @@
                   multiple: false,
                   choices: memberTypeChoices,
                   selected: row[col] ? [row[col]] : [],
-                  onConfirm: (vals)=>{
+                  onConfirm: (vals) => {
                     const v = vals[0] || '';
-                    window.api.updateCell(currentType,row['id'],'memberTypeId',v);
-                    btn.textContent = memberTypeChoices.find(c=>c.id===v)?.label||v;
-                  }
+                    window.api.updateCell(currentType, row['id'], 'memberTypeId', v);
+                    btn.textContent = memberTypeChoices.find((c) => c.id === v)?.label || v;
+                  },
                 });
               };
               td.innerHTML = '';
               td.appendChild(btn);
-            } else if ((currentType === 'member' && col === 'tagIds') || (currentType==='publication' && col==='tagIds')) {
-              const currentVals = (row[col] || '').split(',').map(v=>v.trim()).filter(Boolean);
-              const names = tagsChoices.filter(c=>currentVals.includes(c.id)).map(c=>c.label).join(',');
+            } else if (
+              (currentType === 'member' && col === 'tagIds') ||
+              (currentType === 'publication' && col === 'tagIds')
+            ) {
+              const currentVals = (row[col] || '')
+                .split(',')
+                .map((v) => v.trim())
+                .filter(Boolean);
+              const names = tagsChoices
+                .filter((c) => currentVals.includes(c.id))
+                .map((c) => c.label)
+                .join(',');
               const btn = document.createElement('button');
               btn.className = 'dropdownBtn';
               btn.textContent = names || '選択 ▾';
-              btn.onclick = (e)=>{
+              btn.onclick = (e) => {
                 e.stopPropagation();
                 openSelectionPopup({
-                  multiple:true,
+                  multiple: true,
                   choices: tagsChoices,
                   selected: currentVals,
-                  onConfirm:(vals)=>{
-                    window.api.updateCell(currentType,row['id'],'tagIds',vals.join(','));
-                    const namesAfter = tagsChoices.filter(c=>vals.includes(c.id)).map(c=>c.label).join(',');
+                  onConfirm: (vals) => {
+                    window.api.updateCell(currentType, row['id'], 'tagIds', vals.join(','));
+                    const namesAfter = tagsChoices
+                      .filter((c) => vals.includes(c.id))
+                      .map((c) => c.label)
+                      .join(',');
                     btn.textContent = namesAfter || '選択 ▾';
-                  }
+                  },
                 });
               };
-              td.innerHTML='';
+              td.innerHTML = '';
               td.appendChild(btn);
-            } else if (currentType==='publication' && col==='authorMemberIds') {
-              const currentVals = (row[col] || '').split(',').map(v=>v.trim()).filter(Boolean);
-              const names = memberChoices.filter(c=>currentVals.includes(c.id)).map(c=>c.label).join(',');
+            } else if (currentType === 'publication' && col === 'authorMemberIds') {
+              const currentVals = (row[col] || '')
+                .split(',')
+                .map((v) => v.trim())
+                .filter(Boolean);
+              const names = memberChoices
+                .filter((c) => currentVals.includes(c.id))
+                .map((c) => c.label)
+                .join(',');
               const btn = document.createElement('button');
               btn.className = 'dropdownBtn';
               btn.textContent = names || '選択 ▾';
-              btn.onclick = (e)=>{
+              btn.onclick = (e) => {
                 e.stopPropagation();
                 openSelectionPopup({
-                  multiple:true,
+                  multiple: true,
                   choices: memberChoices,
                   selected: currentVals,
-                  onConfirm:(vals)=>{
-                    window.api.updateCell(currentType,row['id'],'authorMemberIds',vals.join(','));
-                    const namesAfter = memberChoices.filter(c=>vals.includes(c.id)).map(c=>c.label).join(',');
+                  onConfirm: (vals) => {
+                    window.api.updateCell(
+                      currentType,
+                      row['id'],
+                      'authorMemberIds',
+                      vals.join(','),
+                    );
+                    const namesAfter = memberChoices
+                      .filter((c) => vals.includes(c.id))
+                      .map((c) => c.label)
+                      .join(',');
                     btn.textContent = namesAfter || '選択 ▾';
-                  }
+                  },
                 });
               };
-              td.innerHTML='';
+              td.innerHTML = '';
               td.appendChild(btn);
             } else {
               td.contentEditable = 'true';
@@ -461,16 +522,23 @@
         const files = Array.from(e.dataTransfer.files);
         if (!files.length) return;
         const file = files[0];
-        const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(file.name);
+        const isImage =
+          file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(file.name);
         if (!isImage) return;
 
-        const markdownPath = await window.api.saveImage(currentType, currentId, file.path, file.name);
+        const markdownPath = await window.api.saveImage(
+          currentType,
+          currentId,
+          file.path,
+          file.name,
+        );
         if (!markdownPath) return;
 
         // insert at cursor position
         const imgMarkdown = `![${file.name}](${markdownPath})`;
         const { selectionStart, selectionEnd, value } = contentArea;
-        contentArea.value = value.slice(0, selectionStart) + imgMarkdown + value.slice(selectionEnd);
+        contentArea.value =
+          value.slice(0, selectionStart) + imgMarkdown + value.slice(selectionEnd);
         // set cursor after inserted text
         const newPos = selectionStart + imgMarkdown.length;
         contentArea.selectionStart = contentArea.selectionEnd = newPos;
@@ -532,6 +600,15 @@
         popup.appendChild(cancelBtn);
         overlay.style.display = 'flex';
       }
+
+      // Load custom font
+      window.api.getFontURL().then((url) => {
+        if (!url) return;
+        const style = document.createElement('style');
+        style.textContent = `@font-face { font-family: CustomFont; src: url('${url}'); }
+        body, button, table, textarea, input, select { font-family: 'CustomFont', sans-serif; }`;
+        document.head.appendChild(style);
+      });
     </script>
   </body>
-</html> 
+</html>

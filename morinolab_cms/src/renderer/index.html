@@ -43,11 +43,19 @@
         border-right-color: #fff;
       }
       #sidebar button.active {
+        position: relative;
+        background: #d4d0c8; /* same as sidebar */
+        color: #000;
+        font-weight: bold;
+      }
+      #sidebar button.active::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 4px;
         background: #000080;
-        color: #fff;
-        border: 1px solid #808080;
-        border-top-color: #fff;
-        border-left-color: #fff;
       }
       #main {
         flex: 1;
@@ -589,6 +597,15 @@
         popup.appendChild(cancelBtn);
         overlay.style.display = 'flex';
       }
+
+      // Load custom font
+      window.api.getFontURL().then((url) => {
+        if (!url) return;
+        const style = document.createElement('style');
+        style.textContent = `@font-face { font-family: CustomFont; src: url('${url}'); }
+        body, button, table, textarea, input, select { font-family: 'CustomFont', sans-serif; }`;
+        document.head.appendChild(style);
+      });
     </script>
   </body>
 </html>

@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.invoke('select-thumbnail', type, id),
   resolvePath: (type: string, rel: string): Promise<string> =>
     ipcRenderer.invoke('resolve-path', type, rel),
+  getFontURL: (): Promise<string | null> => ipcRenderer.invoke('get-font-url'),
 });
 
 declare global {
@@ -47,6 +48,7 @@ declare global {
       updateCell(type: string, id: string, column: string, value: string): Promise<void>;
       selectThumbnail(type: string, id: string): Promise<string | null>;
       resolvePath(type: string, rel: string): Promise<string>;
+      getFontURL(): Promise<string | null>;
     };
   }
 }

@@ -13,4 +13,5 @@ electron_1.contextBridge.exposeInMainWorld('api', {
     updateCell: (type, id, column, value) => electron_1.ipcRenderer.invoke('update-cell', type, id, column, value),
     selectThumbnail: (type, id) => electron_1.ipcRenderer.invoke('select-thumbnail', type, id),
     resolvePath: (type, rel) => electron_1.ipcRenderer.invoke('resolve-path', type, rel),
+    getFontURL: () => electron_1.ipcRenderer.invoke('get-font-url'),
 });

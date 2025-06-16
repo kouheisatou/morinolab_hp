@@ -182,6 +182,7 @@ function updateCell(type, id, column, value) {
         saveCsvTable(type, header, rows);
     }
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const wrap = (fn) => (_event, ...args) => fn(...args);
 electron_1.ipcMain.handle('get-content-types', wrap(listContentTypes));
 electron_1.ipcMain.handle('get-items', wrap(listItems));
@@ -259,4 +260,8 @@ electron_1.ipcMain.handle('select-thumbnail', async (_event, type, id) => {
 electron_1.ipcMain.handle('resolve-path', (_e, type, rel) => {
     const abs = node_path_1.default.join(CONTENT_ROOT, type, rel.replace(/^\.\//, ''));
     return 'file://' + abs;
+});
+electron_1.ipcMain.handle('get-font-url', () => {
+    const fontPath = node_path_1.default.join(process.cwd(), 'Sango-JA-CPAL.ttf');
+    return node_fs_1.default.existsSync(fontPath) ? 'file://' + fontPath : null;
 });

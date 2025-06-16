@@ -29,9 +29,13 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+          # Cache based on lockfiles in each project directory
+          cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci --prefix morinolab_hp
+          npm ci --prefix morinolab_cms
 
       - name: Run ESLint for morinolab_hp
         run: cd morinolab_hp; npm run lint
@@ -56,9 +60,12 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+          cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci --prefix morinolab_hp
+          npm ci --prefix morinolab_cms
 
       - name: Set up Python
         uses: actions/setup-python@v4
