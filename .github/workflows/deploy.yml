@@ -113,6 +113,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install openpyxl openpyxl-image-loader pillow pandas
 
+      - name: Generate contents (again for build)
+        run: |
+          npm run generate_contents
+
       - name: Generate .env.local
         run: |
           cat <<'EOF' > .env
