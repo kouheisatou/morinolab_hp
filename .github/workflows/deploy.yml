@@ -63,7 +63,6 @@ jobs:
         run: |
           python scripts/gen_contents_db.py --excel-path contents/contents_db.xlsx
 
-      # Convert all .docx articles into standalone HTML files for detail pages
       - name: Install Pandoc
         run: |
           sudo apt-get update
@@ -112,7 +111,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install openpyxl openpyxl-image-loader pillow pandas
-
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
       - name: Generate contents (again for build)
         run: |
           npm run generate_contents
