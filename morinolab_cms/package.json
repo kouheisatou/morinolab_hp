@@ -1,0 +1,23 @@
+{
+  "name": "morinolab-cms-electron",
+  "version": "1.0.0",
+  "description": "Desktop CMS for managing contents directory without DB (file-based) using Electron and TypeScript.",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc && cp -R src/renderer dist/renderer",
+    "start": "npm run build && electron .",
+    "dev": "electronmon -w src -e ts-node/register src/main.ts"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^29.3.3",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.9.1",
+    "ts-node": "^10.9.1",
+    "electronmon": "^1.1.0"
+  }
+} 

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Morinolab CMS</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Chicago", "Geneva", sans-serif;
+        display: flex;
+        height: 100vh;
+        background: #c0c0c0; /* classic gray */
+        color: #000;
+      }
+      #sidebar {
+        width: 180px;
+        background: #d4d0c8;
+        border-right: 2px solid #808080;
+        overflow-y: auto;
+        overflow-x: hidden; /* disable horizontal scroll */
+      }
+      #sidebar button {
+        width: 100%;
+        padding: 6px 8px;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        background: #d4d0c8;
+        color: #000;
+        text-align: left;
+        cursor: pointer;
+        font-size: 13px;
+        margin: 2px 0; /* vertical margin only to avoid width overflow */
+      }
+      #sidebar button:hover {
+        background: #c8c4bc;
+      }
+      #sidebar button.active {
+        background: #000080;
+        color: #fff;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+      }
+      #main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      #items {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        background: #c0c0c0;
+      }
+      #editor {
+        flex: 1;
+        display: none;
+        flex-direction: column;
+      }
+      #editor textarea {
+        flex: 1;
+        resize: none;
+        font-family: monospace;
+        font-size: 14px;
+        padding: 12px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 2px solid #808080;
+      }
+      th, td {
+        padding: 4px 8px;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        text-align: left;
+        background: #e0e0e0;
+      }
+      th {
+        background: #d4d0c8;
+        font-weight: bold;
+      }
+      .btn {
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        background: #d4d0c8;
+        padding: 4px 10px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #000;
+        margin: 2px;
+      }
+      .btn:hover {
+        background: #c8c4bc;
+      }
+      .btn:active {
+        border-top-color: #808080;
+        border-left-color: #808080;
+        border-bottom-color: #fff;
+        border-right-color: #fff;
+      }
+      .btn.add {
+        background: #c0d6c0;
+      }
+      .btn.edit {
+        background: #c0c8d6;
+      }
+      .btn.danger {
+        background: #d6c0c0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sidebar"></div>
+    <div id="main">
+      <div id="items">
+        <button id="addBtn" class="btn add">+ 追加</button>
+        <table id="itemsTable">
+          <thead>
+            <tr><th>ID</th><th>タイトル</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="editor">
+        <button id="backBtn" class="btn">← 一覧へ戻る</button>
+        <button id="deleteBtn" class="btn danger" style="margin-left:4px;">削除</button>
+        <h2 id="editorTitle"></h2>
+        <textarea id="contentArea"></textarea>
+      </div>
+    </div>
+    <script>
+      const sidebar = document.getElementById('sidebar');
+      const itemsDiv = document.getElementById('items');
+      const editorDiv = document.getElementById('editor');
+      const itemsTableBody = document.querySelector('#itemsTable tbody');
+      const addBtn = document.getElementById('addBtn');
+      const backBtn = document.getElementById('backBtn');
+      const deleteBtn = document.getElementById('deleteBtn');
+      const contentArea = document.getElementById('contentArea');
+      const editorTitle = document.getElementById('editorTitle');
+
+      let currentType = null;
+      let currentId = null;
+      let saveTimer = null;
+
+      async function init() {
+        const types = await window.api.getContentTypes();
+        types.forEach((t) => {
+          const btn = document.createElement('button');
+          btn.textContent = t;
+          btn.dataset.type = t;
+          btn.onclick = () => selectType(t);
+          sidebar.appendChild(btn);
+        });
+        if (types.length) selectType(types[0]);
+      }
+
+      async function selectType(type) {
+        currentType = type;
+        editorDiv.style.display = 'none';
+        itemsDiv.style.display = 'block';
+        loadItems();
+        // Highlight active sidebar button
+        Array.from(sidebar.querySelectorAll('button')).forEach((b) => {
+          if (b.dataset.type === type) {
+            b.classList.add('active');
+          } else {
+            b.classList.remove('active');
+          }
+        });
+      }
+
+      async function loadItems() {
+        itemsTableBody.innerHTML = '';
+        const items = await window.api.getItems(currentType);
+        addBtn.onclick = async () => {
+          await window.api.createItem(currentType);
+          loadItems();
+        };
+        items.forEach((item) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td class="id-cell">${item.id}</td><td>${item.title}</td>`;
+          const idCell = tr.querySelector('.id-cell');
+          idCell.style.cursor = 'pointer';
+          idCell.classList.add('clickable');
+          idCell.onclick = () => openEditor(item.id, item.title);
+          itemsTableBody.appendChild(tr);
+        });
+      }
+
+      async function openEditor(id, title) {
+        currentId = id;
+        editorDiv.style.display = 'flex';
+        itemsDiv.style.display = 'none';
+        editorTitle.textContent = `${currentType} / ${id} - ${title}`;
+        const content = await window.api.loadContent(currentType, id);
+        contentArea.value = content;
+
+        // Set delete handler each time
+        deleteBtn.onclick = async () => {
+          if (confirm('削除しますか?')) {
+            await window.api.deleteItem(currentType, id);
+            // Return to list
+            currentId = null;
+            editorDiv.style.display = 'none';
+            itemsDiv.style.display = 'block';
+            loadItems();
+          }
+        };
+      }
+
+      backBtn.onclick = () => {
+        editorDiv.style.display = 'none';
+        itemsDiv.style.display = 'block';
+        loadItems();
+      };
+
+      // Auto-save
+      contentArea.addEventListener('input', () => {
+        if (!currentId) return;
+        if (saveTimer) clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => {
+          window.api.saveContent(currentType, currentId, contentArea.value);
+        }, 500);
+      });
+
+      // Drag & Drop image insertion
+      contentArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      contentArea.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        if (!currentId) return;
+        const files = Array.from(e.dataTransfer.files);
+        if (!files.length) return;
+        const file = files[0];
+        const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(file.name);
+        if (!isImage) return;
+
+        const markdownPath = await window.api.saveImage(currentType, currentId, file.path, file.name);
+        if (!markdownPath) return;
+
+        // insert at cursor position
+        const imgMarkdown = `![${file.name}](${markdownPath})`;
+        const { selectionStart, selectionEnd, value } = contentArea;
+        contentArea.value = value.slice(0, selectionStart) + imgMarkdown + value.slice(selectionEnd);
+        // set cursor after inserted text
+        const newPos = selectionStart + imgMarkdown.length;
+        contentArea.selectionStart = contentArea.selectionEnd = newPos;
+        // trigger save
+        window.api.saveContent(currentType, currentId, contentArea.value);
+      });
+
+      init();
+
+      // Style clickable id cells
+      const styleEl = document.createElement('style');
+      styleEl.textContent = `.clickable { color: #0000ee; text-decoration: underline; }`;
+      document.head.appendChild(styleEl);
+    </script>
+  </body>
+</html> 
