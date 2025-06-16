@@ -29,7 +29,7 @@ function createWindow() {
         pathname: path.join(__dirname, '../src/renderer/index.html'),
         protocol: 'file:',
         slashes: true,
-      })
+      }),
     );
   }
 }
@@ -202,7 +202,11 @@ function updateCell(type: string, id: string, column: string, value: string) {
 
 type Handler = Parameters<typeof ipcMain.handle>[1];
 
-const wrap: (fn: (...args: any[]) => any) => Handler = (fn) => (_event, ...args) => fn(...args);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const wrap: (fn: (...args: any[]) => any) => Handler =
+  (fn) =>
+  (_event, ...args) =>
+    fn(...args);
 
 ipcMain.handle('get-content-types', wrap(listContentTypes));
 ipcMain.handle('get-items', wrap(listItems));
@@ -218,30 +222,45 @@ ipcMain.on('save-content', (_event, type: string, id: string, content: string) =
 ipcMain.handle(
   'save-image',
   async (_event, type: string, id: string, sourcePath: string, fileName: string) => {
-    try {
-      const mediaDir = path.join(getItemDir(type, id), 'media');
-      if (!fs.existsSync(mediaDir)) fs.mkdirSync(mediaDir, { recursive: true });
+    const mediaDir = path.join(getItemDir(type, id), 'media');
+    if (!fs.existsSync(mediaDir)) fs.mkdirSync(mediaDir, { recursive: true });
 
-      // If file with same name exists, add suffix
-      let destName = fileName;
-      const ext = path.extname(fileName);
-      const base = path.basename(fileName, ext);
-      let counter = 1;
-      while (fs.existsSync(path.join(mediaDir, destName))) {
-        destName = `${base}_${counter}${ext}`;
-        counter += 1;
+    // If file with same name exists, add suffix
+    let destName = fileName;
+    const ext = path.extname(fileName);
+    const base = path.basename(fileName, ext);
+    let counter = 1;
+    while (fs.existsSync(path.join(mediaDir, destName))) {
+      destName = `${base}_${counter}${ext}`;
+      counter += 1;
+    }
+
+    const destPath = path.join(mediaDir, destName);
+
+    try {
+      const img = sharp(sourcePath);
+      const meta = await img.metadata();
+      const maxWidth = 1600;
+      let pipe = img;
+      if (meta.width && meta.width > maxWidth) {
+        pipe = pipe.resize({ width: maxWidth });
+      }
+      if (ext === '.png') {
+        await pipe.png({ compressionLevel: 8 }).toFile(destPath);
+      } else {
+        await pipe.jpeg({ quality: 80 }).toFile(destPath);
       }
 
-      const destPath = path.join(mediaDir, destName);
+      // Return markdown relative path
+      return `./media/${destName}`;
+    } catch {
+      // fallback copy if sharp fails
       fs.copyFileSync(sourcePath, destPath);
 
       // Return markdown relative path
       return `./media/${destName}`;
-    } catch (error) {
-      console.error('save-image error', error);
-      return null;
     }
-  }
+  },
 );
 
 ipcMain.handle('get-table-data', wrap(getTableData));
@@ -273,4 +292,4 @@ ipcMain.handle('select-thumbnail', async (_event, type: string, id: string) => {
 ipcMain.handle('resolve-path', (_e, type: string, rel: string) => {
   const abs = path.join(CONTENT_ROOT, type, rel.replace(/^\.\//, ''));
   return 'file://' + abs;
-}); 
+});

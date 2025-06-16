@@ -5,7 +5,6 @@ export class Theme {
   titleEn: string;
   descJa: string;
   descEn: string;
-  url?: string;
 
   constructor(
     id: number,
@@ -14,7 +13,6 @@ export class Theme {
     titleEn: string,
     descJa: string,
     descEn: string,
-    url?: string,
   ) {
     this.id = id;
     this.thumbnail = thumbnail;
@@ -22,6 +20,5 @@ export class Theme {
     this.titleEn = titleEn;
     this.descJa = descJa;
     this.descEn = descEn;
-    this.url = url;
   }
 }

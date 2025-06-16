@@ -4,7 +4,6 @@ export class NewsItem {
   textJa: string;
   textEn: string;
   thumbnail?: string;
-  url?: string;
 
   constructor(
     id: number,
@@ -12,13 +11,11 @@ export class NewsItem {
     textJa: string,
     textEn: string,
     thumbnail?: string,
-    url?: string,
   ) {
     this.id = id;
     this.date = date;
     this.textJa = textJa;
     this.textEn = textEn;
     this.thumbnail = thumbnail;
-    this.url = url;
   }
 }

@@ -29,14 +29,15 @@ export default function ArticleDetailBody({ type, id }: Props) {
           return; // Success – exit early
         }
       } catch (err) {
-        // continue to html fallback
+        console.error(err);
       }
 
-      // 2. Fallback to legacy HTML file
+      // 2. Fallback to HTML file
       try {
         const htmlUrl = `${basePath}article.html`;
         const htmlRes = await fetch(htmlUrl);
-        if (!htmlRes.ok) throw new Error(`${htmlRes.status} ${htmlRes.statusText}`);
+        if (!htmlRes.ok)
+          throw new Error(`${htmlRes.status} ${htmlRes.statusText}`);
         const txt = await htmlRes.text();
         // Extract <body> inner HTML if any
         const match = txt.match(/<body[^>]*>([\s\S]*?)<\/body>/i);

@@ -161,25 +161,13 @@ export async function loadPublications(): Promise<Publication[]> {
     (r) =>
       new Publication(
         Number(r.id),
-        Number(r.fiscalYear),
-        r.type,
         parseIdList(r.authorMemberIds),
         parseIdList(r.tagIds),
         r.titleJa || undefined,
         r.titleEn || undefined,
         r.publicationNameJa || undefined,
         r.publicationNameEn || undefined,
-        r.volume || undefined,
-        r.number || undefined,
-        r.pages || undefined,
-        r.dateJa || undefined,
-        r.dateEn || undefined,
-        r.locationJa || undefined,
-        r.locationEn || undefined,
-        r.notesJa || undefined,
-        r.notesEn || undefined,
         resolveThumbnail(r.thumbnail, "publication"),
-        r.url || undefined,
       ),
   );
 }
@@ -197,7 +185,6 @@ export async function loadThemes(): Promise<Theme[]> {
         r.titleEn,
         r.descJa,
         r.descEn,
-        r.url,
       ),
   );
 }
@@ -212,7 +199,6 @@ export async function loadNews(): Promise<NewsItem[]> {
         r.textJa,
         r.textEn,
         resolveThumbnail(r.thumbnail, "news"),
-        r.url,
       ),
   );
 }
@@ -228,7 +214,6 @@ export async function loadLectures(): Promise<Lecture[]> {
         r.titleEn,
         r.descJa,
         r.descEn,
-        r.url,
       ),
   );
 }

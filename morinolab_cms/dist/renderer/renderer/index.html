@@ -157,6 +157,64 @@
       ::-webkit-scrollbar-corner {
         background: #d4d0c8;
       }
+      /* popup */
+      #popupOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      #popup {
+        background: #d4d0c8;
+        border: 2px solid #808080;
+        padding: 12px;
+        max-height: 70vh;
+        overflow: auto;
+        min-width: 300px;
+      }
+      #popup h3 { margin-top:0; }
+      #popup .choices { max-height:50vh; overflow:auto; margin-bottom:12px; }
+      #popup button { margin-right:6px; }
+      #popup .choices input[type="checkbox"],
+      #popup .choices input[type="radio"] {
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        margin-right: 4px;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        background: #d4d0c8;
+        vertical-align: middle;
+      }
+      #popup .choices input[type="checkbox"]:checked,
+      #popup .choices input[type="radio"]:checked {
+        background: #000080;
+      }
+      #popup .choices input[type="radio"] {
+        border-radius: 50%;
+      }
+      .dropdownBtn {
+        display: block;
+        margin: 0 auto;
+        padding: 2px 6px;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        background: #d4d0c8;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .dropdownBtn:hover { background: #c8c4bc; }
+      .dropdownBtn:active {
+        border-top-color: #808080;
+        border-left-color: #808080;
+        border-bottom-color: #fff;
+        border-right-color: #fff;
+      }
     </style>
   </head>
   <body>
@@ -179,6 +237,9 @@
         </div>
         <textarea id="contentArea"></textarea>
       </div>
+    </div>
+    <div id="popupOverlay">
+      <div id="popup"></div>
     </div>
     <script>
       const sidebar = document.getElementById('sidebar');
@@ -225,6 +286,21 @@
 
       async function loadItems() {
         itemsTableBody.innerHTML = '';
+        let tagsChoices = [];
+        let memberTypeChoices = [];
+        let memberChoices = [];
+        if (currentType === 'member' || currentType === 'publication') {
+          const tagsData = await window.api.getTableData('tags');
+          tagsChoices = tagsData.rows.map((r) => ({ id: r.id, label: r.name || r.title || r.id }));
+          if (currentType === 'member') {
+            const memberTypeData = await window.api.getTableData('membertype');
+            memberTypeChoices = memberTypeData.rows.map((r) => ({ id: r.id, label: r.nameJa || r.name || r.title || r.id }));
+          }
+          if (currentType === 'publication') {
+            const memberData = await window.api.getTableData('member');
+            memberChoices = memberData.rows.map((r)=>({ id: r.id, label: r.nameJa || r.nameEn || r.name || r.id }));
+          }
+        }
         const tableData = await window.api.getTableData(currentType);
         const headers = tableData.header;
         const rows = tableData.rows;
@@ -244,7 +320,7 @@
             } else if (col === 'thumbnail') {
               const img = document.createElement('img');
               if (row[col]) {
-                window.api.resolvePath(currentType, row[col]).then((url) => (img.src = url));
+                window.api.resolvePath(currentType, row[col]).then((url) => (img.src = url + '?' + Date.now()));
               }
               img.style.width = '60px';
               img.style.height = '60px';
@@ -253,12 +329,74 @@
               img.onclick = async () => {
                 const newPath = await window.api.selectThumbnail(currentType, row['id']);
                 if (newPath) {
-                  window.api.resolvePath(currentType, newPath).then((url) => (img.src = url));
+                  window.api.resolvePath(currentType, newPath).then((url) => (img.src = url + '?' + Date.now()));
                   window.api.updateCell(currentType, row['id'], 'thumbnail', newPath);
                 }
               };
               td.innerHTML = '';
               td.appendChild(img);
+            } else if (currentType === 'member' && col === 'memberTypeId') {
+              const valueName = memberTypeChoices.find((c)=>c.id===row[col])?.label || row[col];
+              const btn = document.createElement('button');
+              btn.className = 'dropdownBtn';
+              btn.textContent = valueName + ' ▾';
+              btn.onclick = (e) => {
+                e.stopPropagation();
+                openSelectionPopup({
+                  multiple: false,
+                  choices: memberTypeChoices,
+                  selected: row[col] ? [row[col]] : [],
+                  onConfirm: (vals)=>{
+                    const v = vals[0] || '';
+                    window.api.updateCell(currentType,row['id'],'memberTypeId',v);
+                    btn.textContent = memberTypeChoices.find(c=>c.id===v)?.label||v;
+                  }
+                });
+              };
+              td.innerHTML = '';
+              td.appendChild(btn);
+            } else if ((currentType === 'member' && col === 'tagIds') || (currentType==='publication' && col==='tagIds')) {
+              const currentVals = (row[col] || '').split(',').map(v=>v.trim()).filter(Boolean);
+              const names = tagsChoices.filter(c=>currentVals.includes(c.id)).map(c=>c.label).join(',');
+              const btn = document.createElement('button');
+              btn.className = 'dropdownBtn';
+              btn.textContent = names || '選択 ▾';
+              btn.onclick = (e)=>{
+                e.stopPropagation();
+                openSelectionPopup({
+                  multiple:true,
+                  choices: tagsChoices,
+                  selected: currentVals,
+                  onConfirm:(vals)=>{
+                    window.api.updateCell(currentType,row['id'],'tagIds',vals.join(','));
+                    const namesAfter = tagsChoices.filter(c=>vals.includes(c.id)).map(c=>c.label).join(',');
+                    btn.textContent = namesAfter || '選択 ▾';
+                  }
+                });
+              };
+              td.innerHTML='';
+              td.appendChild(btn);
+            } else if (currentType==='publication' && col==='authorMemberIds') {
+              const currentVals = (row[col] || '').split(',').map(v=>v.trim()).filter(Boolean);
+              const names = memberChoices.filter(c=>currentVals.includes(c.id)).map(c=>c.label).join(',');
+              const btn = document.createElement('button');
+              btn.className = 'dropdownBtn';
+              btn.textContent = names || '選択 ▾';
+              btn.onclick = (e)=>{
+                e.stopPropagation();
+                openSelectionPopup({
+                  multiple:true,
+                  choices: memberChoices,
+                  selected: currentVals,
+                  onConfirm:(vals)=>{
+                    window.api.updateCell(currentType,row['id'],'authorMemberIds',vals.join(','));
+                    const namesAfter = memberChoices.filter(c=>vals.includes(c.id)).map(c=>c.label).join(',');
+                    btn.textContent = namesAfter || '選択 ▾';
+                  }
+                });
+              };
+              td.innerHTML='';
+              td.appendChild(btn);
             } else {
               td.contentEditable = 'true';
               td.addEventListener('blur', () => {
@@ -346,6 +484,54 @@
       const styleEl = document.createElement('style');
       styleEl.textContent = `.clickable { color: #0000ee; text-decoration: underline; }`;
       document.head.appendChild(styleEl);
+
+      // Popup helper
+      function openSelectionPopup({ multiple, choices, selected, onConfirm }) {
+        const overlay = document.getElementById('popupOverlay');
+        const popup = document.getElementById('popup');
+        popup.innerHTML = '';
+        const title = document.createElement('h3');
+        title.textContent = multiple ? 'タグを選択' : 'タイプを選択';
+        popup.appendChild(title);
+        const listDiv = document.createElement('div');
+        listDiv.className = 'choices';
+        choices.forEach((c) => {
+          const label = document.createElement('label');
+          label.style.display = 'block';
+          const input = document.createElement('input');
+          input.type = multiple ? 'checkbox' : 'radio';
+          input.name = 'choice';
+          input.value = c.id;
+          if (selected.includes(c.id)) input.checked = true;
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(` ${c.label}`));
+          listDiv.appendChild(label);
+        });
+        popup.appendChild(listDiv);
+        const okBtn = document.createElement('button');
+        okBtn.textContent = 'OK';
+        okBtn.className = 'btn';
+        const closePopup = () => {
+          overlay.style.display = 'none';
+          document.removeEventListener('keydown', escHandler);
+        };
+        const escHandler = (ev) => {
+          if (ev.key === 'Escape') closePopup();
+        };
+        document.addEventListener('keydown', escHandler);
+        okBtn.onclick = () => {
+          const vals = Array.from(listDiv.querySelectorAll('input:checked')).map((i) => i.value);
+          onConfirm(vals);
+          closePopup();
+        };
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.className = 'btn danger';
+        cancelBtn.onclick = closePopup;
+        popup.appendChild(okBtn);
+        popup.appendChild(cancelBtn);
+        overlay.style.display = 'flex';
+      }
     </script>
   </body>
 </html> 

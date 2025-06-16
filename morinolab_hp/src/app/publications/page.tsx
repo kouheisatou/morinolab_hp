@@ -85,32 +85,17 @@ const Publications = () => {
 
   // State for tag and year filters (use tag.id for reliability)
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
-  const [selectedYear, setSelectedYear] = useState<"all" | number>("all");
-  const [showOlder, setShowOlder] = useState(false);
 
   const filterByTag = (p: PubWithTags) =>
     selectedTagIds.length === 0
       ? true
       : p.tags.some((t: Tag) => t && selectedTagIds.includes(t.id));
 
-  // Group after filtering
-  const grouped: Record<number, PubWithTags[]> = {};
-  enriched.filter(filterByTag).forEach((p) => {
-    if (!grouped[p.fiscalYear]) grouped[p.fiscalYear] = [];
-    grouped[p.fiscalYear].push(p);
-  });
-
-  const years = Object.keys(grouped)
-    .map(Number)
-    .sort((a, b) => b - a);
-
-  const recentYears = years.slice(0, 8);
-
-  const yearFilterFn = (year: number) => {
-    if (selectedYear === "all") return true;
-    if (showOlder) return year <= (selectedYear as number);
-    return year === selectedYear;
-  };
+  // Filtered publications based on selected tags only
+  const filteredPublications: PubWithTags[] = useMemo(
+    () => enriched.filter(filterByTag),
+    [enriched, selectedTagIds],
+  );
 
   // Format authors list by mapping authorMemberIds to Member objects
   const formatAuthors = (ids: number[]) =>
@@ -126,9 +111,6 @@ const Publications = () => {
 
   const getTitle = (p: Publication) =>
     lang === "ja" ? p.titleJa || p.titleEn : p.titleEn || p.titleJa;
-
-  const getDate = (p: Publication) =>
-    lang === "ja" ? p.dateJa || "" : p.dateEn || "";
 
   // Fallback when thumbnail is not provided
   const getFallbackImage = () => "img/noimage_publication.png";
@@ -165,67 +147,31 @@ const Publications = () => {
         ))}
       </div>
 
-      {/* Year filter */}
-      <div className="filter-row mt-4">
-        <span className="filter-label">{lang === "ja" ? "年度" : "Year"}</span>
-        <button
-          className={`tag-chip ${selectedYear === "all" ? "selected" : ""}`}
-          onClick={() => {
-            setSelectedYear("all");
-            setShowOlder(false);
-          }}
-        >
-          All
-        </button>
-        {recentYears.map((y, idx) => (
-          <button
-            key={y}
-            className={`tag-chip ${selectedYear === y && (idx !== recentYears.length - 1 ? !showOlder : true) ? "selected" : ""}`}
-            onClick={() => {
-              setSelectedYear(y);
-              setShowOlder(idx === recentYears.length - 1);
-            }}
+      {/* Publications grid */}
+      <div className="pub-grid mt-8">
+        {filteredPublications.map((p) => (
+          <Link
+            key={p.id}
+            href={`/articles/publication/${p.id}`}
+            className="pub-card clickable-card"
           >
-            {idx === recentYears.length - 1 ? `${y}~以前` : y}
-          </button>
+            <img src={p.thumbnail || getFallbackImage()} alt={getTitle(p)} />
+            <div className="pub-meta">
+              <span className="pub-title">{getTitle(p)}</span>
+              <span className="pub-authors text-sm text-gray-700 dark:text-gray-300">
+                {formatAuthors(p.authorMemberIds)}
+              </span>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {p.tags.filter(Boolean).map((t: Tag) => (
+                  <span key={t.id} className="tag-badge">
+                    {tagLabel(t)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Link>
         ))}
       </div>
-
-      {years.filter(yearFilterFn).map((year) => (
-        <div key={year} className="mb-10">
-          <h2 className="section-title">{year}</h2>
-          <div className="pub-grid">
-            {grouped[year].map((p) => (
-              <Link
-                key={p.id}
-                href={`/articles/publication/${p.id}`}
-                className="pub-card clickable-card"
-              >
-                <img
-                  src={p.thumbnail || getFallbackImage()}
-                  alt={getTitle(p)}
-                />
-                <div className="pub-meta">
-                  <span className="pub-title">{getTitle(p)}</span>
-                  <span className="pub-authors text-sm text-gray-700 dark:text-gray-300">
-                    {formatAuthors(p.authorMemberIds)}
-                  </span>
-                  <span className="pub-date text-sm text-gray-500 dark:text-gray-400">
-                    {getDate(p)}
-                  </span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {p.tags.filter(Boolean).map((t: Tag) => (
-                      <span key={t.id} className="tag-badge">
-                        {tagLabel(t)}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      ))}
     </div>
   );
 };

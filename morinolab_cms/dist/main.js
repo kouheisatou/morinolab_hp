@@ -193,27 +193,41 @@ electron_1.ipcMain.on('save-content', (_event, type, id, content) => {
 });
 // Handle image file copy from renderer
 electron_1.ipcMain.handle('save-image', async (_event, type, id, sourcePath, fileName) => {
+    const mediaDir = node_path_1.default.join(getItemDir(type, id), 'media');
+    if (!node_fs_1.default.existsSync(mediaDir))
+        node_fs_1.default.mkdirSync(mediaDir, { recursive: true });
+    // If file with same name exists, add suffix
+    let destName = fileName;
+    const ext = node_path_1.default.extname(fileName);
+    const base = node_path_1.default.basename(fileName, ext);
+    let counter = 1;
+    while (node_fs_1.default.existsSync(node_path_1.default.join(mediaDir, destName))) {
+        destName = `${base}_${counter}${ext}`;
+        counter += 1;
+    }
+    const destPath = node_path_1.default.join(mediaDir, destName);
     try {
-        const mediaDir = node_path_1.default.join(getItemDir(type, id), 'media');
-        if (!node_fs_1.default.existsSync(mediaDir))
-            node_fs_1.default.mkdirSync(mediaDir, { recursive: true });
-        // If file with same name exists, add suffix
-        let destName = fileName;
-        const ext = node_path_1.default.extname(fileName);
-        const base = node_path_1.default.basename(fileName, ext);
-        let counter = 1;
-        while (node_fs_1.default.existsSync(node_path_1.default.join(mediaDir, destName))) {
-            destName = `${base}_${counter}${ext}`;
-            counter += 1;
+        const img = (0, sharp_1.default)(sourcePath);
+        const meta = await img.metadata();
+        const maxWidth = 1600;
+        let pipe = img;
+        if (meta.width && meta.width > maxWidth) {
+            pipe = pipe.resize({ width: maxWidth });
         }
-        const destPath = node_path_1.default.join(mediaDir, destName);
-        node_fs_1.default.copyFileSync(sourcePath, destPath);
+        if (ext === '.png') {
+            await pipe.png({ compressionLevel: 8 }).toFile(destPath);
+        }
+        else {
+            await pipe.jpeg({ quality: 80 }).toFile(destPath);
+        }
         // Return markdown relative path
         return `./media/${destName}`;
     }
-    catch (error) {
-        console.error('save-image error', error);
-        return null;
+    catch {
+        // fallback copy if sharp fails
+        node_fs_1.default.copyFileSync(sourcePath, destPath);
+        // Return markdown relative path
+        return `./media/${destName}`;
     }
 });
 electron_1.ipcMain.handle('get-table-data', wrap(getTableData));
