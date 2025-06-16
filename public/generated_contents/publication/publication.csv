@@ -1,0 +1,2 @@
+id,fiscalYear,type,authorMemberIds,tagIds,titleJa,titleEn,publicationNameJa,publicationNameEn,volume,number,pages,dateJa,dateEn,locationJa,locationEn,notesJa,notesEn,thumbnail,url
+1,2024,ジャーナル論文,1,1,深層学習による画像認識,Image Recognition with Deep Learning,情報処理学会論文誌,IPSJ Journal,Vol.65,No.3,pp.100–110,45352,2024-03-01 00:00:00,東京,Tokyo,学生奨励賞,Best Student Paper,66fb04fd10db0b78eb8a09d6dfaafb28.jpg,https://example.com/publications/1
