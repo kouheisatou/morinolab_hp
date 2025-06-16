@@ -8,8 +8,10 @@ const node_path_1 = __importDefault(require("node:path"));
 const node_fs_1 = __importDefault(require("node:fs"));
 const node_url_1 = require("node:url");
 const gray_matter_1 = __importDefault(require("gray-matter"));
+const papaparse_1 = __importDefault(require("papaparse"));
+const sharp_1 = __importDefault(require("sharp"));
 // Root directory that contains the various content folders
-const CONTENT_ROOT = node_path_1.default.join(process.cwd(), 'contents');
+const CONTENT_ROOT = node_path_1.default.join(process.cwd(), '../morinolab_hp/public/contents');
 function createWindow() {
     const win = new electron_1.BrowserWindow({
         width: 1200,
@@ -101,6 +103,17 @@ function createItem(type) {
     node_fs_1.default.mkdirSync(itemDir);
     const template = `---\ntitle: 新規記事\n---\n\n# 見出し\n\nここに本文を書いてください\n`;
     node_fs_1.default.writeFileSync(node_path_1.default.join(itemDir, 'article.md'), template, 'utf8');
+    // CSV row
+    const { header, rows } = loadCsvTable(type);
+    if (!header.includes('id'))
+        header.unshift('id');
+    const newRow = {};
+    header.forEach((h) => {
+        newRow[h] = '';
+    });
+    newRow['id'] = String(newId);
+    rows.push(newRow);
+    saveCsvTable(type, header, rows);
     return { id: String(newId), title: '新規記事' };
 }
 function deleteItem(type, id) {
@@ -108,6 +121,15 @@ function deleteItem(type, id) {
     if (node_fs_1.default.existsSync(dir)) {
         node_fs_1.default.rmSync(dir, { recursive: true, force: true });
     }
+    // remove thumbnail file
+    const typeDir = node_path_1.default.join(CONTENT_ROOT, type);
+    const thumbPattern = new RegExp(`^${id}\\.(png|jpe?g|gif|webp)$`, 'i');
+    node_fs_1.default.readdirSync(typeDir)
+        .filter((f) => thumbPattern.test(f))
+        .forEach((f) => node_fs_1.default.rmSync(node_path_1.default.join(typeDir, f), { force: true }));
+    const { header, rows } = loadCsvTable(type);
+    const newRows = rows.filter((r) => String(r.id) !== String(id));
+    saveCsvTable(type, header, newRows);
 }
 function loadContent(type, id) {
     const articlePath = node_path_1.default.join(getItemDir(type, id), 'article.md');
@@ -119,6 +141,46 @@ function loadContent(type, id) {
 function saveContent(type, id, content) {
     const articlePath = node_path_1.default.join(getItemDir(type, id), 'article.md');
     node_fs_1.default.writeFileSync(articlePath, content, 'utf8');
+}
+// ================= CSV Utils =================
+function getCsvPath(type) {
+    return node_path_1.default.join(CONTENT_ROOT, type, `${type}.csv`);
+}
+function loadCsvTable(type) {
+    const csvPath = getCsvPath(type);
+    if (!node_fs_1.default.existsSync(csvPath)) {
+        return { header: ['id'], rows: [] };
+    }
+    const csvText = node_fs_1.default.readFileSync(csvPath, 'utf8');
+    const parsed = papaparse_1.default.parse(csvText.trim(), {
+        header: true,
+        skipEmptyLines: true,
+    });
+    const header = parsed.meta.fields ?? [];
+    const rows = parsed.data;
+    return { header, rows };
+}
+function saveCsvTable(type, header, rows) {
+    const csvPath = getCsvPath(type);
+    let csvText = '';
+    if (rows.length === 0) {
+        csvText = header.join(',') + '\n';
+    }
+    else {
+        csvText = papaparse_1.default.unparse(rows, { columns: header });
+    }
+    node_fs_1.default.writeFileSync(csvPath, csvText, 'utf8');
+}
+function getTableData(type) {
+    return loadCsvTable(type);
+}
+function updateCell(type, id, column, value) {
+    const { header, rows } = loadCsvTable(type);
+    const row = rows.find((r) => String(r.id) === String(id));
+    if (row) {
+        row[column] = value;
+        saveCsvTable(type, header, rows);
+    }
 }
 const wrap = (fn) => (_event, ...args) => fn(...args);
 electron_1.ipcMain.handle('get-content-types', wrap(listContentTypes));
@@ -153,4 +215,34 @@ electron_1.ipcMain.handle('save-image', async (_event, type, id, sourcePath, fil
         console.error('save-image error', error);
         return null;
     }
+});
+electron_1.ipcMain.handle('get-table-data', wrap(getTableData));
+electron_1.ipcMain.handle('update-cell', wrap(updateCell));
+electron_1.ipcMain.handle('select-thumbnail', async (_event, type, id) => {
+    const result = await electron_1.dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp'] }],
+    });
+    if (result.canceled || !result.filePaths.length)
+        return null;
+    const sourcePath = result.filePaths[0];
+    const ext = node_path_1.default.extname(sourcePath).toLowerCase();
+    const destDir = node_path_1.default.join(CONTENT_ROOT, type); // same level as csv
+    if (!node_fs_1.default.existsSync(destDir))
+        node_fs_1.default.mkdirSync(destDir, { recursive: true });
+    const destName = `${id}${ext}`;
+    const destPath = node_path_1.default.join(destDir, destName);
+    // compress and resize
+    const img = (0, sharp_1.default)(sourcePath);
+    const metadata = await img.metadata();
+    const width = metadata.width && metadata.width > 800 ? 800 : metadata.width;
+    await img
+        .resize(width)
+        .toFormat(ext === '.png' ? 'png' : 'jpeg', { quality: 80 })
+        .toFile(destPath);
+    return `./${destName}`;
+});
+electron_1.ipcMain.handle('resolve-path', (_e, type, rel) => {
+    const abs = node_path_1.default.join(CONTENT_ROOT, type, rel.replace(/^\.\//, ''));
+    return 'file://' + abs;
 });

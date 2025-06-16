@@ -9,4 +9,8 @@ electron_1.contextBridge.exposeInMainWorld('api', {
     loadContent: (type, id) => electron_1.ipcRenderer.invoke('load-content', type, id),
     saveContent: (type, id, content) => electron_1.ipcRenderer.send('save-content', type, id, content),
     saveImage: (type, id, sourcePath, fileName) => electron_1.ipcRenderer.invoke('save-image', type, id, sourcePath, fileName),
+    getTableData: (type) => electron_1.ipcRenderer.invoke('get-table-data', type),
+    updateCell: (type, id, column, value) => electron_1.ipcRenderer.invoke('update-cell', type, id, column, value),
+    selectThumbnail: (type, id) => electron_1.ipcRenderer.invoke('select-thumbnail', type, id),
+    resolvePath: (type, rel) => electron_1.ipcRenderer.invoke('resolve-path', type, rel),
 });

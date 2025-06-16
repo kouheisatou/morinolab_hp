@@ -100,7 +100,7 @@ async function loadCsv(filePath: string): Promise<Record<string, string>[]> {
 }
 
 export async function loadTags(): Promise<Tag[]> {
-  const rows = await loadCsv("/generated_contents/tags/tags.csv");
+  const rows = await loadCsv("/contents/tags/tags.csv");
   return rows.map((r) => new Tag(Number(r.id), r.name, r.name_english));
 }
 
@@ -109,7 +109,7 @@ export async function loadTags(): Promise<Tag[]> {
 // ---------------------------------------------------------------------------
 
 export async function loadMemberTypes(): Promise<MemberType[]> {
-  const rows = await loadCsv("/generated_contents/memberType/memberType.csv");
+  const rows = await loadCsv("/contents/memberType/memberType.csv");
   return rows.map((r) => new MemberType(Number(r.id), r.nameJa, r.nameEn));
 }
 
@@ -123,7 +123,7 @@ const parseIdList = (v: string | undefined): number[] =>
 
 // Helper: ensure thumbnail path is correctly prefixed when only a file name is provided.
 // If the value already starts with "http", "https", "/" or "./" we leave it unchanged.
-// Otherwise we prefix it with the given directory under /generated_contents.
+// Otherwise we prefix it with the given directory under /contents.
 const resolveThumbnail = (
   filename: string | undefined,
   subDir: string,
@@ -134,11 +134,11 @@ const resolveThumbnail = (
   if (/^(https?:)?\//.test(trimmed) || trimmed.startsWith("./")) {
     return trimmed;
   }
-  return `${process.env.NEXT_PUBLIC_BASE_PREFIX}/generated_contents/${subDir}/${trimmed}`;
+  return `${process.env.NEXT_PUBLIC_BASE_PREFIX}/contents/${subDir}/${trimmed}`;
 };
 
 export async function loadMembers(): Promise<Member[]> {
-  const rows = await loadCsv("/generated_contents/member/member.csv");
+  const rows = await loadCsv("/contents/member/member.csv");
   return rows.map(
     (r) =>
       new Member(
@@ -156,7 +156,7 @@ export async function loadMembers(): Promise<Member[]> {
 }
 
 export async function loadPublications(): Promise<Publication[]> {
-  const rows = await loadCsv("/generated_contents/publication/publication.csv");
+  const rows = await loadCsv("/contents/publication/publication.csv");
   return rows.map(
     (r) =>
       new Publication(
@@ -187,7 +187,7 @@ export async function loadPublications(): Promise<Publication[]> {
 // Corrected loadThemes and loadNews constructor argument order ------------
 
 export async function loadThemes(): Promise<Theme[]> {
-  const rows = await loadCsv("/generated_contents/theme/theme.csv");
+  const rows = await loadCsv("/contents/theme/theme.csv");
   return rows.map(
     (r) =>
       new Theme(
@@ -203,7 +203,7 @@ export async function loadThemes(): Promise<Theme[]> {
 }
 
 export async function loadNews(): Promise<NewsItem[]> {
-  const rows = await loadCsv("/generated_contents/news/news.csv");
+  const rows = await loadCsv("/contents/news/news.csv");
   return rows.map(
     (r) =>
       new NewsItem(
@@ -218,7 +218,7 @@ export async function loadNews(): Promise<NewsItem[]> {
 }
 
 export async function loadLectures(): Promise<Lecture[]> {
-  const rows = await loadCsv("/generated_contents/lecture/lecture.csv");
+  const rows = await loadCsv("/contents/lecture/lecture.csv");
   return rows.map(
     (r) =>
       new Lecture(
@@ -234,7 +234,7 @@ export async function loadLectures(): Promise<Lecture[]> {
 }
 
 export async function loadCompanies(): Promise<Company[]> {
-  const rows = await loadCsv("/generated_contents/company/company.csv");
+  const rows = await loadCsv("/contents/company/company.csv");
   return rows.map(
     (r) =>
       new Company(

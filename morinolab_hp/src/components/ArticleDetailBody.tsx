@@ -13,22 +13,41 @@ export default function ArticleDetailBody({ type, id }: Props) {
 
   useEffect(() => {
     const basePrefix = process.env.NEXT_PUBLIC_BASE_PREFIX ?? "";
-    const url = `${basePrefix}/generated_contents/${type}/${id}/article.html`;
+    const basePath = `${basePrefix}/contents/${type}/${id}/`;
 
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-        return res.text();
-      })
-      .then((txt) => {
-        // Extract <body> inner HTML
+    const fetchContent = async () => {
+      // 1. Try to fetch markdown first
+      try {
+        const mdUrl = `${basePath}article.md`;
+        const mdRes = await fetch(mdUrl);
+        if (mdRes.ok) {
+          const mdText = await mdRes.text();
+          // Dynamically import marked only on the client to avoid increasing bundle size unnecessarily
+          const { marked } = await import("marked");
+          const htmlStr = marked.parse(mdText);
+          setHtml(`<base href="${basePath}">` + htmlStr);
+          return; // Success – exit early
+        }
+      } catch (err) {
+        // continue to html fallback
+      }
+
+      // 2. Fallback to legacy HTML file
+      try {
+        const htmlUrl = `${basePath}article.html`;
+        const htmlRes = await fetch(htmlUrl);
+        if (!htmlRes.ok) throw new Error(`${htmlRes.status} ${htmlRes.statusText}`);
+        const txt = await htmlRes.text();
+        // Extract <body> inner HTML if any
         const match = txt.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
         const bodyHtml = match ? match[1] : txt;
-        // Prepend <base> for relative paths
-        const basePath = `${basePrefix}/generated_contents/${type}/${id}/`;
         setHtml(`<base href="${basePath}">` + bodyHtml);
-      })
-      .catch((err: Error) => setError(err.message));
+      } catch (err: unknown) {
+        setError((err as Error).message ?? "Failed to load content");
+      }
+    };
+
+    fetchContent();
   }, [type, id]);
 
   if (error) {

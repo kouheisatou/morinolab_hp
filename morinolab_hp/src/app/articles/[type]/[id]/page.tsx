@@ -13,11 +13,11 @@ export const dynamicParams = false;
 export const generateStaticParams = () => {
   // NOTE: Article contents are generated under the public directory so that they are
   // copied as-is on `next export`. We therefore enumerate the combinations of
-  // `type` and `id` by scanning `public/generated_contents/{type}/*`.
+  // `type` and `id` by scanning `public/contents/{type}/*`.
   const CONTENT_ROOT = path.join(
     process.cwd(),
     "public",
-    "generated_contents",
+    "contents",
   );
 
   const params: { type: string; id: string }[] = [];

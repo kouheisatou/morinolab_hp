@@ -11,7 +11,7 @@ interface ArticleDetailClientProps {
  * Client-side component that fetches the pre-generated HTML for an article and renders it.
  *
  * The HTML is generated ahead of time by `scripts/gen_contents_db.sh` and placed under:
- *   public/generated_contents/{type}/{id}/article.html
+ *   public/contents/{type}/{id}/article.html
  */
 export default function ArticleDetailClient({
   type,
@@ -24,7 +24,7 @@ export default function ArticleDetailClient({
     let isMounted = true;
 
     const basePrefix = process.env.NEXT_PUBLIC_BASE_PREFIX ?? "";
-    const url = `${basePrefix}/generated_contents/${type}/${id}/article.html`;
+    const url = `${basePrefix}/contents/${type}/${id}/article.html`;
 
     fetch(url)
       .then((res) => {
@@ -34,7 +34,7 @@ export default function ArticleDetailClient({
       .then((text) => {
         if (!isMounted) return;
 
-        const basePath = `${basePrefix}/generated_contents/${type}/${id}/`;
+        const basePath = `${basePrefix}/contents/${type}/${id}/`;
         // Prepend <base> tag so that relative URLs (images, links) resolve correctly.
         const wrapped = `<base href="${basePath}">` + text;
         setHtml(wrapped);
