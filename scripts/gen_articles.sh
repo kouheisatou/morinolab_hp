@@ -22,7 +22,6 @@ for TYPE in "${CONTENT_TYPES[@]}"; do
 
   echo "[INFO] Processing category: ${TYPE}"
 
-  # Iterate over each .docx file inside the category directory
   shopt -s nullglob
   for DOCX_FILE in "${DOC_DIR}"/*.docx; do
     FILENAME="$(basename "${DOCX_FILE}")"
@@ -33,13 +32,17 @@ for TYPE in "${CONTENT_TYPES[@]}"; do
 
     echo "  • Converting ${DOCX_FILE} -> ${OUTPUT_DIR}/article.html"
 
-    # Convert the .docx file to standalone HTML while extracting embedded media (images)
-    # The resulting article.html can be loaded directly by the browser.
-    pandoc "${DOCX_FILE}" \
+    CURRENT_DIR="$(pwd)"
+    cp "${DOCX_FILE}" "${OUTPUT_DIR}"
+    cd "${OUTPUT_DIR}"
+    pandoc "${FILENAME}" \
            --from docx \
            --to html \
            --standalone \
-           --output "${OUTPUT_DIR}/article.html"
+           --extract-media="." \
+           --output "article.html"
+    rm "${FILENAME}"
+    cd "${CURRENT_DIR}"
   done
   shopt -u nullglob
 
