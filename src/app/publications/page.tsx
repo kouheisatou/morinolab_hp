@@ -35,7 +35,10 @@ const Publications = () => {
   const tagLabel = (tag: Tag) => (lang === "ja" ? tag.name : tag.name_english);
 
   // Build helper maps
-  const memberMap = useMemo(() => new Map(members.map((m) => [m.id, m])), [members]);
+  const memberMap = useMemo(
+    () => new Map(members.map((m) => [m.id, m])),
+    [members],
+  );
 
   // Infer tags from title / publication name with robust fallback
   const inferTags = (p: Publication): Tag[] => {

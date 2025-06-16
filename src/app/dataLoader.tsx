@@ -17,10 +17,10 @@ function parseLine(line: string): string[] {
   for (let i = 0; i < line.length; i++) {
     const char = line[i];
 
-    if (char === "\"") {
+    if (char === '"') {
       // Handle escaped quotes ("") inside a quoted field
-      if (inQuotes && line[i + 1] === "\"") {
-        current += "\"";
+      if (inQuotes && line[i + 1] === '"') {
+        current += '"';
         i++; // Skip the escaped quote
       } else {
         inQuotes = !inQuotes;
@@ -116,53 +116,71 @@ const parseIdList = (v: string | undefined): number[] =>
     .map((s) => Number(s))
     .filter((n) => !Number.isNaN(n));
 
+// Helper: ensure thumbnail path is correctly prefixed when only a file name is provided.
+// If the value already starts with "http", "https", "/" or "./" we leave it unchanged.
+// Otherwise we prefix it with the given directory under /generated_contents.
+const resolveThumbnail = (
+  filename: string | undefined,
+  subDir: string,
+): string | undefined => {
+  if (!filename) return undefined;
+  const trimmed = filename.trim();
+  if (trimmed === "") return undefined;
+  if (/^(https?:)?\//.test(trimmed) || trimmed.startsWith("./")) {
+    return trimmed;
+  }
+  return `${process.env.NEXT_PUBLIC_BASE_PREFIX}/generated_contents/${subDir}/${trimmed}`;
+};
+
 export async function loadMembers(): Promise<Member[]> {
   const rows = await loadCsv("/generated_contents/member/member.csv");
-  return rows.map((r) =>
-    new Member(
-      Number(r.id),
-      r.name,
-      r.desc,
-      r.nameEnglish,
-      r.descEnglish,
-      Number(r.admissionYear),
-      r.thumbnail,
-      parseIdList(r.tagIds),
-      Number(r.repeats ?? 0),
-      parseBool(r.graduated),
-      parseBool(r.master),
-      parseBool(r.bachelor),
-      r.gradYear ? Number(r.gradYear) : undefined,
-      r.url,
-    ),
+  return rows.map(
+    (r) =>
+      new Member(
+        Number(r.id),
+        r.name,
+        r.desc,
+        r.nameEnglish,
+        r.descEnglish,
+        Number(r.admissionYear),
+        resolveThumbnail(r.thumbnail, "member") ?? "",
+        parseIdList(r.tagIds),
+        Number(r.repeats ?? 0),
+        parseBool(r.graduated),
+        parseBool(r.master),
+        parseBool(r.bachelor),
+        r.gradYear ? Number(r.gradYear) : undefined,
+        r.url,
+      ),
   );
 }
 
 export async function loadPublications(): Promise<Publication[]> {
   const rows = await loadCsv("/generated_contents/publication/publication.csv");
-  return rows.map((r) =>
-    new Publication(
-      Number(r.id),
-      Number(r.fiscalYear),
-      r.type,
-      parseIdList(r.authorMemberIds),
-      parseIdList(r.tagIds),
-      r.titleJa || undefined,
-      r.titleEn || undefined,
-      r.publicationNameJa || undefined,
-      r.publicationNameEn || undefined,
-      r.volume || undefined,
-      r.number || undefined,
-      r.pages || undefined,
-      r.dateJa || undefined,
-      r.dateEn || undefined,
-      r.locationJa || undefined,
-      r.locationEn || undefined,
-      r.notesJa || undefined,
-      r.notesEn || undefined,
-      r.thumbnail || undefined,
-      r.url || undefined,
-    ),
+  return rows.map(
+    (r) =>
+      new Publication(
+        Number(r.id),
+        Number(r.fiscalYear),
+        r.type,
+        parseIdList(r.authorMemberIds),
+        parseIdList(r.tagIds),
+        r.titleJa || undefined,
+        r.titleEn || undefined,
+        r.publicationNameJa || undefined,
+        r.publicationNameEn || undefined,
+        r.volume || undefined,
+        r.number || undefined,
+        r.pages || undefined,
+        r.dateJa || undefined,
+        r.dateEn || undefined,
+        r.locationJa || undefined,
+        r.locationEn || undefined,
+        r.notesJa || undefined,
+        r.notesEn || undefined,
+        resolveThumbnail(r.thumbnail, "publication"),
+        r.url || undefined,
+      ),
   );
 }
 
@@ -170,60 +188,64 @@ export async function loadPublications(): Promise<Publication[]> {
 
 export async function loadThemes(): Promise<Theme[]> {
   const rows = await loadCsv("/generated_contents/theme/theme.csv");
-  return rows.map((r) =>
-    new Theme(
-      Number(r.id),
-      r.thumbnail,
-      r.titleJa,
-      r.titleEn,
-      r.descJa,
-      r.descEn,
-      r.url,
-    ),
+  return rows.map(
+    (r) =>
+      new Theme(
+        Number(r.id),
+        resolveThumbnail(r.thumbnail, "theme") ?? "",
+        r.titleJa,
+        r.titleEn,
+        r.descJa,
+        r.descEn,
+        r.url,
+      ),
   );
 }
 
 export async function loadNews(): Promise<NewsItem[]> {
   const rows = await loadCsv("/generated_contents/news/news.csv");
-  return rows.map((r) =>
-    new NewsItem(
-      Number(r.id),
-      r.date,
-      r.textJa,
-      r.textEn,
-      r.thumbnail,
-      r.url,
-    ),
+  return rows.map(
+    (r) =>
+      new NewsItem(
+        Number(r.id),
+        r.date,
+        r.textJa,
+        r.textEn,
+        resolveThumbnail(r.thumbnail, "news"),
+        r.url,
+      ),
   );
 }
 
 export async function loadLectures(): Promise<Lecture[]> {
   const rows = await loadCsv("/generated_contents/lecture/lecture.csv");
-  return rows.map((r) =>
-    new Lecture(
-      Number(r.id),
-      r.thumbnail,
-      r.titleJa,
-      r.titleEn,
-      r.descJa,
-      r.descEn,
-      r.url,
-    ),
+  return rows.map(
+    (r) =>
+      new Lecture(
+        Number(r.id),
+        resolveThumbnail(r.thumbnail, "lecture") ?? "",
+        r.titleJa,
+        r.titleEn,
+        r.descJa,
+        r.descEn,
+        r.url,
+      ),
   );
 }
 
 export async function loadCompanies(): Promise<Company[]> {
   const rows = await loadCsv("/generated_contents/company/company.csv");
-  return rows.map((r) =>
-    new Company(
-      Number(r.id),
-      r.thumbnail,
-      r.nameJa,
-      r.nameEn,
-      Number(r.year),
-    ),
+  return rows.map(
+    (r) =>
+      new Company(
+        Number(r.id),
+        resolveThumbnail(r.thumbnail, "company") ?? "",
+        r.nameJa,
+        r.nameEn,
+        Number(r.year),
+      ),
   );
 }
 
 // Re-export utility types that might help callers.
-export type CSVRow = Record<string, string>; 
+export type CSVRow = Record<string, string>;
