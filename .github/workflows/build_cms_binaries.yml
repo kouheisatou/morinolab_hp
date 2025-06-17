@@ -45,15 +45,19 @@ jobs:
           - os: ubuntu-latest
             platform: linux
             arch: x64
+            script_name: package_cms_linux_x64
           - os: windows-latest
             platform: win32
             arch: x64
+            script_name: package_cms_win32_x64
           - os: macos-latest
             platform: darwin
             arch: x64
+            script_name: package_cms_darwin_x64
           - os: macos-latest
             platform: darwin
             arch: arm64
+            script_name: package_cms_darwin_arm64
 
     steps:
       - name: Checkout repository
@@ -65,40 +69,16 @@ jobs:
           node-version: "20"
           cache: "npm"
           # Cache only the CMS dependencies for faster builds
-          cache-dependency-path: "morinolab_cms/package-lock.json"
+          cache-dependency-path: "package-lock.json"
 
-      - name: Install dependencies (morinolab_cms)
-        run: npm ci --prefix morinolab_cms
+      - name: Install dependencies (workspace projects)
+        run: npm ci --workspaces
 
-      - name: Build TypeScript sources
-        run: npm run build --prefix morinolab_cms
-
-      - name: Package Electron app (Linux / macOS)
-        if: runner.os != 'Windows'
-        run: |
-          cd morinolab_cms
-          npx -y electron-packager . morinolab_cms \
-            --platform=${{ matrix.platform }} \
-            --arch=${{ matrix.arch }} \
-            --out=$GITHUB_WORKSPACE/build \
-            --overwrite \
-            --prune=true \
-            --asar
-
-      - name: Package Electron app (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          cd morinolab_cms
-          npx -y electron-packager . morinolab_cms `
-            --platform=${{ matrix.platform }} `
-            --arch=${{ matrix.arch }} `
-            --out=$Env:GITHUB_WORKSPACE/build `
-            --overwrite `
-            --prune=true `
-            --asar
+      - name: Package Electron app
+        run: npm run ${{ matrix.script_name }}
 
       - name: Upload packaged binary as artifact
         uses: actions/upload-artifact@v4
         with:
           name: morinolab_cms-${{ matrix.platform }}-${{ matrix.arch }}
-          path: build/** 
+          path: morinolab_cms/build/** 

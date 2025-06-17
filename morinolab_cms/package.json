@@ -7,7 +7,11 @@
     "build": "tsc && cp -R src/renderer dist/renderer",
     "start": "npm run build && electron .",
     "lint": "eslint 'src/**/*.{ts,tsx,js}'",
-    "format": "prettier --write 'src/**/*.{ts,tsx,js,html,css,json,md}'"
+    "format": "prettier --write 'src/**/*.{ts,tsx,js,html,css,json,md}'",
+    "pack-linux": "npm run build && electron-packager . morinolab_cms --platform=linux --arch=x64 --out=build --overwrite --prune=true --asar",
+    "pack-win": "npm run build && electron-packager . morinolab_cms --platform=win32 --arch=x64 --out=build --overwrite --prune=true --asar",
+    "pack-mac-x64": "npm run build && electron-packager . morinolab_cms --platform=darwin --arch=x64 --out=build --overwrite --prune=true --asar",
+    "pack-mac-arm64": "npm run build && electron-packager . morinolab_cms --platform=darwin --arch=arm64 --out=build --overwrite --prune=true --asar"
   },
   "author": "",
   "license": "MIT",
@@ -28,6 +32,7 @@
     "eslint-plugin-prettier": "^5.1.3",
     "prettier": "^3.2.5",
     "ts-node": "^10.9.1",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "electron-packager": "^17.1.1"
   }
 }

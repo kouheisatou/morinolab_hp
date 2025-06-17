@@ -110,7 +110,7 @@ jobs:
       # Next.js をエクスポートモードでビルド
       - name: Build Next.js static site
         run: |
-          cd morinolab_hp; npm run build
+          npm run build_morinolab_hp
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
