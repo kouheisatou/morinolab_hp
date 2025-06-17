@@ -13,7 +13,7 @@ export default function ArticleDetailBody({ type, id }: Props) {
 
   useEffect(() => {
     const basePrefix = process.env.NEXT_PUBLIC_BASE_PREFIX ?? "";
-    const basePath = `${basePrefix}/contents/${type}/${id}/`;
+    const basePath = `${basePrefix}/generated_contents/${type}/${id}/`;
 
     const fetchContent = async () => {
       // 1. Try to fetch markdown first

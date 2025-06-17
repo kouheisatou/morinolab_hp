@@ -17,8 +17,19 @@ npm run dev
 ## ビルド & 実行
 
 ```bash
+# 既定 (GitHub から自動 clone されます)
 npm run start
+
+# contents ディレクトリを明示的に指定したい場合
+npm run start -- --contents=/absolute/path/to/contents
 ```
+
+上記の `--contents` オプション（または環境変数 `CONTENTS_DIR`）を使うと、アプリが読み書きする
+`contents` ルートを任意の場所に変更できます。指定が無い場合は以下の挙動になります。
+
+1. カレントディレクトリ直下に `morinolab_hp` というフォルダーが存在しない場合、
+   `git clone https://github.com/morinolab/morinolab_hp.git` が自動で実行されます。
+2. `morinolab_hp/morinolab_hp/public/contents` を CMS のデータルートとして利用します。
 
 ## 使い方
 1. 左のサイドバーにコンテンツタイプ（`contents` 直下のフォルダー名）が表示されます。

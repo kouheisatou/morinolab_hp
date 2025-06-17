@@ -35,15 +35,42 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci --prefix morinolab_hp
-          npm ci --prefix morinolab_cms
 
       - name: Run ESLint for morinolab_hp
         run: cd morinolab_hp; npm run lint
 
-      - name: Run ESLint for morinolab_cms
-        run: cd morinolab_cms; npm run lint
+  generate_contents:
+    name: Generate contents for morinolab_hp
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Need full history to push a new commit
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install dependencies for morinolab_hp
+        run: npm ci --prefix morinolab_hp
+
+      - name: Run generate_contents script
+        run: npm run generate_contents
+
+      - name: Commit and push generated contents
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: "chore: update generated contents [skip ci]"
 
   build:
+    needs: eslint
     runs-on: ubuntu-latest
 
     steps:
@@ -95,7 +122,7 @@ jobs:
           path: ./morinolab_hp/out
 
   deploy:
-    needs: build
+    needs: [build, generate_contents]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

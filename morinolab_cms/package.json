@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc && cp -R src/renderer dist/renderer",
     "start": "npm run build && electron .",
-    "dev": "electronmon -w src -e ts-node/register src/main.ts",
     "lint": "eslint 'src/**/*.{ts,tsx,js}'",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,html,css,json,md}'"
   },

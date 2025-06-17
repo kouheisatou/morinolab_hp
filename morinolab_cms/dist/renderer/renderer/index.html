@@ -32,7 +32,6 @@
         cursor: pointer;
         font-size: 13px;
         margin: 2px 0; /* vertical margin only to avoid width overflow */
-        position: relative;
       }
       #sidebar button:hover {
         background: #c8c4bc;
@@ -44,21 +43,19 @@
         border-right-color: #fff;
       }
       #sidebar button.active {
-        background: #000080;
-        color: #fff;
-        border: 1px solid #808080;
-        border-top-color: #fff;
-        border-left-color: #fff;
+        position: relative;
+        background: #d4d0c8; /* same as sidebar */
+        color: #000;
+        font-weight: bold;
       }
-      /* blue bar */
       #sidebar button.active::after {
         content: '';
         position: absolute;
-        top: -1px;
-        bottom: -1px;
-        right: -3px;
-        width: 3px;
-        background: #0000ff;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 4px;
+        background: #000080;
       }
       #main {
         flex: 1;

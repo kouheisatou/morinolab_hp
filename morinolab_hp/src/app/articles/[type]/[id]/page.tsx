@@ -6,15 +6,16 @@ import ArticleDetailBody from "@/components/ArticleDetailBody";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 // Build-time: Generate all combinations of `type` and `id` found
-// under contents/articles/{type}/*.docx so that `next export`
+// under generated_contents/articles/{type}/*.docx so that `next export`
 // can pre-render static HTML for every article detail page.
 export const dynamicParams = false;
 
 export const generateStaticParams = () => {
-  // NOTE: Article contents are generated under the public directory so that they are
-  // copied as-is on `next export`. We therefore enumerate the combinations of
-  // `type` and `id` by scanning `public/contents/{type}/*`.
-  const CONTENT_ROOT = path.join(process.cwd(), "public", "contents");
+  // The generated markdown/HTML files live under
+  //   public/generated_contents/{type}/{id}/...
+  // so we need to look inside that directory to enumerate all combinations
+  // that actually exist.
+  const CONTENT_ROOT = path.join(process.cwd(), "public", "generated_contents");
 
   const params: { type: string; id: string }[] = [];
 

@@ -1,0 +1,14 @@
+{
+  "name": "morinolab-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint_all": "npm run lint -w morinolab_hp && npm run lint -w morinolab_cms",
+    "generate_contents": "npm run generate_contents -w morinolab_hp",
+    "format_all": "npm run format -w morinolab_hp && npm run format -w morinolab_cms"
+  },
+  "workspaces": [
+    "morinolab_hp",
+    "morinolab_cms"
+  ]
+} 

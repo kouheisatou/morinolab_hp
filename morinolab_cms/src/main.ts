@@ -6,8 +6,59 @@ import matter from 'gray-matter';
 import Papa from 'papaparse';
 import sharp from 'sharp';
 
+// ---------------------------------------------------------------------------
+// Resolve the root directory that contains the various content folders.
+// Priority order:
+//   1. `--contents=<absolute|relative path>` CLI argument passed to Electron.
+//   2. `CONTENTS_DIR` environment variable.
+//   3. Default path that clones `morinolab_hp` repo next to the executable
+//      and points to `morinolab_hp/morinolab_hp/public/contents` inside it.
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse CLI args like `--contents=/some/path` and return value if present.
+ */
+function getCliContentsDir(): string | undefined {
+  const arg = process.argv.find((a) => a.startsWith('--contents='));
+  if (!arg) return undefined;
+  const [, value] = arg.split('=', 2);
+  return value ? path.resolve(value) : undefined;
+}
+
+const cliDir = getCliContentsDir();
+const envDir = process.env.CONTENTS_DIR ? path.resolve(process.env.CONTENTS_DIR) : undefined;
+
+const WORK_DIR = process.cwd();
+const REPO_DIR = path.join(WORK_DIR, 'morinolab_hp'); // cloned repository location
+
+function ensureRepoCloned() {
+  if (fs.existsSync(REPO_DIR)) return;
+  const REPO_URL = 'https://github.com/morinolab/morinolab_hp.git';
+  try {
+    // Lazy import to avoid unnecessary load when repo already exists
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { execSync } = require('node:child_process');
+    console.log(`Cloning contents repository from ${REPO_URL}...`);
+    execSync(`git clone --depth 1 ${REPO_URL} "${REPO_DIR}"`, { stdio: 'inherit' });
+  } catch (e) {
+    console.error('Failed to clone repository. Please ensure Git is installed and accessible.', e);
+  }
+}
+
+let resolvedContentRoot: string;
+
+if (cliDir) {
+  resolvedContentRoot = cliDir;
+} else if (envDir) {
+  resolvedContentRoot = envDir;
+} else {
+  // Default: auto-clone repo and use its contents directory
+  ensureRepoCloned();
+  resolvedContentRoot = path.join(REPO_DIR, 'morinolab_hp', 'public', 'contents');
+}
+
 // Root directory that contains the various content folders
-const CONTENT_ROOT = path.join(process.cwd(), '../morinolab_hp/public/contents');
+const CONTENT_ROOT = resolvedContentRoot;
 
 function createWindow() {
   const win = new BrowserWindow({
