@@ -29,7 +29,7 @@ npm run start -- --contents=/absolute/path/to/contents
 
 1. カレントディレクトリ直下に `morinolab_hp` というフォルダーが存在しない場合、
    `git clone https://github.com/morinolab/morinolab_hp.git` が自動で実行されます。
-2. `morinolab_hp/morinolab_hp/public/contents` を CMS のデータルートとして利用します。
+2. `../contents` を CMS のデータルートとして利用します。
 
 ## 使い方
 1. 左のサイドバーにコンテンツタイプ（`contents` 直下のフォルダー名）が表示されます。

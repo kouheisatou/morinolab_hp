@@ -12,7 +12,7 @@ import sharp from 'sharp';
 //   1. `--contents=<absolute|relative path>` CLI argument passed to Electron.
 //   2. `CONTENTS_DIR` environment variable.
 //   3. Default path that clones `morinolab_hp` repo next to the executable
-//      and points to `morinolab_hp/morinolab_hp/public/contents` inside it.
+//      and points to `../contents` inside it.
 // ---------------------------------------------------------------------------
 
 /**
@@ -33,7 +33,7 @@ const REPO_DIR = path.join(WORK_DIR, 'morinolab_hp'); // cloned repository locat
 
 function ensureRepoCloned() {
   if (fs.existsSync(REPO_DIR)) return;
-  const REPO_URL = 'https://github.com/morinolab/morinolab_hp.git';
+  const REPO_URL = 'https://github.com/kouheisatou/morinolab_hp.git';
   try {
     // Lazy import to avoid unnecessary load when repo already exists
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -47,10 +47,31 @@ function ensureRepoCloned() {
 
 let resolvedContentRoot: string;
 
-if (cliDir) {
-  resolvedContentRoot = cliDir;
-} else if (envDir) {
-  resolvedContentRoot = envDir;
+// Helper to check whether a directory actually exists (and is a directory)
+function isValidDir(p: string | undefined): p is string {
+  if (!p) return false;
+  try {
+    return fs.existsSync(p) && fs.statSync(p).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+if (isValidDir(cliDir)) {
+  resolvedContentRoot = cliDir as string;
+} else if (cliDir) {
+  console.warn(
+    `⚠️  Specified --contents path "${cliDir}" does not exist. Falling back to default path.`,
+  );
+  if (envDir && isValidDir(envDir)) {
+    resolvedContentRoot = envDir;
+  } else {
+    // Default: auto-clone repo and use its contents directory
+    ensureRepoCloned();
+    resolvedContentRoot = path.join(REPO_DIR, 'morinolab_hp', 'public', 'contents');
+  }
+} else if (isValidDir(envDir)) {
+  resolvedContentRoot = envDir as string;
 } else {
   // Default: auto-clone repo and use its contents directory
   ensureRepoCloned();
