@@ -44,7 +44,8 @@ jobs:
       - name: Build TypeScript sources
         run: npm run build --prefix morinolab_cms
 
-      - name: Package Electron app
+      - name: Package Electron app (Linux / macOS)
+        if: runner.os != 'Windows'
         run: |
           cd morinolab_cms
           npx -y electron-packager . morinolab_cms \
@@ -55,8 +56,20 @@ jobs:
             --prune=true \
             --asar
 
+      - name: Package Electron app (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cd morinolab_cms
+          npx -y electron-packager . morinolab_cms `
+            --platform=${{ matrix.platform }} `
+            --arch=${{ matrix.arch }} `
+            --out=$Env:GITHUB_WORKSPACE/build `
+            --overwrite `
+            --prune=true `
+            --asar
+
       - name: Upload packaged binary as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: morinolab_cms-${{ matrix.platform }}-${{ matrix.arch }}
           path: build/** 
