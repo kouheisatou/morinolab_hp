@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "lint_all": "npm run lint -w morinolab_hp && npm run lint -w morinolab_cms",
-    "generate_contents": "npm run generate_contents -w morinolab_hp",
+    "generate_contents": "mkdir -p morinolab_hp/public/generated_contents/ && cp -r contents/* morinolab_hp/public/generated_contents/",
     "format_all": "npm run format -w morinolab_hp && npm run format -w morinolab_cms"
   },
   "workspaces": [

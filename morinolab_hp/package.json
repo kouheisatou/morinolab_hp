@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "format": "prettier --write .",
-    "generate_contents": "cp -r ../contents/* public/generated_contents/"
+    "format": "prettier --write ."
   },
   "dependencies": {
     "csv-parse": "^5.6.0",

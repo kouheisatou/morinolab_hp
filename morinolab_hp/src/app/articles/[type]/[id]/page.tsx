@@ -10,7 +10,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 // can pre-render static HTML for every article detail page.
 export const dynamicParams = false;
 
-export const generateStaticParams = () => {
+export async function generateStaticParams() {
   // The generated markdown/HTML files live under
   //   public/generated_contents/{type}/{id}/...
   // so we need to look inside that directory to enumerate all combinations
@@ -51,7 +51,7 @@ export const generateStaticParams = () => {
   // Remove potential duplicates
   const unique = new Map(params.map((p) => [p.type + "/" + p.id, p]));
   return Array.from(unique.values());
-};
+}
 
 export default async function ArticleDetailPage({
   params,
