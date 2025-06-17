@@ -10,6 +10,9 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 // can pre-render static HTML for every article detail page.
 export const dynamicParams = false;
 
+// Add route segment config to statically render in environments where output: "export" sometimes mis-detects generateStaticParams
+export const dynamic = "force-static";
+
 export async function generateStaticParams() {
   // The generated markdown/HTML files live under
   //   public/generated_contents/{type}/{id}/...
