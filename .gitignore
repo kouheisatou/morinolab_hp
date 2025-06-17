@@ -3,7 +3,6 @@
 # macOS Finder metadata files
 .DS_Store
 
-/morinolab_hp/public/generated_contents/
 /morinolab_cms/node_modules/
 /morinolab_hp/node_modules/
 /node_modules/
