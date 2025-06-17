@@ -3,3 +3,5 @@
 /.idea/
 # macOS Finder metadata files
 .DS_Store
+
+/morinolab_cms/morinolab_cms-darwin-x64

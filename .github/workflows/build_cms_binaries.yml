@@ -26,6 +26,10 @@ jobs:
           - os: macos-latest
             platform: darwin
             arch: x64
+          - os: macos-latest
+            platform: darwin
+            arch: arm64
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
