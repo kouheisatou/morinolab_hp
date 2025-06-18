@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { format } from 'node:url';
 import matter from 'gray-matter';
 import Papa from 'papaparse';
-import sharp from 'sharp';
+import Jimp from 'jimp';
 
 // Root directory that contains the various content folders
 const CONTENT_ROOT = path.join(process.cwd(), '../contents');
@@ -238,27 +238,37 @@ ipcMain.handle(
     const destPath = path.join(mediaDir, destName);
 
     try {
-      const img = sharp(sourcePath);
-      const meta = await img.metadata();
+      // Load image with Jimp
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const image = await (Jimp as any).read(sourcePath);
       const maxWidth = 1600;
-      let pipe = img;
-      if (meta.width && meta.width > maxWidth) {
-        pipe = pipe.resize({ width: maxWidth });
+
+      // Resize if width is larger than maxWidth
+      if (image.getWidth() > maxWidth) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        image.resize(maxWidth, (Jimp as any).AUTO);
       }
-      if (ext === '.png') {
-        await pipe.png({ compressionLevel: 8 }).toFile(destPath);
+
+      // Set quality and save
+      if (ext.toLowerCase() === '.png') {
+        await image.quality(90).writeAsync(destPath);
       } else {
-        await pipe.jpeg({ quality: 80 }).toFile(destPath);
+        // Convert to JPEG with quality compression
+        await image.quality(80).writeAsync(destPath);
       }
 
       // Return markdown relative path
       return `./media/${destName}`;
-    } catch {
-      // fallback copy if sharp fails
-      fs.copyFileSync(sourcePath, destPath);
-
-      // Return markdown relative path
-      return `./media/${destName}`;
+    } catch (error) {
+      console.error('Failed to process image with Jimp, falling back to copy:', error);
+      // Fallback to simple copy if Jimp fails
+      try {
+        fs.copyFileSync(sourcePath, destPath);
+        return `./media/${destName}`;
+      } catch (copyError) {
+        console.error('Failed to copy image:', copyError);
+        return null;
+      }
     }
   },
 );
@@ -278,14 +288,30 @@ ipcMain.handle('select-thumbnail', async (_event, type: string, id: string) => {
   if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
   const destName = `${id}${ext}`;
   const destPath = path.join(destDir, destName);
-  // compress and resize
-  const img = sharp(sourcePath);
-  const metadata = await img.metadata();
-  const width = metadata.width && metadata.width > 800 ? 800 : metadata.width;
-  await img
-    .resize(width)
-    .toFormat(ext === '.png' ? 'png' : 'jpeg', { quality: 80 })
-    .toFile(destPath);
+  // Process and resize thumbnail with Jimp
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const image = await (Jimp as any).read(sourcePath);
+    const maxWidth = 800;
+
+    // Resize if width is larger than maxWidth
+    if (image.getWidth() > maxWidth) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      image.resize(maxWidth, (Jimp as any).AUTO);
+    }
+
+    // Set quality and save
+    if (ext.toLowerCase() === '.png') {
+      await image.quality(90).writeAsync(destPath);
+    } else {
+      // Convert to JPEG with quality compression
+      await image.quality(80).writeAsync(destPath);
+    }
+  } catch (error) {
+    console.error('Failed to process thumbnail with Jimp, falling back to copy:', error);
+    // Fallback to simple copy if Jimp fails
+    fs.copyFileSync(sourcePath, destPath);
+  }
   return `./${destName}`;
 });
 

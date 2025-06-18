@@ -7,3 +7,5 @@
 /morinolab_hp/node_modules/
 /node_modules/
 /morinolab_cms/build/
+/morinolab_cms/out/
+morinolab_cms/.npm-cache/
