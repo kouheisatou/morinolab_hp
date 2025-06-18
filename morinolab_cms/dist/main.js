@@ -374,6 +374,26 @@ electron_1.ipcMain.handle('resolve-path', (_e, type, rel) => {
     return 'file://' + abs;
 });
 electron_1.ipcMain.handle('get-font-url', () => {
-    const fontPath = node_path_1.default.join(process.cwd(), 'Sango-JA-CPAL.ttf');
-    return node_fs_1.default.existsSync(fontPath) ? 'file://' + fontPath : null;
+    // Check multiple possible locations for the font file
+    const appPath = electron_1.app.getAppPath();
+    const resourcesPath = process.resourcesPath || node_path_1.default.join(appPath, '..', 'Resources');
+    const possiblePaths = [
+        node_path_1.default.join(process.cwd(), 'Sango-JA-CPAL.ttf'), // Development
+        node_path_1.default.join(appPath, 'Sango-JA-CPAL.ttf'), // Packaged app root
+        node_path_1.default.join(resourcesPath, 'Sango-JA-CPAL.ttf'), // extraResource location
+        node_path_1.default.join(__dirname, '..', 'Sango-JA-CPAL.ttf'), // One level up from dist
+        node_path_1.default.join(__dirname, 'Sango-JA-CPAL.ttf'), // Same directory as main.js
+    ];
+    for (const fontPath of possiblePaths) {
+        if (node_fs_1.default.existsSync(fontPath)) {
+            console.log('Font found at:', fontPath);
+            return 'file://' + fontPath;
+        }
+    }
+    console.warn('Font file not found in any of the expected locations:', possiblePaths);
+    console.warn('App path:', appPath);
+    console.warn('Resources path:', resourcesPath);
+    console.warn('__dirname:', __dirname);
+    console.warn('process.cwd():', process.cwd());
+    return null;
 });

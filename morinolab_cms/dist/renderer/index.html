@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
@@ -6,42 +6,87 @@
     <style>
       body {
         margin: 0;
-        font-family: sans-serif;
+        font-family: 'Chicago', 'Geneva', sans-serif;
         display: flex;
         height: 100vh;
+        background: #c0c0c0; /* classic gray */
+        color: #000;
       }
       #sidebar {
-        width: 200px;
-        background: #2f3b52;
-        color: #fff;
+        flex: 0 0 180px; /* fixed width */
+        width: 180px;
+        background: #d4d0c8;
+        border-right: 2px solid #808080;
         overflow-y: auto;
+        overflow-x: hidden; /* disable horizontal scroll */
       }
       #sidebar button {
         width: 100%;
-        padding: 10px;
-        border: none;
-        background: none;
-        color: inherit;
+        padding: 6px 8px;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        background: #d4d0c8;
+        color: #000;
         text-align: left;
         cursor: pointer;
+        font-size: 13px;
+        margin: 2px 0; /* vertical margin only to avoid width overflow */
       }
       #sidebar button:hover {
-        background: #3e4b66;
+        background: #c8c4bc;
+      }
+      #sidebar button:active {
+        border-top-color: #808080;
+        border-left-color: #808080;
+        border-bottom-color: #fff;
+        border-right-color: #fff;
+      }
+      #sidebar button.active {
+        position: relative;
+        background: #d4d0c8; /* same as sidebar */
+        color: #000;
+        font-weight: bold;
+      }
+      #sidebar button.active::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 4px;
+        background: #000080;
       }
       #main {
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow: auto; /* allow scroll when content wider */
       }
       #items {
         flex: 1;
         overflow-y: auto;
         padding: 16px;
+        background: #c0c0c0;
       }
       #editor {
         flex: 1;
         display: none;
         flex-direction: column;
+      }
+      #editorHeader {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #d4d0c8;
+        border-bottom: 2px solid #808080;
+        padding: 6px 8px;
+      }
+      #editorHeader h2 {
+        flex: 1;
+        margin: 0;
+        font-size: 14px;
+        font-weight: bold;
       }
       #editor textarea {
         flex: 1;
@@ -51,12 +96,143 @@
         padding: 12px;
       }
       table {
-        width: 100%;
+        width: max-content; /* prevent squeezing, enable horizontal scroll */
         border-collapse: collapse;
+        border: 2px solid #808080;
       }
-      th, td {
-        padding: 8px 12px;
-        border-bottom: 1px solid #ddd;
+      th,
+      td {
+        padding: 4px 8px;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        text-align: left;
+        background: #e0e0e0;
+      }
+      th {
+        background: #d4d0c8;
+        font-weight: bold;
+      }
+      .btn {
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        background: #d4d0c8;
+        padding: 4px 10px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #000;
+        margin: 2px;
+      }
+      .btn:hover {
+        background: #c8c4bc;
+      }
+      .btn:active {
+        border-top-color: #808080;
+        border-left-color: #808080;
+        border-bottom-color: #fff;
+        border-right-color: #fff;
+      }
+      .btn.add {
+        background: #c0d6c0;
+      }
+      .btn.edit {
+        background: #c0c8d6;
+      }
+      .btn.danger {
+        background: #d6c0c0;
+      }
+      /* Mac OS 9 style scrollbars (WebKit-based browsers) */
+      ::-webkit-scrollbar {
+        width: 16px;
+        height: 16px;
+        background: #d4d0c8;
+      }
+      ::-webkit-scrollbar-track {
+        background: #d4d0c8;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #c0c0c0;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #b0b0b0;
+      }
+      ::-webkit-scrollbar-corner {
+        background: #d4d0c8;
+      }
+      /* popup */
+      #popupOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      #popup {
+        background: #d4d0c8;
+        border: 2px solid #808080;
+        padding: 12px;
+        max-height: 70vh;
+        overflow: auto;
+        min-width: 300px;
+      }
+      #popup h3 {
+        margin-top: 0;
+      }
+      #popup .choices {
+        max-height: 50vh;
+        overflow: auto;
+        margin-bottom: 12px;
+      }
+      #popup button {
+        margin-right: 6px;
+      }
+      #popup .choices input[type='checkbox'],
+      #popup .choices input[type='radio'] {
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        margin-right: 4px;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        background: #d4d0c8;
+        vertical-align: middle;
+      }
+      #popup .choices input[type='checkbox']:checked,
+      #popup .choices input[type='radio']:checked {
+        background: #000080;
+      }
+      #popup .choices input[type='radio'] {
+        border-radius: 50%;
+      }
+      .dropdownBtn {
+        display: block;
+        margin: 0 auto;
+        padding: 2px 6px;
+        border: 1px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        background: #d4d0c8;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .dropdownBtn:hover {
+        background: #c8c4bc;
+      }
+      .dropdownBtn:active {
+        border-top-color: #808080;
+        border-left-color: #808080;
+        border-bottom-color: #fff;
+        border-right-color: #fff;
       }
     </style>
   </head>
@@ -64,27 +240,38 @@
     <div id="sidebar"></div>
     <div id="main">
       <div id="items">
-        <button id="addBtn">+ 追加</button>
+        <button id="addBtn" class="btn add">+ 追加</button>
         <table id="itemsTable">
           <thead>
-            <tr><th>ID</th><th>タイトル</th><th>操作</th></tr>
+            <tr>
+              <th>ID</th>
+              <th>タイトル</th>
+            </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
       <div id="editor">
-        <button id="backBtn">← 一覧へ戻る</button>
-        <h2 id="editorTitle"></h2>
+        <div id="editorHeader">
+          <button id="backBtn" class="btn">← 一覧へ戻る</button>
+          <h2 id="editorTitle"></h2>
+          <button id="deleteBtn" class="btn danger">削除</button>
+        </div>
         <textarea id="contentArea"></textarea>
       </div>
+    </div>
+    <div id="popupOverlay">
+      <div id="popup"></div>
     </div>
     <script>
       const sidebar = document.getElementById('sidebar');
       const itemsDiv = document.getElementById('items');
       const editorDiv = document.getElementById('editor');
+      const itemsTableHead = document.querySelector('#itemsTable thead');
       const itemsTableBody = document.querySelector('#itemsTable tbody');
       const addBtn = document.getElementById('addBtn');
       const backBtn = document.getElementById('backBtn');
+      const deleteBtn = document.getElementById('deleteBtn');
       const contentArea = document.getElementById('contentArea');
       const editorTitle = document.getElementById('editorTitle');
 
@@ -97,6 +284,7 @@
         types.forEach((t) => {
           const btn = document.createElement('button');
           btn.textContent = t;
+          btn.dataset.type = t;
           btn.onclick = () => selectType(t);
           sidebar.appendChild(btn);
         });
@@ -108,34 +296,180 @@
         editorDiv.style.display = 'none';
         itemsDiv.style.display = 'block';
         loadItems();
+        // Highlight active sidebar button
+        Array.from(sidebar.querySelectorAll('button')).forEach((b) => {
+          if (b.dataset.type === type) {
+            b.classList.add('active');
+          } else {
+            b.classList.remove('active');
+          }
+        });
       }
 
       async function loadItems() {
         itemsTableBody.innerHTML = '';
-        const items = await window.api.getItems(currentType);
+        let tagsChoices = [];
+        let memberTypeChoices = [];
+        let memberChoices = [];
+        if (currentType === 'member' || currentType === 'publication') {
+          const tagsData = await window.api.getTableData('tags');
+          tagsChoices = tagsData.rows.map((r) => ({ id: r.id, label: r.name || r.title || r.id }));
+          if (currentType === 'member') {
+            const memberTypeData = await window.api.getTableData('membertype');
+            memberTypeChoices = memberTypeData.rows.map((r) => ({
+              id: r.id,
+              label: r.nameJa || r.name || r.title || r.id,
+            }));
+          }
+          if (currentType === 'publication') {
+            const memberData = await window.api.getTableData('member');
+            memberChoices = memberData.rows.map((r) => ({
+              id: r.id,
+              label: r.nameJa || r.nameEn || r.name || r.id,
+            }));
+          }
+        }
+        const tableData = await window.api.getTableData(currentType);
+        const headers = tableData.header;
+        const rows = tableData.rows;
+
+        // build header
+        itemsTableHead.innerHTML = '<tr>' + headers.map((h) => `<th>${h}</th>`).join('') + '</tr>';
+
+        rows.forEach((row) => {
+          const tr = document.createElement('tr');
+          headers.forEach((col) => {
+            const td = document.createElement('td');
+            td.textContent = row[col] || '';
+            if (col === 'id') {
+              td.classList.add('id-cell', 'clickable');
+              td.style.cursor = 'pointer';
+              td.onclick = () => openEditor(row['id'], row[headers[1]] || '');
+            } else if (col === 'thumbnail') {
+              const img = document.createElement('img');
+              if (row[col]) {
+                window.api
+                  .resolvePath(currentType, row[col])
+                  .then((url) => (img.src = url + '?' + Date.now()));
+              }
+              img.style.width = '60px';
+              img.style.height = '60px';
+              img.style.objectFit = 'cover';
+              img.style.cursor = 'pointer';
+              img.onclick = async () => {
+                const newPath = await window.api.selectThumbnail(currentType, row['id']);
+                if (newPath) {
+                  window.api
+                    .resolvePath(currentType, newPath)
+                    .then((url) => (img.src = url + '?' + Date.now()));
+                  window.api.updateCell(currentType, row['id'], 'thumbnail', newPath);
+                }
+              };
+              td.innerHTML = '';
+              td.appendChild(img);
+            } else if (currentType === 'member' && col === 'memberTypeId') {
+              const valueName = memberTypeChoices.find((c) => c.id === row[col])?.label || row[col];
+              const btn = document.createElement('button');
+              btn.className = 'dropdownBtn';
+              btn.textContent = valueName + ' ▾';
+              btn.onclick = (e) => {
+                e.stopPropagation();
+                openSelectionPopup({
+                  multiple: false,
+                  choices: memberTypeChoices,
+                  selected: row[col] ? [row[col]] : [],
+                  onConfirm: (vals) => {
+                    const v = vals[0] || '';
+                    window.api.updateCell(currentType, row['id'], 'memberTypeId', v);
+                    btn.textContent = memberTypeChoices.find((c) => c.id === v)?.label || v;
+                  },
+                });
+              };
+              td.innerHTML = '';
+              td.appendChild(btn);
+            } else if (
+              (currentType === 'member' && col === 'tagIds') ||
+              (currentType === 'publication' && col === 'tagIds')
+            ) {
+              const currentVals = (row[col] || '')
+                .split(',')
+                .map((v) => v.trim())
+                .filter(Boolean);
+              const names = tagsChoices
+                .filter((c) => currentVals.includes(c.id))
+                .map((c) => c.label)
+                .join(',');
+              const btn = document.createElement('button');
+              btn.className = 'dropdownBtn';
+              btn.textContent = names || '選択 ▾';
+              btn.onclick = (e) => {
+                e.stopPropagation();
+                openSelectionPopup({
+                  multiple: true,
+                  choices: tagsChoices,
+                  selected: currentVals,
+                  onConfirm: (vals) => {
+                    window.api.updateCell(currentType, row['id'], 'tagIds', vals.join(','));
+                    const namesAfter = tagsChoices
+                      .filter((c) => vals.includes(c.id))
+                      .map((c) => c.label)
+                      .join(',');
+                    btn.textContent = namesAfter || '選択 ▾';
+                  },
+                });
+              };
+              td.innerHTML = '';
+              td.appendChild(btn);
+            } else if (currentType === 'publication' && col === 'authorMemberIds') {
+              const currentVals = (row[col] || '')
+                .split(',')
+                .map((v) => v.trim())
+                .filter(Boolean);
+              const names = memberChoices
+                .filter((c) => currentVals.includes(c.id))
+                .map((c) => c.label)
+                .join(',');
+              const btn = document.createElement('button');
+              btn.className = 'dropdownBtn';
+              btn.textContent = names || '選択 ▾';
+              btn.onclick = (e) => {
+                e.stopPropagation();
+                openSelectionPopup({
+                  multiple: true,
+                  choices: memberChoices,
+                  selected: currentVals,
+                  onConfirm: (vals) => {
+                    window.api.updateCell(
+                      currentType,
+                      row['id'],
+                      'authorMemberIds',
+                      vals.join(','),
+                    );
+                    const namesAfter = memberChoices
+                      .filter((c) => vals.includes(c.id))
+                      .map((c) => c.label)
+                      .join(',');
+                    btn.textContent = namesAfter || '選択 ▾';
+                  },
+                });
+              };
+              td.innerHTML = '';
+              td.appendChild(btn);
+            } else {
+              td.contentEditable = 'true';
+              td.addEventListener('blur', () => {
+                window.api.updateCell(currentType, row['id'], col, td.textContent);
+              });
+            }
+            tr.appendChild(td);
+          });
+          itemsTableBody.appendChild(tr);
+        });
+
         addBtn.onclick = async () => {
           await window.api.createItem(currentType);
           loadItems();
         };
-        items.forEach((item) => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${item.id}</td><td>${item.title}</td><td></td>`;
-          const editBtn = document.createElement('button');
-          editBtn.textContent = '編集';
-          editBtn.onclick = () => openEditor(item.id, item.title);
-          const delBtn = document.createElement('button');
-          delBtn.textContent = '削除';
-          delBtn.onclick = async () => {
-            if (confirm('削除しますか?')) {
-              await window.api.deleteItem(currentType, item.id);
-              loadItems();
-            }
-          };
-          const tdOps = tr.querySelector('td:last-child');
-          tdOps.appendChild(editBtn);
-          tdOps.appendChild(delBtn);
-          itemsTableBody.appendChild(tr);
-        });
       }
 
       async function openEditor(id, title) {
@@ -145,6 +479,18 @@
         editorTitle.textContent = `${currentType} / ${id} - ${title}`;
         const content = await window.api.loadContent(currentType, id);
         contentArea.value = content;
+
+        // Set delete handler each time
+        deleteBtn.onclick = async () => {
+          if (confirm('削除しますか?')) {
+            await window.api.deleteItem(currentType, id);
+            // Return to list
+            currentId = null;
+            editorDiv.style.display = 'none';
+            itemsDiv.style.display = 'block';
+            loadItems();
+          }
+        };
       }
 
       backBtn.onclick = () => {
@@ -153,7 +499,7 @@
         loadItems();
       };
 
-      // Real-time save with debounce
+      // Auto-save
       contentArea.addEventListener('input', () => {
         if (!currentId) return;
         if (saveTimer) clearTimeout(saveTimer);
@@ -162,7 +508,104 @@
         }, 500);
       });
 
+      // Drag & Drop image insertion
+      contentArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      contentArea.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        if (!currentId) return;
+        const files = Array.from(e.dataTransfer.files);
+        if (!files.length) return;
+        const file = files[0];
+        const isImage =
+          file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(file.name);
+        if (!isImage) return;
+
+        const markdownPath = await window.api.saveImage(
+          currentType,
+          currentId,
+          file.path,
+          file.name,
+        );
+        if (!markdownPath) return;
+
+        // insert at cursor position
+        const imgMarkdown = `![${file.name}](${markdownPath})`;
+        const { selectionStart, selectionEnd, value } = contentArea;
+        contentArea.value =
+          value.slice(0, selectionStart) + imgMarkdown + value.slice(selectionEnd);
+        // set cursor after inserted text
+        const newPos = selectionStart + imgMarkdown.length;
+        contentArea.selectionStart = contentArea.selectionEnd = newPos;
+        // trigger save
+        window.api.saveContent(currentType, currentId, contentArea.value);
+      });
+
       init();
+
+      // Style clickable id cells
+      const styleEl = document.createElement('style');
+      styleEl.textContent = `.clickable { color: #0000ee; text-decoration: underline; }`;
+      document.head.appendChild(styleEl);
+
+      // Popup helper
+      function openSelectionPopup({ multiple, choices, selected, onConfirm }) {
+        const overlay = document.getElementById('popupOverlay');
+        const popup = document.getElementById('popup');
+        popup.innerHTML = '';
+        const title = document.createElement('h3');
+        title.textContent = multiple ? 'タグを選択' : 'タイプを選択';
+        popup.appendChild(title);
+        const listDiv = document.createElement('div');
+        listDiv.className = 'choices';
+        choices.forEach((c) => {
+          const label = document.createElement('label');
+          label.style.display = 'block';
+          const input = document.createElement('input');
+          input.type = multiple ? 'checkbox' : 'radio';
+          input.name = 'choice';
+          input.value = c.id;
+          if (selected.includes(c.id)) input.checked = true;
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(` ${c.label}`));
+          listDiv.appendChild(label);
+        });
+        popup.appendChild(listDiv);
+        const okBtn = document.createElement('button');
+        okBtn.textContent = 'OK';
+        okBtn.className = 'btn';
+        const closePopup = () => {
+          overlay.style.display = 'none';
+          document.removeEventListener('keydown', escHandler);
+        };
+        const escHandler = (ev) => {
+          if (ev.key === 'Escape') closePopup();
+        };
+        document.addEventListener('keydown', escHandler);
+        okBtn.onclick = () => {
+          const vals = Array.from(listDiv.querySelectorAll('input:checked')).map((i) => i.value);
+          onConfirm(vals);
+          closePopup();
+        };
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.className = 'btn danger';
+        cancelBtn.onclick = closePopup;
+        popup.appendChild(okBtn);
+        popup.appendChild(cancelBtn);
+        overlay.style.display = 'flex';
+      }
+
+      // Load custom font
+      window.api.getFontURL().then((url) => {
+        if (!url) return;
+        const style = document.createElement('style');
+        style.textContent = `@font-face { font-family: CustomFont; src: url('${url}'); }
+        body, button, table, textarea, input, select { font-family: 'CustomFont', sans-serif; }`;
+        document.head.appendChild(style);
+      });
     </script>
   </body>
-</html> 
+</html>

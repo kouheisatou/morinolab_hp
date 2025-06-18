@@ -414,6 +414,29 @@ ipcMain.handle('resolve-path', (_e, type: string, rel: string) => {
 });
 
 ipcMain.handle('get-font-url', () => {
-  const fontPath = path.join(process.cwd(), 'Sango-JA-CPAL.ttf');
-  return fs.existsSync(fontPath) ? 'file://' + fontPath : null;
+  // Check multiple possible locations for the font file
+  const appPath = app.getAppPath();
+  const resourcesPath = process.resourcesPath || path.join(appPath, '..', 'Resources');
+  
+  const possiblePaths = [
+    path.join(process.cwd(), 'Sango-JA-CPAL.ttf'), // Development
+    path.join(appPath, 'Sango-JA-CPAL.ttf'), // Packaged app root
+    path.join(resourcesPath, 'Sango-JA-CPAL.ttf'), // extraResource location
+    path.join(__dirname, '..', 'Sango-JA-CPAL.ttf'), // One level up from dist
+    path.join(__dirname, 'Sango-JA-CPAL.ttf'), // Same directory as main.js
+  ];
+  
+  for (const fontPath of possiblePaths) {
+    if (fs.existsSync(fontPath)) {
+      console.log('Font found at:', fontPath);
+      return 'file://' + fontPath;
+    }
+  }
+  
+  console.warn('Font file not found in any of the expected locations:', possiblePaths);
+  console.warn('App path:', appPath);
+  console.warn('Resources path:', resourcesPath);
+  console.warn('__dirname:', __dirname);
+  console.warn('process.cwd():', process.cwd());
+  return null;
 });
