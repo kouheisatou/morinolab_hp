@@ -57,7 +57,7 @@ const electronAppPath = process.argv[2] || 'out/morinolab-cms-electron-darwin-ar
 const destNodeModules = path.join(__dirname, electronAppPath, 'node_modules');
 
 // Dependencies that need to be copied
-const requiredDeps = ['gray-matter', 'papaparse', 'electron-squirrel-startup', 'jimp'];
+const requiredDeps = ['gray-matter', 'papaparse', 'electron-squirrel-startup'];
 
 // Find all dependencies including sub-dependencies
 let allDeps = [];
