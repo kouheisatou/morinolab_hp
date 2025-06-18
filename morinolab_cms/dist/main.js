@@ -10,79 +10,8 @@ const node_url_1 = require("node:url");
 const gray_matter_1 = __importDefault(require("gray-matter"));
 const papaparse_1 = __importDefault(require("papaparse"));
 const sharp_1 = __importDefault(require("sharp"));
-// ---------------------------------------------------------------------------
-// Resolve the root directory that contains the various content folders.
-// Priority order:
-//   1. `--contents=<absolute|relative path>` CLI argument passed to Electron.
-//   2. `CONTENTS_DIR` environment variable.
-//   3. Default path that clones `morinolab_hp` repo next to the executable
-//      and points to `../contents` inside it.
-// ---------------------------------------------------------------------------
-/**
- * Parse CLI args like `--contents=/some/path` and return value if present.
- */
-function getCliContentsDir() {
-    const arg = process.argv.find((a) => a.startsWith('--contents='));
-    if (!arg)
-        return undefined;
-    const [, value] = arg.split('=', 2);
-    return value ? node_path_1.default.resolve(value) : undefined;
-}
-const cliDir = getCliContentsDir();
-const envDir = process.env.CONTENTS_DIR ? node_path_1.default.resolve(process.env.CONTENTS_DIR) : undefined;
-const WORK_DIR = process.cwd();
-const REPO_DIR = node_path_1.default.join(WORK_DIR, 'morinolab_hp'); // cloned repository location
-function ensureRepoCloned() {
-    if (node_fs_1.default.existsSync(REPO_DIR))
-        return;
-    const REPO_URL = 'https://github.com/kouheisatou/morinolab_hp.git';
-    try {
-        // Lazy import to avoid unnecessary load when repo already exists
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const { execSync } = require('node:child_process');
-        console.log(`Cloning contents repository from ${REPO_URL}...`);
-        execSync(`git clone --depth 1 ${REPO_URL} "${REPO_DIR}"`, { stdio: 'inherit' });
-    }
-    catch (e) {
-        console.error('Failed to clone repository. Please ensure Git is installed and accessible.', e);
-    }
-}
-let resolvedContentRoot;
-// Helper to check whether a directory actually exists (and is a directory)
-function isValidDir(p) {
-    if (!p)
-        return false;
-    try {
-        return node_fs_1.default.existsSync(p) && node_fs_1.default.statSync(p).isDirectory();
-    }
-    catch {
-        return false;
-    }
-}
-if (isValidDir(cliDir)) {
-    resolvedContentRoot = cliDir;
-}
-else if (cliDir) {
-    console.warn(`⚠️  Specified --contents path "${cliDir}" does not exist. Falling back to default path.`);
-    if (envDir && isValidDir(envDir)) {
-        resolvedContentRoot = envDir;
-    }
-    else {
-        // Default: auto-clone repo and use its contents directory
-        // ensureRepoCloned();
-        resolvedContentRoot = node_path_1.default.join(REPO_DIR, 'morinolab_hp', 'public', 'contents');
-    }
-}
-else if (isValidDir(envDir)) {
-    resolvedContentRoot = envDir;
-}
-else {
-    // Default: auto-clone repo and use its contents directory
-    // ensureRepoCloned();
-    resolvedContentRoot = node_path_1.default.join(REPO_DIR, 'morinolab_hp', 'public', 'contents');
-}
 // Root directory that contains the various content folders
-const CONTENT_ROOT = resolvedContentRoot;
+const CONTENT_ROOT = node_path_1.default.join(process.cwd(), '../contents');
 function createWindow() {
     const win = new electron_1.BrowserWindow({
         width: 1200,
