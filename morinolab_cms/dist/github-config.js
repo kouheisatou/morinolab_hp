@@ -37,7 +37,7 @@ exports.getGitHubOAuthConfig = getGitHubOAuthConfig;
  * GitHub OAuth設定を保存（セキュア）
  */
 const saveGitHubOAuthConfig = async (clientId, clientSecret) => {
-    await secureConfig.saveGitHubOAuthConfig(clientId, clientSecret);
+    await secureConfig.saveGitHubOAuthConfig(clientId, clientSecret || '');
 };
 exports.saveGitHubOAuthConfig = saveGitHubOAuthConfig;
 /**

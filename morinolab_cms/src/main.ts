@@ -772,10 +772,7 @@ ipcMain.handle('github-oauth-authenticate', async () => {
       };
     }
 
-    const result = await githubService.authenticateWithOAuth(
-      oauthConfig.clientId,
-      oauthConfig.clientSecret,
-    );
+    const result = await githubService.authenticateWithDeviceFlow(oauthConfig.clientId);
     if (result.success && result.token) {
       await githubService.authenticate(result.token);
     }

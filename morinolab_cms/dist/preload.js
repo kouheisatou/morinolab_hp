@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
+// Gitのコミットログの型 (グローバル宣言へ移動)
 electron_1.contextBridge.exposeInMainWorld('api', {
     getContentTypes: () => electron_1.ipcRenderer.invoke('get-content-types'),
     getItems: (type) => electron_1.ipcRenderer.invoke('get-items', type),
@@ -55,4 +56,8 @@ electron_1.contextBridge.exposeInMainWorld('api', {
     githubCheckConflictsResolved: () => electron_1.ipcRenderer.invoke('github-check-conflicts-resolved'),
     // Git log
     githubGetLog: (limit = 20) => electron_1.ipcRenderer.invoke('github-get-log', limit),
+    onGitHubDeviceCode: (callback) => {
+        electron_1.ipcRenderer.on('github-device-code', (_, data) => callback(data));
+        return () => electron_1.ipcRenderer.removeAllListeners('github-device-code');
+    },
 });

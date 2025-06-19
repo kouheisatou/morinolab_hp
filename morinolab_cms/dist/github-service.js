@@ -9,159 +9,11 @@ const simple_git_1 = __importDefault(require("simple-git"));
 const electron_1 = require("electron");
 const node_fs_1 = __importDefault(require("node:fs"));
 const node_path_1 = __importDefault(require("node:path"));
-const node_http_1 = require("node:http");
-/**
- * 利用可能なポートを見つける
- */
-function findAvailablePort(startPort = 3000) {
-    return new Promise((resolve, reject) => {
-        const server = (0, node_http_1.createServer)();
-        server.listen(startPort, () => {
-            const port = server.address().port;
-            server.close(() => {
-                resolve(port);
-            });
-        });
-        server.on('error', (err) => {
-            if (err.code === 'EADDRINUSE') {
-                // ポートが使用中の場合、次のポートを試す
-                findAvailablePort(startPort + 1)
-                    .then(resolve)
-                    .catch(reject);
-            }
-            else {
-                reject(err);
-            }
-        });
-    });
-}
 class GitHubService {
     octokit = null;
     git = null;
     config = null;
     constructor() { }
-    /**
-     * ブラウザベースOAuth認証
-     */
-    async authenticateWithOAuth(clientId, clientSecret) {
-        return new Promise((resolve) => {
-            (async () => {
-                try {
-                    // 利用可能なポートを動的に見つける
-                    const port = await findAvailablePort(3000);
-                    const redirectUri = `http://localhost:${port}/auth/callback`;
-                    const scope = 'repo,user';
-                    const state = Math.random().toString(36).substring(7);
-                    console.log(`Starting OAuth server on port ${port}`);
-                    // ローカルサーバーを起動してコールバックを受信
-                    const server = (0, node_http_1.createServer)((req, res) => {
-                        const url = new URL(req.url, `http://localhost:${port}`);
-                        if (url.pathname === '/auth/callback') {
-                            const code = url.searchParams.get('code');
-                            const returnedState = url.searchParams.get('state');
-                            if (returnedState !== state) {
-                                res.writeHead(400, { 'Content-Type': 'text/html' });
-                                res.end('<h1>認証エラー</h1><p>不正なリクエストです。</p>');
-                                server.close();
-                                resolve({ success: false, error: 'Invalid state parameter' });
-                                return;
-                            }
-                            if (code) {
-                                // アクセストークンを取得
-                                this.exchangeCodeForToken(code, clientId, clientSecret, redirectUri)
-                                    .then((token) => {
-                                    res.writeHead(200, { 'Content-Type': 'text/html' });
-                                    res.end('<h1>認証完了</h1><p>アプリケーションに戻ってください。</p><script>window.close();</script>');
-                                    server.close();
-                                    resolve({ success: true, token });
-                                })
-                                    .catch((error) => {
-                                    res.writeHead(400, { 'Content-Type': 'text/html' });
-                                    res.end('<h1>認証エラー</h1><p>トークンの取得に失敗しました。</p>');
-                                    server.close();
-                                    resolve({ success: false, error: error.message });
-                                });
-                            }
-                            else {
-                                res.writeHead(400, { 'Content-Type': 'text/html' });
-                                res.end('<h1>認証エラー</h1><p>認証コードが取得できませんでした。</p>');
-                                server.close();
-                                resolve({ success: false, error: 'No authorization code received' });
-                            }
-                        }
-                    });
-                    // エラーハンドリングを追加
-                    server.on('error', (err) => {
-                        console.error('Server error:', err);
-                        server.close();
-                        resolve({ success: false, error: `Server error: ${err.message}` });
-                    });
-                    let authWin = null;
-                    server.listen(port, () => {
-                        console.log(`OAuth server listening on port ${port}`);
-                        const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}`;
-                        if (electron_1.app.isPackaged) {
-                            // 本番ビルドではデフォルトブラウザで開く
-                            electron_1.shell.openExternal(authUrl);
-                        }
-                        else {
-                            // 開発時は Electron ウィンドウで開き、自動では閉じない
-                            authWin = new electron_1.BrowserWindow({
-                                width: 960,
-                                height: 900,
-                                webPreferences: { nodeIntegration: false },
-                            });
-                            authWin.loadURL(authUrl);
-                        }
-                    });
-                    // 認証完了時に、パッケージ版のみウィンドウを閉じる
-                    const closeAuthWindow = () => {
-                        if (authWin && electron_1.app.isPackaged) {
-                            authWin.close();
-                            authWin = null;
-                        }
-                    };
-                    // タイムアウト設定
-                    setTimeout(() => {
-                        console.log('OAuth authentication timeout');
-                        server.close();
-                        closeAuthWindow();
-                        resolve({ success: false, error: 'Authentication timeout' });
-                    }, 300000); // 5分でタイムアウト
-                }
-                catch (error) {
-                    console.error('Failed to find available port:', error);
-                    resolve({
-                        success: false,
-                        error: `Failed to start OAuth server: ${error.message}`,
-                    });
-                }
-            })(); // immediately invoked async function to keep executor sync
-        });
-    }
-    /**
-     * 認証コードをアクセストークンに交換
-     */
-    async exchangeCodeForToken(code, clientId, clientSecret, redirectUri) {
-        const response = await fetch('https://github.com/login/oauth/access_token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-            },
-            body: JSON.stringify({
-                client_id: clientId,
-                client_secret: clientSecret,
-                code: code,
-                redirect_uri: redirectUri,
-            }),
-        });
-        const data = await response.json();
-        if (data.error) {
-            throw new Error(data.error_description || data.error);
-        }
-        return data.access_token;
-    }
     /**
      * GitHub認証を設定
      */
@@ -260,16 +112,19 @@ class GitHubService {
                 onProgress?.('変更をステージング...', 30);
                 await this.git.add('.');
                 onProgress?.('コミットを作成中...', 40);
-                const finalMsg = message.startsWith('[MorinolabCMS]') ? message : `[MorinolabCMS] ${message}`;
+                const finalMsg = message.startsWith('[MorinolabCMS]')
+                    ? message
+                    : `[MorinolabCMS] ${message}`;
                 await this.git.commit(finalMsg);
             }
             else {
                 onProgress?.('コミットする変更はありません', 40);
             }
             onProgress?.('プッシュを開始...', 60);
-            const gitAny = this.git;
-            if (typeof gitAny.progress === 'function') {
-                gitAny.progress((evt) => {
+            // 型定義に progress メソッドが含まれていないため、progress を持つ型としてアサート
+            const gitWithProgress = this.git;
+            if (typeof gitWithProgress.progress === 'function') {
+                gitWithProgress.progress((evt) => {
                     const { method, stage, progress } = evt;
                     if (method === 'push') {
                         const percent = 60 + progress / 2; // 60-100%
@@ -563,6 +418,82 @@ class GitHubService {
             console.error('Clone failed:', error);
             onProgress?.('クローンに失敗しました', 0);
             return false;
+        }
+    }
+    /**
+     * GitHub Device Flow 認証
+     * Client Secret を必要とせず、デスクトップ/CLI アプリで安全に使用できる
+     * 参考: https://docs.github.com/en/developers/apps/authorizing-oauth-apps#device-flow
+     */
+    async authenticateWithDeviceFlow(clientId, scope = 'repo,user') {
+        try {
+            // 1. デバイスコードを取得
+            const deviceCodeRes = await fetch('https://github.com/login/device/code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    Accept: 'application/json',
+                },
+                body: new URLSearchParams({ client_id: clientId, scope }).toString(),
+            });
+            const deviceData = (await deviceCodeRes.json());
+            if (deviceData.error) {
+                return { success: false, error: deviceData.error_description || deviceData.error };
+            }
+            const { device_code: deviceCode, user_code: userCode, verification_uri: verificationUri, verification_uri_complete: verificationUriComplete, expires_in: expiresIn, interval, } = deviceData;
+            // 2. ユーザーにブラウザで認証を促す
+            const openUrl = verificationUriComplete || verificationUri;
+            electron_1.shell.openExternal(openUrl);
+            // after shell.openExternal(openUrl);
+            electron_1.BrowserWindow.getAllWindows()[0]?.webContents.send('github-device-code', {
+                code: userCode,
+                url: openUrl,
+            });
+            // ユーザーコードをクリップボードにコピーし、ダイアログ表示
+            try {
+                electron_1.clipboard.writeText(userCode);
+            }
+            catch { /* ignore */ }
+            // 3. ポーリングでトークン取得を試みる
+            const started = Date.now();
+            let pollingIntervalMs = interval * 1000;
+            while (Date.now() - started < expiresIn * 1000) {
+                await new Promise((r) => setTimeout(r, pollingIntervalMs));
+                const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        Accept: 'application/json',
+                    },
+                    body: new URLSearchParams({
+                        client_id: clientId,
+                        device_code: deviceCode,
+                        grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
+                    }).toString(),
+                });
+                const tokenData = (await tokenRes.json());
+                if (tokenData.access_token) {
+                    console.log('GitHub Device Flow authentication successful');
+                    return { success: true, token: tokenData.access_token };
+                }
+                if (tokenData.error === 'authorization_pending') {
+                    // まだユーザーが認証していない → 継続
+                    continue;
+                }
+                if (tokenData.error === 'slow_down') {
+                    // ポーリング間隔を増やす
+                    pollingIntervalMs += 5000;
+                    continue;
+                }
+                if (tokenData.error) {
+                    return { success: false, error: tokenData.error_description || tokenData.error };
+                }
+            }
+            return { success: false, error: 'Device code expired or timeout' };
+        }
+        catch (error) {
+            console.error('GitHub Device Flow authentication failed:', error);
+            return { success: false, error: error.message };
         }
     }
 }

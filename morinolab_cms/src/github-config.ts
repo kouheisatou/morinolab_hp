@@ -5,7 +5,7 @@ import { SecureGitHubConfig } from './config-manager';
 
 export interface GitHubOAuthConfig {
   clientId: string;
-  clientSecret: string;
+  clientSecret?: string;
 }
 
 // セキュアな設定管理のインスタンス
@@ -44,9 +44,9 @@ export const getGitHubOAuthConfig = async (): Promise<GitHubOAuthConfig | null> 
  */
 export const saveGitHubOAuthConfig = async (
   clientId: string,
-  clientSecret: string,
+  clientSecret?: string,
 ): Promise<void> => {
-  await secureConfig.saveGitHubOAuthConfig(clientId, clientSecret);
+  await secureConfig.saveGitHubOAuthConfig(clientId, clientSecret || '');
 };
 
 /**

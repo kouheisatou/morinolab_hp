@@ -1,10 +1,8 @@
 import { Octokit } from '@octokit/rest';
 import simpleGit, { SimpleGit } from 'simple-git';
-import { shell, BrowserWindow, app } from 'electron';
+import { shell, clipboard, dialog } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
-import { createServer } from 'node:http';
-import { AddressInfo } from 'node:net';
 
 export interface GitHubConfig {
   token: string;
@@ -29,184 +27,12 @@ export interface GitHubRepository {
   };
 }
 
-/**
- * 利用可能なポートを見つける
- */
-function findAvailablePort(startPort: number = 3000): Promise<number> {
-  return new Promise((resolve, reject) => {
-    const server = createServer();
-
-    server.listen(startPort, () => {
-      const port = (server.address() as AddressInfo).port;
-      server.close(() => {
-        resolve(port);
-      });
-    });
-
-    server.on('error', (err: NodeJS.ErrnoException) => {
-      if (err.code === 'EADDRINUSE') {
-        // ポートが使用中の場合、次のポートを試す
-        findAvailablePort(startPort + 1)
-          .then(resolve)
-          .catch(reject);
-      } else {
-        reject(err);
-      }
-    });
-  });
-}
-
 export class GitHubService {
   private octokit: Octokit | null = null;
   private git: SimpleGit | null = null;
   private config: GitHubConfig | null = null;
 
   constructor() {}
-
-  /**
-   * ブラウザベースOAuth認証
-   */
-  async authenticateWithOAuth(
-    clientId: string,
-    clientSecret: string,
-  ): Promise<{ success: boolean; token?: string; error?: string }> {
-    return new Promise((resolve) => {
-      (async () => {
-        try {
-          // 利用可能なポートを動的に見つける
-          const port = await findAvailablePort(3000);
-          const redirectUri = `http://localhost:${port}/auth/callback`;
-          const scope = 'repo,user';
-          const state = Math.random().toString(36).substring(7);
-
-          console.log(`Starting OAuth server on port ${port}`);
-
-          // ローカルサーバーを起動してコールバックを受信
-          const server = createServer((req, res) => {
-            const url = new URL(req.url!, `http://localhost:${port}`);
-
-            if (url.pathname === '/auth/callback') {
-              const code = url.searchParams.get('code');
-              const returnedState = url.searchParams.get('state');
-
-              if (returnedState !== state) {
-                res.writeHead(400, { 'Content-Type': 'text/html' });
-                res.end('<h1>認証エラー</h1><p>不正なリクエストです。</p>');
-                server.close();
-                resolve({ success: false, error: 'Invalid state parameter' });
-                return;
-              }
-
-              if (code) {
-                // アクセストークンを取得
-                this.exchangeCodeForToken(code, clientId, clientSecret, redirectUri)
-                  .then((token) => {
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
-                    res.end(
-                      '<h1>認証完了</h1><p>アプリケーションに戻ってください。</p><script>window.close();</script>',
-                    );
-                    server.close();
-                    resolve({ success: true, token });
-                  })
-                  .catch((error) => {
-                    res.writeHead(400, { 'Content-Type': 'text/html' });
-                    res.end('<h1>認証エラー</h1><p>トークンの取得に失敗しました。</p>');
-                    server.close();
-                    resolve({ success: false, error: error.message });
-                  });
-              } else {
-                res.writeHead(400, { 'Content-Type': 'text/html' });
-                res.end('<h1>認証エラー</h1><p>認証コードが取得できませんでした。</p>');
-                server.close();
-                resolve({ success: false, error: 'No authorization code received' });
-              }
-            }
-          });
-
-          // エラーハンドリングを追加
-          server.on('error', (err) => {
-            console.error('Server error:', err);
-            server.close();
-            resolve({ success: false, error: `Server error: ${err.message}` });
-          });
-
-          let authWin: BrowserWindow | null = null;
-
-          server.listen(port, () => {
-            console.log(`OAuth server listening on port ${port}`);
-            const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}`;
-
-            if (app.isPackaged) {
-              // 本番ビルドではデフォルトブラウザで開く
-              shell.openExternal(authUrl);
-            } else {
-              // 開発時は Electron ウィンドウで開き、自動では閉じない
-              authWin = new BrowserWindow({
-                width: 960,
-                height: 900,
-                webPreferences: { nodeIntegration: false },
-              });
-              authWin.loadURL(authUrl);
-            }
-          });
-
-          // 認証完了時に、パッケージ版のみウィンドウを閉じる
-          const closeAuthWindow = () => {
-            if (authWin && app.isPackaged) {
-              authWin.close();
-              authWin = null;
-            }
-          };
-
-          // タイムアウト設定
-          setTimeout(() => {
-            console.log('OAuth authentication timeout');
-            server.close();
-            closeAuthWindow();
-            resolve({ success: false, error: 'Authentication timeout' });
-          }, 300000); // 5分でタイムアウト
-        } catch (error) {
-          console.error('Failed to find available port:', error);
-          resolve({
-            success: false,
-            error: `Failed to start OAuth server: ${(error as Error).message}`,
-          });
-        }
-      })(); // immediately invoked async function to keep executor sync
-    });
-  }
-
-  /**
-   * 認証コードをアクセストークンに交換
-   */
-  private async exchangeCodeForToken(
-    code: string,
-    clientId: string,
-    clientSecret: string,
-    redirectUri: string,
-  ): Promise<string> {
-    const response = await fetch('https://github.com/login/oauth/access_token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        client_id: clientId,
-        client_secret: clientSecret,
-        code: code,
-        redirect_uri: redirectUri,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.error) {
-      throw new Error(data.error_description || data.error);
-    }
-
-    return data.access_token;
-  }
 
   /**
    * GitHub認証を設定
@@ -681,6 +507,123 @@ export class GitHubService {
       console.error('Clone failed:', error);
       onProgress?.('クローンに失敗しました', 0);
       return false;
+    }
+  }
+
+  /**
+   * GitHub Device Flow 認証
+   * Client Secret を必要とせず、デスクトップ/CLI アプリで安全に使用できる
+   * 参考: https://docs.github.com/en/developers/apps/authorizing-oauth-apps#device-flow
+   */
+  async authenticateWithDeviceFlow(
+    clientId: string,
+    scope: string = 'repo,user',
+  ): Promise<{ success: boolean; token?: string; error?: string }> {
+    try {
+      // 1. デバイスコードを取得
+      const deviceCodeRes = await fetch('https://github.com/login/device/code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Accept: 'application/json',
+        },
+        body: new URLSearchParams({ client_id: clientId, scope }).toString(),
+      });
+
+      const deviceData = (await deviceCodeRes.json()) as {
+        device_code: string;
+        user_code: string;
+        verification_uri: string;
+        verification_uri_complete?: string;
+        expires_in: number;
+        interval: number;
+        error?: string;
+        error_description?: string;
+      };
+
+      if (deviceData.error) {
+        return { success: false, error: deviceData.error_description || deviceData.error };
+      }
+
+      const {
+        device_code: deviceCode,
+        user_code: userCode,
+        verification_uri: verificationUri,
+        verification_uri_complete: verificationUriComplete,
+        expires_in: expiresIn,
+        interval,
+      } = deviceData;
+
+      // 2. ユーザーにブラウザで認証を促す
+      const openUrl = verificationUriComplete || verificationUri;
+      shell.openExternal(openUrl);
+
+      // ユーザーコードをクリップボードにコピーし、ダイアログ表示
+      try {
+        clipboard.writeText(userCode);
+      } catch {
+        /* ignore */
+      }
+      await dialog.showMessageBox({
+        type: 'info',
+        buttons: ['OK'],
+        title: 'GitHub Device Flow',
+        message: 'ブラウザに表示された入力欄に以下のコードを貼り付けてください。',
+        detail: `認証コード: ${userCode}\n(コードはクリップボードへコピーされています)`,
+        noLink: true,
+      });
+
+      // 3. ポーリングでトークン取得を試みる
+      const started = Date.now();
+      let pollingIntervalMs = interval * 1000;
+      while (Date.now() - started < expiresIn * 1000) {
+        await new Promise((r) => setTimeout(r, pollingIntervalMs));
+
+        const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Accept: 'application/json',
+          },
+          body: new URLSearchParams({
+            client_id: clientId,
+            device_code: deviceCode,
+            grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
+          }).toString(),
+        });
+
+        const tokenData = (await tokenRes.json()) as {
+          access_token?: string;
+          token_type?: string;
+          scope?: string;
+          error?: string;
+          error_description?: string;
+          error_uri?: string;
+        };
+
+        if (tokenData.access_token) {
+          console.log('GitHub Device Flow authentication successful');
+          return { success: true, token: tokenData.access_token };
+        }
+
+        if (tokenData.error === 'authorization_pending') {
+          // まだユーザーが認証していない → 継続
+          continue;
+        }
+        if (tokenData.error === 'slow_down') {
+          // ポーリング間隔を増やす
+          pollingIntervalMs += 5000;
+          continue;
+        }
+        if (tokenData.error) {
+          return { success: false, error: tokenData.error_description || tokenData.error };
+        }
+      }
+
+      return { success: false, error: 'Device code expired or timeout' };
+    } catch (error) {
+      console.error('GitHub Device Flow authentication failed:', error);
+      return { success: false, error: (error as Error).message };
     }
   }
 }

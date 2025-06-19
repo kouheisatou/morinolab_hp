@@ -6,7 +6,8 @@ import crypto from 'node:crypto';
 interface EncryptedConfig {
   github: {
     clientId: string;
-    clientSecret: string;
+    clientSecret?: string; // optional: Device Flow では不要
+    token?: string; // Device Flow で取得したアクセストークンを保存
   };
 }
 
@@ -130,7 +131,7 @@ export class SecureGitHubConfig {
   /**
    * GitHubのOAuth設定を取得（セキュアな方法）
    */
-  async getGitHubOAuthConfig(): Promise<{ clientId: string; clientSecret: string } | null> {
+  async getGitHubOAuthConfig(): Promise<{ clientId: string; clientSecret?: string } | null> {
     try {
       // 1. 暗号化された設定ファイルから取得を試行
       const config = await this.configManager.loadConfig();
@@ -207,24 +208,19 @@ export class SecureGitHubConfig {
   /**
    * GitHub OAuth設定を保存
    */
-  async saveGitHubOAuthConfig(clientId: string, clientSecret: string): Promise<void> {
+  async saveGitHubOAuthConfig(clientId: string, clientSecret?: string): Promise<void> {
     const config: EncryptedConfig = {
       github: { clientId, clientSecret },
-    };
+    } as EncryptedConfig;
     await this.configManager.saveConfig(config);
   }
 
   /**
    * 設定の検証
    */
-  validateConfig(config: { clientId: string; clientSecret: string }): boolean {
+  validateConfig(config: { clientId: string; clientSecret?: string }): boolean {
     return Boolean(
-      config.clientId &&
-        config.clientId !== 'YOUR_GITHUB_CLIENT_ID' &&
-        config.clientSecret &&
-        config.clientSecret !== 'YOUR_GITHUB_CLIENT_SECRET' &&
-        config.clientId.length > 10 &&
-        config.clientSecret.length > 10,
+      config.clientId && config.clientId !== 'YOUR_GITHUB_CLIENT_ID' && config.clientId.length > 10,
     );
   }
 

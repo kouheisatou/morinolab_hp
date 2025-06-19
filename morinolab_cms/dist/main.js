@@ -709,7 +709,7 @@ electron_1.ipcMain.handle('github-oauth-authenticate', async () => {
                 setupGuide: (0, github_config_1.showGitHubSetupGuide)(),
             };
         }
-        const result = await githubService.authenticateWithOAuth(oauthConfig.clientId, oauthConfig.clientSecret);
+        const result = await githubService.authenticateWithDeviceFlow(oauthConfig.clientId);
         if (result.success && result.token) {
             await githubService.authenticate(result.token);
         }
