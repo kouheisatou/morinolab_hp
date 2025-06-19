@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import simpleGit, { SimpleGit } from 'simple-git';
-import { shell } from 'electron';
+import { shell, BrowserWindow, app } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createServer } from 'node:http';
@@ -130,16 +130,39 @@ export class GitHubService {
             resolve({ success: false, error: `Server error: ${err.message}` });
           });
 
+          let authWin: BrowserWindow | null = null;
+
           server.listen(port, () => {
             console.log(`OAuth server listening on port ${port}`);
             const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}`;
-            shell.openExternal(authUrl);
+
+            if (app.isPackaged) {
+              // 本番ビルドではデフォルトブラウザで開く
+              shell.openExternal(authUrl);
+            } else {
+              // 開発時は Electron ウィンドウで開き、自動では閉じない
+              authWin = new BrowserWindow({
+                width: 960,
+                height: 900,
+                webPreferences: { nodeIntegration: false },
+              });
+              authWin.loadURL(authUrl);
+            }
           });
+
+          // 認証完了時に、パッケージ版のみウィンドウを閉じる
+          const closeAuthWindow = () => {
+            if (authWin && app.isPackaged) {
+              authWin.close();
+              authWin = null;
+            }
+          };
 
           // タイムアウト設定
           setTimeout(() => {
             console.log('OAuth authentication timeout');
             server.close();
+            closeAuthWindow();
             resolve({ success: false, error: 'Authentication timeout' });
           }, 300000); // 5分でタイムアウト
         } catch (error) {
@@ -260,34 +283,91 @@ export class GitHubService {
   /**
    * 変更をコミット&プッシュ
    */
-  async commitAndPush(message: string): Promise<boolean> {
+  async commitAndPush(
+    message: string,
+    onProgress?: (message: string, percent: number) => void,
+  ): Promise<{
+    success: boolean;
+    hasConflicts?: boolean;
+    conflicts?: string[];
+    error?: string;
+  }> {
     if (!this.git || !this.config) {
       throw new Error('Git configuration required');
     }
 
     try {
-      // ステータス確認
-      const status = await this.git.status();
+      // プッシュ用にトークン入り URL を常にセット
+      const authRepoUrl = `https://${this.config.token}@github.com/${this.config.owner}/${this.config.repo}.git`;
+      await this.git.remote(['set-url', 'origin', authRepoUrl]);
 
-      if (!status.files.length) {
-        console.log('No changes to commit');
-        return true;
+      onProgress?.('リモートの変更を取得中...', 5);
+      await this.git.fetch('origin', 'main');
+
+      onProgress?.('マージ中...', 15);
+      try {
+        await this.git.pull('origin', 'main', { '--no-rebase': null });
+      } catch (pullError: unknown) {
+        console.error('Pull during commit-push failed:', pullError);
+
+        // コンフリクト判定
+        const errMsg = pullError instanceof Error ? pullError.message : String(pullError);
+        if (errMsg.includes('CONFLICT')) {
+          const conflicts = await this.getConflictFiles();
+          onProgress?.('マージコンフリクトが発生しました', 0);
+          return { success: false, hasConflicts: true, conflicts, error: errMsg };
+        }
+
+        // pull 失敗だがコンフリクトでない
+        onProgress?.('プルに失敗しました', 0);
+        return { success: false, error: errMsg };
       }
 
-      // 全ての変更をステージング
-      await this.git.add('.');
+      // ステータス確認して変更があればコミット
+      const status = await this.git.status();
 
-      // コミット
-      await this.git.commit(message);
+      if (status.files.length) {
+        onProgress?.('変更をステージング...', 30);
+        await this.git.add('.');
 
-      // プッシュ
+        onProgress?.('コミットを作成中...', 40);
+        const finalMsg = message.startsWith('[MorinolabCMS]')
+          ? message
+          : `[MorinolabCMS] ${message}`;
+        await this.git.commit(finalMsg);
+      } else {
+        onProgress?.('コミットする変更はありません', 40);
+      }
+
+      onProgress?.('プッシュを開始...', 60);
+
+      // 型定義に progress メソッドが含まれていないため、progress を持つ型としてアサート
+      const gitWithProgress = this.git as unknown as {
+        progress: (cb: (evt: { method: string; stage: string; progress: number }) => void) => void;
+      };
+
+      if (typeof gitWithProgress.progress === 'function') {
+        gitWithProgress.progress((evt) => {
+          const { method, stage, progress } = evt;
+          if (method === 'push') {
+            const percent = 60 + progress / 2; // 60-100%
+            onProgress?.(`プッシュ中 (${stage})`, Math.min(99, percent));
+          }
+        });
+      } else {
+        onProgress?.('プッシュ中...', 75);
+      }
+
       await this.git.push('origin', 'main');
 
+      onProgress?.('アップロード完了', 100);
       console.log('Changes committed and pushed successfully');
-      return true;
-    } catch (error) {
+      return { success: true };
+    } catch (error: unknown) {
       console.error('Commit and push failed:', error);
-      return false;
+      const errMsg = error instanceof Error ? error.message : String(error);
+      onProgress?.('アップロードに失敗しました', 0);
+      return { success: false, error: errMsg };
     }
   }
 
@@ -446,13 +526,31 @@ export class GitHubService {
         throw new Error('すべてのコンフリクトを解決してください');
       }
 
-      await this.git.commit(message);
+      const finalMsg = message.startsWith('[MorinolabCMS]') ? message : `[MorinolabCMS] ${message}`;
+      await this.git.commit(finalMsg);
       console.log('Merge completed successfully');
       return true;
     } catch (error) {
       console.error('Failed to complete merge:', error);
       return false;
     }
+  }
+
+  /**
+   * 最新のコミットログを取得
+   */
+  async getCommitLog(
+    limit: number = 20,
+  ): Promise<{ hash: string; message: string; date: string; author: string }[]> {
+    if (!this.git) throw new Error('Git not initialized');
+
+    const log = await this.git.log(['-n', String(limit)]);
+    return log.all.map((l) => ({
+      hash: l.hash,
+      message: l.message,
+      date: l.date,
+      author: l.author_name,
+    }));
   }
 
   /**
@@ -495,7 +593,7 @@ export class GitHubService {
    * 設定状態確認
    */
   isConfigured(): boolean {
-    return this.config !== null && this.git !== null;
+    return this.config !== null && this.git !== null && fs.existsSync(this.config.localPath);
   }
 
   /**

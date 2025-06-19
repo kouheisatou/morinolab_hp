@@ -25,7 +25,9 @@ function findAvailablePort(startPort = 3000) {
         server.on('error', (err) => {
             if (err.code === 'EADDRINUSE') {
                 // ポートが使用中の場合、次のポートを試す
-                findAvailablePort(startPort + 1).then(resolve).catch(reject);
+                findAvailablePort(startPort + 1)
+                    .then(resolve)
+                    .catch(reject);
             }
             else {
                 reject(err);
@@ -42,73 +44,99 @@ class GitHubService {
      * ブラウザベースOAuth認証
      */
     async authenticateWithOAuth(clientId, clientSecret) {
-        return new Promise(async (resolve) => {
-            try {
-                // 利用可能なポートを動的に見つける
-                const port = await findAvailablePort(3000);
-                const redirectUri = `http://localhost:${port}/auth/callback`;
-                const scope = 'repo,user';
-                const state = Math.random().toString(36).substring(7);
-                console.log(`Starting OAuth server on port ${port}`);
-                // ローカルサーバーを起動してコールバックを受信
-                const server = (0, node_http_1.createServer)((req, res) => {
-                    const url = new URL(req.url, `http://localhost:${port}`);
-                    if (url.pathname === '/auth/callback') {
-                        const code = url.searchParams.get('code');
-                        const returnedState = url.searchParams.get('state');
-                        if (returnedState !== state) {
-                            res.writeHead(400, { 'Content-Type': 'text/html' });
-                            res.end('<h1>認証エラー</h1><p>不正なリクエストです。</p>');
-                            server.close();
-                            resolve({ success: false, error: 'Invalid state parameter' });
-                            return;
-                        }
-                        if (code) {
-                            // アクセストークンを取得
-                            this.exchangeCodeForToken(code, clientId, clientSecret, redirectUri)
-                                .then((token) => {
-                                res.writeHead(200, { 'Content-Type': 'text/html' });
-                                res.end('<h1>認証完了</h1><p>アプリケーションに戻ってください。</p><script>window.close();</script>');
-                                server.close();
-                                resolve({ success: true, token });
-                            })
-                                .catch((error) => {
+        return new Promise((resolve) => {
+            (async () => {
+                try {
+                    // 利用可能なポートを動的に見つける
+                    const port = await findAvailablePort(3000);
+                    const redirectUri = `http://localhost:${port}/auth/callback`;
+                    const scope = 'repo,user';
+                    const state = Math.random().toString(36).substring(7);
+                    console.log(`Starting OAuth server on port ${port}`);
+                    // ローカルサーバーを起動してコールバックを受信
+                    const server = (0, node_http_1.createServer)((req, res) => {
+                        const url = new URL(req.url, `http://localhost:${port}`);
+                        if (url.pathname === '/auth/callback') {
+                            const code = url.searchParams.get('code');
+                            const returnedState = url.searchParams.get('state');
+                            if (returnedState !== state) {
                                 res.writeHead(400, { 'Content-Type': 'text/html' });
-                                res.end('<h1>認証エラー</h1><p>トークンの取得に失敗しました。</p>');
+                                res.end('<h1>認証エラー</h1><p>不正なリクエストです。</p>');
                                 server.close();
-                                resolve({ success: false, error: error.message });
-                            });
+                                resolve({ success: false, error: 'Invalid state parameter' });
+                                return;
+                            }
+                            if (code) {
+                                // アクセストークンを取得
+                                this.exchangeCodeForToken(code, clientId, clientSecret, redirectUri)
+                                    .then((token) => {
+                                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                                    res.end('<h1>認証完了</h1><p>アプリケーションに戻ってください。</p><script>window.close();</script>');
+                                    server.close();
+                                    resolve({ success: true, token });
+                                })
+                                    .catch((error) => {
+                                    res.writeHead(400, { 'Content-Type': 'text/html' });
+                                    res.end('<h1>認証エラー</h1><p>トークンの取得に失敗しました。</p>');
+                                    server.close();
+                                    resolve({ success: false, error: error.message });
+                                });
+                            }
+                            else {
+                                res.writeHead(400, { 'Content-Type': 'text/html' });
+                                res.end('<h1>認証エラー</h1><p>認証コードが取得できませんでした。</p>');
+                                server.close();
+                                resolve({ success: false, error: 'No authorization code received' });
+                            }
+                        }
+                    });
+                    // エラーハンドリングを追加
+                    server.on('error', (err) => {
+                        console.error('Server error:', err);
+                        server.close();
+                        resolve({ success: false, error: `Server error: ${err.message}` });
+                    });
+                    let authWin = null;
+                    server.listen(port, () => {
+                        console.log(`OAuth server listening on port ${port}`);
+                        const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}`;
+                        if (electron_1.app.isPackaged) {
+                            // 本番ビルドではデフォルトブラウザで開く
+                            electron_1.shell.openExternal(authUrl);
                         }
                         else {
-                            res.writeHead(400, { 'Content-Type': 'text/html' });
-                            res.end('<h1>認証エラー</h1><p>認証コードが取得できませんでした。</p>');
-                            server.close();
-                            resolve({ success: false, error: 'No authorization code received' });
+                            // 開発時は Electron ウィンドウで開き、自動では閉じない
+                            authWin = new electron_1.BrowserWindow({
+                                width: 960,
+                                height: 900,
+                                webPreferences: { nodeIntegration: false },
+                            });
+                            authWin.loadURL(authUrl);
                         }
-                    }
-                });
-                // エラーハンドリングを追加
-                server.on('error', (err) => {
-                    console.error('Server error:', err);
-                    server.close();
-                    resolve({ success: false, error: `Server error: ${err.message}` });
-                });
-                server.listen(port, () => {
-                    console.log(`OAuth server listening on port ${port}`);
-                    const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}`;
-                    electron_1.shell.openExternal(authUrl);
-                });
-                // タイムアウト設定
-                setTimeout(() => {
-                    console.log('OAuth authentication timeout');
-                    server.close();
-                    resolve({ success: false, error: 'Authentication timeout' });
-                }, 300000); // 5分でタイムアウト
-            }
-            catch (error) {
-                console.error('Failed to find available port:', error);
-                resolve({ success: false, error: `Failed to start OAuth server: ${error.message}` });
-            }
+                    });
+                    // 認証完了時に、パッケージ版のみウィンドウを閉じる
+                    const closeAuthWindow = () => {
+                        if (authWin && electron_1.app.isPackaged) {
+                            authWin.close();
+                            authWin = null;
+                        }
+                    };
+                    // タイムアウト設定
+                    setTimeout(() => {
+                        console.log('OAuth authentication timeout');
+                        server.close();
+                        closeAuthWindow();
+                        resolve({ success: false, error: 'Authentication timeout' });
+                    }, 300000); // 5分でタイムアウト
+                }
+                catch (error) {
+                    console.error('Failed to find available port:', error);
+                    resolve({
+                        success: false,
+                        error: `Failed to start OAuth server: ${error.message}`,
+                    });
+                }
+            })(); // immediately invoked async function to keep executor sync
         });
     }
     /**
@@ -199,29 +227,69 @@ class GitHubService {
     /**
      * 変更をコミット&プッシュ
      */
-    async commitAndPush(message) {
+    async commitAndPush(message, onProgress) {
         if (!this.git || !this.config) {
             throw new Error('Git configuration required');
         }
         try {
-            // ステータス確認
-            const status = await this.git.status();
-            if (!status.files.length) {
-                console.log('No changes to commit');
-                return true;
+            // プッシュ用にトークン入り URL を常にセット
+            const authRepoUrl = `https://${this.config.token}@github.com/${this.config.owner}/${this.config.repo}.git`;
+            await this.git.remote(['set-url', 'origin', authRepoUrl]);
+            onProgress?.('リモートの変更を取得中...', 5);
+            await this.git.fetch('origin', 'main');
+            onProgress?.('マージ中...', 15);
+            try {
+                await this.git.pull('origin', 'main', { '--no-rebase': null });
             }
-            // 全ての変更をステージング
-            await this.git.add('.');
-            // コミット
-            await this.git.commit(message);
-            // プッシュ
+            catch (pullError) {
+                console.error('Pull during commit-push failed:', pullError);
+                // コンフリクト判定
+                const errMsg = pullError instanceof Error ? pullError.message : String(pullError);
+                if (errMsg.includes('CONFLICT')) {
+                    const conflicts = await this.getConflictFiles();
+                    onProgress?.('マージコンフリクトが発生しました', 0);
+                    return { success: false, hasConflicts: true, conflicts, error: errMsg };
+                }
+                // pull 失敗だがコンフリクトでない
+                onProgress?.('プルに失敗しました', 0);
+                return { success: false, error: errMsg };
+            }
+            // ステータス確認して変更があればコミット
+            const status = await this.git.status();
+            if (status.files.length) {
+                onProgress?.('変更をステージング...', 30);
+                await this.git.add('.');
+                onProgress?.('コミットを作成中...', 40);
+                const finalMsg = message.startsWith('[MorinolabCMS]') ? message : `[MorinolabCMS] ${message}`;
+                await this.git.commit(finalMsg);
+            }
+            else {
+                onProgress?.('コミットする変更はありません', 40);
+            }
+            onProgress?.('プッシュを開始...', 60);
+            const gitAny = this.git;
+            if (typeof gitAny.progress === 'function') {
+                gitAny.progress((evt) => {
+                    const { method, stage, progress } = evt;
+                    if (method === 'push') {
+                        const percent = 60 + progress / 2; // 60-100%
+                        onProgress?.(`プッシュ中 (${stage})`, Math.min(99, percent));
+                    }
+                });
+            }
+            else {
+                onProgress?.('プッシュ中...', 75);
+            }
             await this.git.push('origin', 'main');
+            onProgress?.('アップロード完了', 100);
             console.log('Changes committed and pushed successfully');
-            return true;
+            return { success: true };
         }
         catch (error) {
             console.error('Commit and push failed:', error);
-            return false;
+            const errMsg = error instanceof Error ? error.message : String(error);
+            onProgress?.('アップロードに失敗しました', 0);
+            return { success: false, error: errMsg };
         }
     }
     /**
@@ -361,7 +429,8 @@ class GitHubService {
             if (!allResolved) {
                 throw new Error('すべてのコンフリクトを解決してください');
             }
-            await this.git.commit(message);
+            const finalMsg = message.startsWith('[MorinolabCMS]') ? message : `[MorinolabCMS] ${message}`;
+            await this.git.commit(finalMsg);
             console.log('Merge completed successfully');
             return true;
         }
@@ -369,6 +438,20 @@ class GitHubService {
             console.error('Failed to complete merge:', error);
             return false;
         }
+    }
+    /**
+     * 最新のコミットログを取得
+     */
+    async getCommitLog(limit = 20) {
+        if (!this.git)
+            throw new Error('Git not initialized');
+        const log = await this.git.log(['-n', String(limit)]);
+        return log.all.map((l) => ({
+            hash: l.hash,
+            message: l.message,
+            date: l.date,
+            author: l.author_name,
+        }));
     }
     /**
      * リポジトリ情報取得
@@ -407,7 +490,7 @@ class GitHubService {
      * 設定状態確認
      */
     isConfigured() {
-        return this.config !== null && this.git !== null;
+        return this.config !== null && this.git !== null && node_fs_1.default.existsSync(this.config.localPath);
     }
     /**
      * 設定情報取得

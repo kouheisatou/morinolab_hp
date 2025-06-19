@@ -43,10 +43,16 @@ electron_1.contextBridge.exposeInMainWorld('api', {
         electron_1.ipcRenderer.on('github-clone-progress', (_, data) => callback(data));
         return () => electron_1.ipcRenderer.removeAllListeners('github-clone-progress');
     },
+    onGitHubCommitProgress: (callback) => {
+        electron_1.ipcRenderer.on('github-commit-progress', (_, data) => callback(data));
+        return () => electron_1.ipcRenderer.removeAllListeners('github-commit-progress');
+    },
     // コンフリクト解決API
     githubGetConflicts: () => electron_1.ipcRenderer.invoke('github-get-conflicts'),
     githubGetConflictContent: (filePath) => electron_1.ipcRenderer.invoke('github-get-conflict-content', filePath),
     githubResolveConflict: (filePath, resolvedContent) => electron_1.ipcRenderer.invoke('github-resolve-conflict', filePath, resolvedContent),
     githubCompleteMerge: (message) => electron_1.ipcRenderer.invoke('github-complete-merge', message),
     githubCheckConflictsResolved: () => electron_1.ipcRenderer.invoke('github-check-conflicts-resolved'),
+    // Git log
+    githubGetLog: (limit = 20) => electron_1.ipcRenderer.invoke('github-get-log', limit),
 });

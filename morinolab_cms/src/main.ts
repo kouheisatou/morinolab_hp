@@ -697,11 +697,14 @@ ipcMain.handle('github-clone-repository', async () => {
   }
 });
 
-// コミット&プッシュ
+// コミット&プッシュ（pull → merge → commit → push を一連で実行）
 ipcMain.handle('github-commit-push', async (_, message: string) => {
   try {
-    const success = await githubService.commitAndPush(message);
-    return { success, error: success ? null : 'Commit and push failed' };
+    const win = BrowserWindow.getAllWindows()[0];
+    const result = await githubService.commitAndPush(message, (msg, percent) => {
+      win?.webContents.send('github-commit-progress', { message: msg, percent });
+    });
+    return result;
   } catch (error) {
     console.error('GitHub commit and push error:', error);
     return { success: false, error: (error as Error).message };
@@ -899,5 +902,70 @@ ipcMain.handle('github-get-oauth-config', async () => {
   } catch (error) {
     console.error('Failed to get GitHub OAuth config:', error);
     return { success: false, data: null, error: (error as Error).message };
+  }
+});
+
+// コミットログ取得
+ipcMain.handle('github-get-log', async (_event, limit: number = 20) => {
+  try {
+    const logs = await githubService.getCommitLog(limit);
+    return { success: true, data: logs, error: null };
+  } catch (error) {
+    console.error('GitHub get log error:', error);
+    return { success: false, data: null, error: (error as Error).message };
+  }
+});
+
+// ===============================
+//   Git Conflict Resolution API
+// ===============================
+
+// 未解決コンフリクト一覧
+ipcMain.handle('github-get-conflicts', async () => {
+  try {
+    const files = await githubService.getConflictFiles();
+    return { success: true, data: files, error: null };
+  } catch (error) {
+    return { success: false, data: [], error: (error as Error).message };
+  }
+});
+
+// コンフリクトファイル内容取得
+ipcMain.handle('github-get-conflict-content', async (_e, filePath: string) => {
+  try {
+    const data = await githubService.getConflictContent(filePath);
+    return { success: true, data, error: null };
+  } catch (error) {
+    return { success: false, data: null, error: (error as Error).message };
+  }
+});
+
+// コンフリクト解決（内容を保存）
+ipcMain.handle('github-resolve-conflict', async (_e, filePath: string, content: string) => {
+  try {
+    const ok = await githubService.resolveConflict(filePath, content);
+    return { success: ok, error: ok ? null : 'Failed to resolve conflict' };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+// すべて解消後のマージコミット作成
+ipcMain.handle('github-complete-merge', async (_e, message?: string) => {
+  try {
+    const ok = await githubService.completeMerge(message);
+    return { success: ok, error: ok ? null : 'Complete merge failed' };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+// 全コンフリクト解決済みか確認
+ipcMain.handle('github-check-conflicts-resolved', async () => {
+  try {
+    const resolved = await githubService.areAllConflictsResolved();
+    return { success: true, data: resolved, error: null };
+  } catch (error) {
+    return { success: false, data: false, error: (error as Error).message };
   }
 });

@@ -4,6 +4,8 @@ import { contextBridge, ipcRenderer } from 'electron';
 interface GitHubResponse {
   success: boolean;
   error: string | null;
+  hasConflicts?: boolean;
+  conflicts?: string[];
 }
 
 interface GitHubStatusResponse extends GitHubResponse {
@@ -49,6 +51,8 @@ interface GitHubConfig {
   localPath?: string;
   token?: string;
 }
+
+// Gitのコミットログの型 (グローバル宣言へ移動)
 
 contextBridge.exposeInMainWorld('api', {
   getContentTypes: (): Promise<string[]> => ipcRenderer.invoke('get-content-types'),
@@ -145,6 +149,11 @@ contextBridge.exposeInMainWorld('api', {
     return () => ipcRenderer.removeAllListeners('github-clone-progress');
   },
 
+  onGitHubCommitProgress: (callback: (data: { message: string; percent: number }) => void) => {
+    ipcRenderer.on('github-commit-progress', (_, data) => callback(data));
+    return () => ipcRenderer.removeAllListeners('github-commit-progress');
+  },
+
   // コンフリクト解決API
   githubGetConflicts: (): Promise<{ success: boolean; data: string[]; error?: string }> =>
     ipcRenderer.invoke('github-get-conflicts'),
@@ -158,9 +167,21 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.invoke('github-complete-merge', message),
   githubCheckConflictsResolved: (): Promise<{ success: boolean; data: boolean; error?: string }> =>
     ipcRenderer.invoke('github-check-conflicts-resolved'),
+
+  // Git log
+  githubGetLog: (
+    limit: number = 20,
+  ): Promise<{ success: boolean; data: GitCommit[]; error?: string }> =>
+    ipcRenderer.invoke('github-get-log', limit),
 });
 
 declare global {
+  type GitCommit = {
+    hash: string;
+    message: string;
+    date: string;
+    author: string;
+  };
   interface Window {
     api: {
       getContentTypes(): Promise<string[]>;
@@ -236,6 +257,11 @@ declare global {
       githubResolveConflict(filePath: string, resolvedContent: string): Promise<GitHubResponse>;
       githubCompleteMerge(message?: string): Promise<GitHubResponse>;
       githubCheckConflictsResolved(): Promise<{ success: boolean; data: boolean; error?: string }>;
+
+      // Git log
+      githubGetLog(
+        limit?: number,
+      ): Promise<{ success: boolean; data: GitCommit[]; error?: string }>;
     };
   }
 }
