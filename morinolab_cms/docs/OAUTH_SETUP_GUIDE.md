@@ -1,8 +1,26 @@
-# GitHub OAuth アプリケーション設定ガイド
+# GitHub OAuth アプリケーション設定ガイド（従来版）
 
-## 概要
+> ⚠️ **非推奨**: このガイドは従来の設定方法です。セキュリティリスクがあります。  
+> 🔒 **強く推奨**: [SECURE_GITHUB_SETUP.md](SECURE_GITHUB_SETUP.md) の新しいセキュアシステムをご利用ください。
 
-このアプリケーションはGitHub OAuth認証を使用してリポジトリにアクセスします。この機能を使用するために、GitHub OAuth Appの作成と設定が必要です。
+## 🚨 重要な警告
+
+このドキュメントの方法では：
+- ❌ Client Secretが平文でソースコードに保存される
+- ❌ Git履歴に認証情報が残るリスク
+- ❌ パッケージング時に認証情報が含まれない
+
+### 🛡️ セキュアな代替手段
+
+**新しい暗号化システムを使用してください：**
+- ✅ [SECURE_GITHUB_SETUP.md](SECURE_GITHUB_SETUP.md) - 暗号化された安全な設定
+- ✅ [QUICK_START.md](QUICK_START.md) - 3分で完了するセットアップ
+
+---
+
+## 概要（レガシー目的のみ）
+
+このアプリケーションはGitHub OAuth認証を使用してリポジトリにアクセスします。**このガイドは既存の従来システムのメンテナンス目的のみです。**
 
 ## 前提条件
 
@@ -42,7 +60,7 @@
 
 OAuth App作成後、以下の情報が表示されます：
 
-- **Client ID**: `Ov23liUjpAYO8cq7oF3O` (既に設定済み)
+- **Client ID**: アプリ作成時に生成されるID（例: `Ov23xxxxxxxxxxxxxxxxx`）
 - **Client Secret**: **Generate a new client secret** をクリックして取得
 
 ⚠️ **重要**: Client Secretは一度しか表示されません。必ずコピーして安全な場所に保存してください。
@@ -56,16 +74,16 @@ OAuth App作成後、以下の情報が表示されます：
 2. 以下の行を見つけます：
    ```typescript
    return {
-     clientId: 'Ov23liUjpAYO8cq7oF3O', // 設定済み
-     clientSecret: 'YOUR_GITHUB_CLIENT_SECRET' // ← ここを変更
+     clientId: 'YOUR_GITHUB_CLIENT_ID',     // ← Client IDを設定
+     clientSecret: 'YOUR_GITHUB_CLIENT_SECRET' // ← Client Secretを設定
    };
    ```
 
-3. `'YOUR_GITHUB_CLIENT_SECRET'` を取得したClient Secretに置き換えます：
+3. プレースホルダーを実際の値に置き換えます：
    ```typescript
    return {
-     clientId: 'Ov23liUjpAYO8cq7oF3O',
-     clientSecret: 'ghs_xxxxxxxxxxxxxxxxxxxxxxxxxxxx' // 実際のSecretを設定
+     clientId: 'Ov23xxxxxxxxxxxxxxxxx',        // 実際のClient ID
+     clientSecret: 'ghs_xxxxxxxxxxxxxxxxxxxx'  // 実際のClient Secret
    };
    ```
 
@@ -109,7 +127,7 @@ npm run start
 環境変数を使用することを強く推奨します：
 
 ```bash
-export GITHUB_CLIENT_ID="Ov23liUjpAYO8cq7oF3O"
+export GITHUB_CLIENT_ID="your_actual_client_id"
 export GITHUB_CLIENT_SECRET="your_actual_client_secret"
 ```
 
@@ -160,7 +178,7 @@ export GITHUB_CLIENT_SECRET="your_actual_client_secret"
 // github-config.ts
 export const getGitHubOAuthConfig = (): GitHubOAuthConfig => {
   return {
-    clientId: 'Ov23liUjpAYO8cq7oF3O',
+    clientId: 'your_actual_client_id',
     clientSecret: 'ghs_1234567890abcdef1234567890abcdef12345678' // 実際の値
   };
 };

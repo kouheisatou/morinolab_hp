@@ -29,9 +29,16 @@ electron_1.contextBridge.exposeInMainWorld('api', {
     githubOAuthAuthenticate: () => electron_1.ipcRenderer.invoke('github-oauth-authenticate'),
     githubGetUserRepositories: () => electron_1.ipcRenderer.invoke('github-get-user-repositories'),
     githubCloneWithProgress: () => electron_1.ipcRenderer.invoke('github-clone-with-progress'),
+    // OAuth設定管理
+    githubSaveOAuthConfig: (clientId, clientSecret) => electron_1.ipcRenderer.invoke('github-save-oauth-config', clientId, clientSecret),
+    githubCheckConfigStatus: () => electron_1.ipcRenderer.invoke('github-check-config-status'),
+    githubGetOAuthConfig: () => electron_1.ipcRenderer.invoke('github-get-oauth-config'),
+    // GitHub設定の復元
+    githubRestoreConfig: (configData) => electron_1.ipcRenderer.invoke('github-restore-config', configData),
     // プログレスイベントのリスナー
     onGitHubCloneProgress: (callback) => {
         electron_1.ipcRenderer.on('github-clone-progress', (_, data) => callback(data));
         return () => electron_1.ipcRenderer.removeAllListeners('github-clone-progress');
     },
 });
+//# sourceMappingURL=preload.js.map

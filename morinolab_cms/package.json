@@ -4,19 +4,22 @@
   "description": "Desktop CMS for managing contents directory without DB (file-based) using Electron and TypeScript.",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc && cp -R src/renderer dist/renderer",
+    "build": "node build.js && tsc",
+    "clean": "rm -rf dist/",
     "rebuild": "electron-rebuild",
     "start-local": "npm run build && npm run rebuild && electron . --contents=../contents",
     "lint": "eslint 'src/**/*.{ts,tsx,js}'",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,html,css,json,md}'",
-    "package": "npm run build && npm run rebuild && electron-forge package && npm run copy-deps",
-    "make": "npm run build && npm run rebuild && electron-forge make && npm run copy-deps-make",
+    "package": "npm run clean-out && npm run build && npm run rebuild && electron-forge package && npm run copy-deps",
+    "make": "npm run clean-out && npm run build && npm run rebuild && electron-forge make && npm run copy-deps-make",
+    "clean-out": "rm -rf out/",
     "copy-deps": "node copy-deps.js",
     "copy-deps-make": "node copy-deps.js",
     "start": "npm run build && npx electron . --contents=../contents",
-    "dev": "npm run build && npx electron . --contents=../contents --dev"
+    "dev": "npm run build && npx electron . --contents=../contents --dev",
+    "setup-github": "node setup-github-config.js"
   },
-  "author": "",
+  "author": "Kohei Sato",
   "license": "MIT",
   "dependencies": {
     "@octokit/rest": "^20.0.2",

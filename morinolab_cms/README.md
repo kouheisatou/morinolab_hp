@@ -1,43 +1,106 @@
-# Morinolab CMS (Electron)
+# Morinolab CMS Electron
 
-デスクトップ CMS アプリです。`contents` フォルダ以下のファイルを直接操作し、データベースを使わずにコンテンツを管理できます。
+デスクトップ版のコンテンツ管理システム（CMS）です。データベースを使わずにファイルベースでコンテンツを管理し、GitHubと連携してバージョン管理を行います。
 
-## セットアップ
+## 🏗️ アーキテクチャ（リファクタリング済み）
 
-```bash
-npm install
+このプロジェクトは責任の分離と保守性向上のためにリファクタリングされました：
+
+### ディレクトリ構造
+
+```
+morinolab_cms/
+├── src/
+│   ├── types/           # 共通型定義
+│   │   └── common.ts    # 全プロジェクト共通の型
+│   ├── services/        # ビジネスロジック
+│   │   ├── content-service.ts   # コンテンツ管理
+│   │   ├── image-service.ts     # 画像処理
+│   │   └── ipc-service.ts       # IPC通信ハンドラー
+│   ├── config-manager.ts        # 暗号化設定管理
+│   ├── github-config.ts         # GitHub OAuth設定
+│   ├── github-service.ts        # GitHub API操作
+│   ├── main.ts                  # メインプロセス（簡素化済み）
+│   ├── preload.ts              # プリロードスクリプト
+│   └── renderer/               # レンダラープロセス
+│       └── index.html
+├── dist/                       # ビルド出力
+├── docs/                       # ドキュメント
+└── package.json
 ```
 
-## 開発モード
+### サービス層の責任
 
+- **ContentService**: コンテンツの作成、編集、削除、CSVファイル管理
+- **ImageService**: 画像の処理、リサイズ、圧縮
+- **IPCService**: メインプロセスとレンダラープロセス間の通信
+- **GitHubService**: GitHub認証、リポジトリ操作、クローン、プッシュ
+
+### 主要な改善点
+
+1. **単一責任の原則**: 各クラスが明確な責任を持つ
+2. **依存性注入**: サービス間の疎結合を実現
+3. **型安全性**: 共通型定義による型エラーの削減
+4. **エラーハンドリング**: 統一されたエラー処理
+5. **テスタビリティ**: モジュール化によりテストが容易
+
+## 🚀 開発・ビルド
+
+### 開発環境での実行
 ```bash
 npm run dev
 ```
 
-## ビルド & 実行
-
+### ビルド
 ```bash
-# 既定 (GitHub から自動 clone されます)
-npm run start
-
-# contents ディレクトリを明示的に指定したい場合
-npm run start -- --contents=/absolute/path/to/contents
+npm run build
 ```
 
-上記の `--contents` オプション（または環境変数 `CONTENTS_DIR`）を使うと、アプリが読み書きする
-`contents` ルートを任意の場所に変更できます。指定が無い場合は以下の挙動になります。
+### パッケージ作成
+```bash
+npm run package
+```
 
-1. カレントディレクトリ直下に `morinolab_hp` というフォルダーが存在しない場合、
-   `git clone https://github.com/morinolab/morinolab_hp.git` が自動で実行されます。
-2. `../contents` を CMS のデータルートとして利用します。
+### アプリケーション作成
+```bash
+npm run make
+```
 
-## 使い方
-1. 左のサイドバーにコンテンツタイプ（`contents` 直下のフォルダー名）が表示されます。
-2. 各タイプをクリックすると一覧表が表示され、`+ 追加` ボタンで新規記事を作成できます。
-3. 行の「編集」ボタンで記事を開き、右側のエディタで Markdown を入力すると 0.5 秒ごとに自動保存されます。
-4. 「削除」ボタンで記事フォルダーごと削除します。
+## 🔧 設定
 
-## 構成
-- `src/main.ts` : Electron メインプロセス。IPC を介してファイル読み書きを実装。
-- `src/preload.ts` : `window.api` としてレンダラーに安全な API を公開。
-- `src/renderer/index.html` : UI（バニラ JS + HTML/CSS）。 
+### GitHub OAuth設定
+セキュリティのため、GitHub OAuth認証情報は暗号化されて保存されます：
+
+```bash
+# 初回セットアップ
+npm run setup-github
+```
+
+または、アプリケーション内の設定画面から設定できます。
+
+## 📁 コンテンツ管理
+
+ファイルベースのCMSとして以下の機能を提供：
+
+- **記事管理**: Markdownファイルによる記事作成・編集
+- **メディア管理**: 画像の自動圧縮・リサイズ
+- **メタデータ管理**: CSVファイルによる構造化データ
+- **GitHub連携**: バージョン管理とデプロイメント
+
+## 🔒 セキュリティ
+
+- OAuth認証情報の暗号化保存
+- アプリケーション固有のキー導出
+- セキュアな設定管理システム
+
+## 📚 技術スタック
+
+- **Electron**: デスクトップアプリケーションフレームワーク
+- **TypeScript**: 型安全な開発
+- **Node.js**: バックエンド処理
+- **GitHub API**: リポジトリ操作
+- **Canvas API**: 画像処理
+
+## 🤝 貢献
+
+プロジェクトへの貢献を歓迎します。リファクタリング後の構造を理解し、適切なサービス層に変更を加えてください。 

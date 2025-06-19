@@ -15,7 +15,10 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        authors: 'Kohei Sato',
+        description: 'Desktop CMS for managing contents directory without DB (file-based) using Electron and TypeScript.'
+      },
       platforms: ['win32']
     },
     {

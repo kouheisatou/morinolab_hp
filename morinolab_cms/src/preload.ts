@@ -1,54 +1,13 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-// Define proper types for GitHub API responses
-interface GitHubResponse {
-  success: boolean;
-  error: string | null;
-}
-
-interface GitHubStatusResponse extends GitHubResponse {
-  data: {
-    ahead: number;
-    behind: number;
-    current: string;
-    tracking: string;
-    files: Array<{
-      path: string;
-      index: string;
-      working_dir: string;
-    }>;
-  } | null;
-}
-
-interface GitHubInfoResponse extends GitHubResponse {
-  data: {
-    owner: string;
-    repo: string;
-    localPath: string;
-    isCloned: boolean;
-    lastSync?: string;
-  } | null;
-}
-
-interface GitHubRepository {
-  id: number;
-  name: string;
-  full_name: string;
-  description: string | null;
-  private: boolean;
-  html_url: string;
-  clone_url: string;
-  default_branch: string;
-}
-
-interface GitHubConfig {
-  clientId?: string;
-  clientSecret?: string;
-  owner?: string;
-  repo?: string;
-  localPath?: string;
-  token?: string;
-}
+// Import types from common types file
+import {
+  GitHubResponse,
+  GitHubStatusResponse,
+  GitHubInfoResponse,
+  GitHubRepository,
+  GitHubConfig,
+} from '@/types/common';
 
 contextBridge.exposeInMainWorld('api', {
   getContentTypes: (): Promise<string[]> => ipcRenderer.invoke('get-content-types'),
@@ -110,6 +69,29 @@ contextBridge.exposeInMainWorld('api', {
   githubCloneWithProgress: (): Promise<GitHubResponse> =>
     ipcRenderer.invoke('github-clone-with-progress'),
 
+  // OAuth設定管理
+  githubSaveOAuthConfig: (clientId: string, clientSecret: string): Promise<GitHubResponse> =>
+    ipcRenderer.invoke('github-save-oauth-config', clientId, clientSecret),
+  githubCheckConfigStatus: (): Promise<{
+    success: boolean;
+    configured: boolean;
+    setupGuide?: string;
+    error?: string;
+  }> => ipcRenderer.invoke('github-check-config-status'),
+  githubGetOAuthConfig: (): Promise<{
+    success: boolean;
+    data: { clientId: string; hasClientSecret: boolean } | null;
+    error?: string;
+  }> => ipcRenderer.invoke('github-get-oauth-config'),
+
+  // GitHub設定の復元
+  githubRestoreConfig: (configData: {
+    owner: string;
+    repo: string;
+    localPath: string;
+    token: string;
+  }): Promise<GitHubResponse> => ipcRenderer.invoke('github-restore-config', configData),
+
   // プログレスイベントのリスナー
   onGitHubCloneProgress: (callback: (data: { message: string; percent: number }) => void) => {
     ipcRenderer.on('github-clone-progress', (_, data) => callback(data));
@@ -163,6 +145,21 @@ declare global {
         error: string | null;
       }>;
       githubCloneWithProgress(): Promise<GitHubResponse>;
+
+      // OAuth設定管理の型定義
+      githubSaveOAuthConfig(clientId: string, clientSecret: string): Promise<GitHubResponse>;
+      githubCheckConfigStatus(): Promise<{
+        success: boolean;
+        configured: boolean;
+        setupGuide?: string;
+        error?: string;
+      }>;
+      githubGetOAuthConfig(): Promise<{
+        success: boolean;
+        data: { clientId: string; hasClientSecret: boolean } | null;
+        error?: string;
+      }>;
+
       onGitHubCloneProgress(
         callback: (data: { message: string; percent: number }) => void,
       ): () => void;

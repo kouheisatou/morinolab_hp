@@ -1,8 +1,26 @@
 # 環境設定ガイド - npm run start で環境設定が読み込まれない問題の解決
 
+> 🔒 **新機能**: [SECURE_GITHUB_SETUP.md](SECURE_GITHUB_SETUP.md) の新しいセキュアシステムもご利用ください  
+> このガイドは従来の設定方法を扱います
+
 ## 🚨 問題の確認
 
 `npm run start` で環境設定が読み込まれない場合の解決方法を説明します。
+
+### 🆕 新しいセキュアな方法（推奨）
+
+暗号化された設定システムを使用する場合：
+
+```bash
+# セットアップスクリプトでの設定（直接指定）
+npm run setup-github YOUR_CLIENT_ID YOUR_CLIENT_SECRET
+
+# 設定確認
+npm run build
+npm run start
+```
+
+従来の方法で問題が発生する場合は、新しいシステムをお試しください。
 
 ## 🔍 現在の状況確認
 
@@ -69,7 +87,9 @@ export GITHUB_CLIENT_SECRET="実際のClient Secretをここに入力"
 source ~/.zshrc
 ```
 
-### **オプション3: github-config.tsで直接設定**
+### **オプション3: github-config.tsで直接設定（非推奨）**
+
+⚠️ **危険**: この方法はセキュリティリスクがあります。[SECURE_GITHUB_SETUP.md](SECURE_GITHUB_SETUP.md) の使用を強く推奨します。
 
 #### 1. 設定ファイルを編集
 
@@ -77,16 +97,16 @@ source ~/.zshrc
 open src/github-config.ts
 ```
 
-#### 2. `YOUR_GITHUB_CLIENT_SECRET` を実際の値に変更
+#### 2. プレースホルダーを実際の値に変更
 
 ```typescript
 return {
-  clientId: 'Ov23ctlbBnAjnisOSCrm',
-  clientSecret: '実際のClient Secretをここに入力' // ← ここを変更
+  clientId: 'your_actual_client_id',      // ← Client IDを設定
+  clientSecret: 'your_actual_client_secret' // ← Client Secretを設定
 };
 ```
 
-⚠️ **注意**: この方法はセキュリティ上推奨されません。
+⚠️ **重要**: この方法では認証情報がソースコードに平文で保存されます。
 
 ## 🧪 設定テスト
 
@@ -182,5 +202,7 @@ npm install dotenv
 ---
 
 **関連ドキュメント**:
-- `OAUTH_SETUP_GUIDE.md` - OAuth App作成方法
-- `QUICK_START.md` - 5分で完了する設定方法 
+- **[SECURE_GITHUB_SETUP.md](SECURE_GITHUB_SETUP.md)** - 🔒 新しいセキュア設定方法（推奨）
+- **[SECURITY_GUIDE.md](SECURITY_GUIDE.md)** - セキュリティガイド
+- **[QUICK_START.md](QUICK_START.md)** - クイックスタート
+- **[OAUTH_SETUP_GUIDE.md](OAUTH_SETUP_GUIDE.md)** - 従来のOAuth App作成方法 

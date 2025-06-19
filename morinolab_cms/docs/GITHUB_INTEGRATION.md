@@ -1,4 +1,6 @@
-# GitHub統合機能 (OAuth対応版)
+# GitHub統合機能ガイド
+
+> 🔒 **推奨**: [SECURE_GITHUB_SETUP.md](SECURE_GITHUB_SETUP.md) の新しいセキュアシステムを使用してください
 
 この機能により、CMSアプリケーションから直接GitHubリポジトリと連携し、コンテンツの編集後にワンボタンでコミット・プッシュが可能になります。
 
@@ -27,6 +29,19 @@
 5. **Client ID** と **Client Secret** をコピー（後で使用）
 
 ### 2. CMSアプリケーションでの初回セットアップ
+
+#### 🔒 新しいセキュアシステム（推奨）
+
+```bash
+# セットアップスクリプトで自動設定（直接指定）
+npm run setup-github YOUR_CLIENT_ID YOUR_CLIENT_SECRET
+npm run build
+npm run start
+```
+
+詳細は [SECURE_GITHUB_SETUP.md](SECURE_GITHUB_SETUP.md) をご覧ください。
+
+#### 従来システム（非推奨）
 
 1. CMSアプリケーションを起動
 2. 初回起動時に自動的にセットアップ画面が表示されます

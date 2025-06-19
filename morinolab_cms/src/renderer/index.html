@@ -1009,36 +1009,56 @@
 
       // 初期化時に保存された設定を読み込み
       async function initializeGitHub() {
+        console.log('DEBUG: Initializing GitHub configuration...');
         const savedConfig = localStorage.getItem('githubConfig');
+        console.log('DEBUG: Saved config from localStorage:', savedConfig);
+
         if (savedConfig) {
           try {
             githubConfig = JSON.parse(savedConfig);
+            console.log('DEBUG: Parsed GitHub config:', {
+              owner: githubConfig.owner,
+              repo: githubConfig.repo,
+              localPath: githubConfig.localPath,
+              hasToken: !!githubConfig.token,
+            });
 
             // 認証状態確認
             const isAuth = await window.api.githubIsAuthenticated();
             const isConfig = await window.api.githubIsConfigured();
+            console.log('DEBUG: Auth status:', isAuth, 'Config status:', isConfig);
 
             if (isAuth && isConfig) {
+              console.log('✅ GitHub already configured and authenticated');
               updateSidebarGitHubStatus('接続済み', githubConfig);
             } else {
-              // 再認証が必要
+              // 設定を復元
+              console.log('🔄 Restoring GitHub configuration...');
               if (githubConfig.token) {
-                await window.api.githubAuthenticate(githubConfig.token);
-                await window.api.githubSetRepository(
-                  githubConfig.owner,
-                  githubConfig.repo,
-                  githubConfig.localPath,
-                  githubConfig.token,
-                );
-                updateSidebarGitHubStatus('接続済み', githubConfig);
+                // 新しい復元APIを使用
+                const restoreResult = await window.api.githubRestoreConfig({
+                  owner: githubConfig.owner,
+                  repo: githubConfig.repo,
+                  localPath: githubConfig.localPath,
+                  token: githubConfig.token,
+                });
+
+                if (restoreResult.success) {
+                  console.log('✅ GitHub configuration restored successfully');
+                  updateSidebarGitHubStatus('接続済み', githubConfig);
+                } else {
+                  console.error('❌ Failed to restore GitHub configuration:', restoreResult.error);
+                  updateSidebarGitHubStatus('未接続', null);
+                }
               }
             }
           } catch (error) {
-            console.error('GitHub設定読み込みエラー:', error);
+            console.error('❌ GitHub設定読み込みエラー:', error);
             localStorage.removeItem('githubConfig');
             updateSidebarGitHubStatus('未接続', null);
           }
         } else {
+          console.log('📭 No saved GitHub configuration found');
           updateSidebarGitHubStatus('未接続', null);
         }
       }

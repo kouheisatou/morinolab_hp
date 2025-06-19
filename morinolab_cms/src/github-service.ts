@@ -5,28 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createServer } from 'node:http';
 
-export interface GitHubConfig {
-  token: string;
-  owner: string;
-  repo: string;
-  localPath: string;
-}
-
-export interface GitHubRepository {
-  id: number;
-  name: string;
-  full_name: string;
-  description: string | null;
-  private: boolean;
-  clone_url: string;
-  html_url: string;
-  default_branch: string;
-  permissions?: {
-    admin: boolean;
-    push: boolean;
-    pull: boolean;
-  };
-}
+import { GitHubConfig, GitHubRepository } from '@/types/common';
 
 export class GitHubService {
   private octokit: Octokit | null = null;

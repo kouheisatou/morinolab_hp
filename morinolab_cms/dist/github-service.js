@@ -11,10 +11,11 @@ const node_fs_1 = __importDefault(require("node:fs"));
 const node_path_1 = __importDefault(require("node:path"));
 const node_http_1 = require("node:http");
 class GitHubService {
-    octokit = null;
-    git = null;
-    config = null;
-    constructor() { }
+    constructor() {
+        this.octokit = null;
+        this.git = null;
+        this.config = null;
+    }
     /**
      * ブラウザベースOAuth認証
      */
@@ -341,3 +342,4 @@ class GitHubService {
     }
 }
 exports.GitHubService = GitHubService;
+//# sourceMappingURL=github-service.js.map
