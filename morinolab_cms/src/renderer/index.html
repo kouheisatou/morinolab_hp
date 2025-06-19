@@ -252,6 +252,7 @@
       }
 
       .setup-container {
+        position: relative;
         background: #d4d0c8;
         border: 2px solid #808080;
         border-top-color: #fff;
@@ -365,127 +366,51 @@
         font-size: 12px;
         color: #333;
       }
-
-      /* Repository Selection */
-      .repo-list {
-        max-height: 300px;
-        overflow-y: auto;
-        border: 1px solid #808080;
-        border-top-color: #000;
-        border-left-color: #000;
-        background: #fff;
-        margin: 12px 0;
-      }
-
-      .repo-item {
-        padding: 8px;
-        border-bottom: 1px solid #d0d0d0;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .repo-item:hover {
-        background: #e0e0e0;
-      }
-
-      .repo-item.selected {
-        background: #000080;
-        color: #fff;
-      }
-
-      .repo-name {
-        font-weight: bold;
-        margin-bottom: 2px;
-      }
-
-      .repo-description {
-        font-size: 12px;
-        color: #666;
-      }
-
-      .repo-item.selected .repo-description {
-        color: #ccc;
-      }
-
-      .repo-meta {
-        font-size: 11px;
-        margin-top: 4px;
-        display: flex;
-        gap: 8px;
-      }
-
-      .repo-private {
-        background: #d6c0c0;
-        padding: 1px 4px;
-        border-radius: 2px;
-      }
-
-      .repo-item.selected .repo-private {
-        background: rgba(255, 255, 255, 0.2);
-      }
     </style>
   </head>
   <body>
     <!-- Initial Setup Screen -->
     <div id="initialSetup">
       <div class="setup-container">
-        <h1 class="setup-title">GitHub CMS セットアップ</h1>
+        <h1 class="setup-title">森野研究室HP CMS</h1>
 
-        <!-- Step 1: Local Directory Setup -->
-        <div id="stepLocalPath" class="setup-step">
-          <h2 style="font-size: 16px; margin: 0 0 12px 0">📁 ステップ1: ローカル保存先の設定</h2>
+        <!-- Quick Setup for Default Repository -->
+        <div id="quickSetup" class="setup-step">
+          <h2 style="font-size: 16px; margin: 0 0 12px 0">🚀 クイックセットアップ</h2>
           <p style="margin: 0 0 16px 0; color: #666">
-            GitHubからクローンしたリポジトリを保存するディレクトリを指定してください。<br />
-            選択したディレクトリの下に各リポジトリのフォルダが作成されます。
+            Morinolab研究室のデフォルトリポジトリを使用してすぐに開始できます。<br />
+            GitHubでログインするだけで、リポジトリが自動的にセットアップされます。
           </p>
 
           <div class="form-group">
-            <label for="localPath">保存先ディレクトリ:</label>
+            <label for="quickLocalPath">保存先ディレクトリ:</label>
             <div style="display: flex; gap: 8px; margin-top: 4px">
               <input
                 type="text"
-                id="localPath"
+                id="quickLocalPath"
                 style="flex: 1"
-                placeholder="例: /Users/username/Documents/github-repos"
+                placeholder="例: /Users/username/Documents/morinolab"
               />
-              <button id="selectDirBtn" class="btn" style="padding: 8px 12px">フォルダ選択</button>
-            </div>
-            <div class="note" style="margin-top: 8px">
-              💡 例: /Users/username/Documents/github-repos を選択した場合、<br />
-              リポジトリは /Users/username/Documents/github-repos/repo-name/ に保存されます
+              <button id="selectQuickDirBtn" class="btn" style="padding: 8px 12px">
+                フォルダ選択
+              </button>
             </div>
           </div>
 
           <button
-            id="nextToAuthBtn"
+            id="quickStartBtn"
             class="btn"
-            style="padding: 12px 24px; margin-top: 16px; background: #c0d6c0"
+            style="
+              padding: 12px 24px;
+              background: #c0d6c0;
+              font-weight: bold;
+              margin-top: 16px;
+              display: block;
+              margin-left: auto;
+            "
             disabled
           >
-            次へ：GitHubにログイン
-          </button>
-        </div>
-
-        <!-- Step 2: GitHub Authentication -->
-        <div id="stepAuth" class="setup-step" style="display: none">
-          <h2 style="font-size: 16px; margin: 0 0 12px 0">🔐 ステップ2: GitHub認証</h2>
-          <p style="margin: 0 0 16px 0; color: #666">
-            GitHubアカウントにログインして、リポジトリにアクセスする権限を取得します。
-          </p>
-
-          <div
-            style="background: #f0f0f0; padding: 12px; margin-bottom: 16px; border: 1px solid #ccc"
-          >
-            <strong>保存先:</strong> <span id="selectedPath" style="font-family: monospace"></span>
-          </div>
-
-          <button id="startAuthBtn" class="btn" style="padding: 12px 24px; background: #c0d6c0">
-            GitHubでログイン
-          </button>
-
-          <button id="backToPathBtn" class="btn" style="padding: 8px 16px; margin-left: 8px">
-            ← 戻る
+            GitHubでログインして開始
           </button>
         </div>
 
@@ -496,35 +421,6 @@
           </div>
           <div id="progressText" class="progress-text">準備中...</div>
         </div>
-
-        <!-- Step 3: Repository Selection -->
-        <div id="stepRepoSelection" class="setup-step" style="display: none">
-          <h2 style="font-size: 16px; margin: 0 0 12px 0">📚 ステップ3: リポジトリ選択</h2>
-          <p style="margin: 0 0 16px 0; color: #666">
-            使用するGitHubリポジトリを選択してください。
-          </p>
-
-          <div
-            style="background: #f0f0f0; padding: 12px; margin-bottom: 16px; border: 1px solid #ccc"
-          >
-            <strong>保存先:</strong> <span id="selectedPath2" style="font-family: monospace"></span>
-          </div>
-
-          <div id="repoList" class="repo-list"></div>
-          <div style="margin-top: 16px">
-            <button
-              id="cloneSelectedBtn"
-              class="btn"
-              style="padding: 12px 24px; background: #c0d6c0"
-              disabled
-            >
-              セットアップ完了
-            </button>
-            <button id="backToAuthBtn" class="btn" style="padding: 8px 16px; margin-left: 8px">
-              ← 戻る
-            </button>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -533,7 +429,7 @@
         id="githubSection"
         style="border-bottom: 2px solid #808080; padding: 8px; margin-bottom: 8px"
       >
-        <h3 style="margin: 0 0 8px 0; font-size: 12px">GitHub統合</h3>
+        <h3 style="margin: 0 0 8px 0; font-size: 12px">森野研究室HP</h3>
         <div id="githubStatus" style="font-size: 10px; margin-bottom: 4px; color: #666">未接続</div>
         <div
           id="githubRepoInfo"
@@ -554,7 +450,7 @@
           同期
         </button>
         <button id="githubSetupBtn" class="btn" style="width: 100%; margin: 2px 0; font-size: 11px">
-          リポジトリ選択
+          ログアウト
         </button>
         <button
           id="githubCommitBtn"
@@ -1007,7 +903,7 @@
 
       let githubConfig = null;
 
-      // GitHub リポジトリ選択ボタン（初回セットアップ画面を表示）
+      // GitHub セットアップボタン（初回セットアップ画面を表示）
       githubSetupBtn.onclick = () => {
         showInitialSetup();
       };
@@ -1097,12 +993,12 @@
         if (config) {
           githubRepoInfo.textContent = `${config.owner}/${config.repo}`;
           githubRepoInfo.style.display = 'block';
-          githubSetupBtn.textContent = 'リポジトリ選択';
+          githubSetupBtn.textContent = 'ログアウト';
           githubSyncBtn.disabled = false;
           githubCommitBtn.disabled = false;
         } else {
           githubRepoInfo.style.display = 'none';
-          githubSetupBtn.textContent = 'リポジトリ選択';
+          githubSetupBtn.textContent = 'ログアウト';
           githubSyncBtn.disabled = true;
           githubCommitBtn.disabled = true;
         }
@@ -1169,49 +1065,53 @@
       // ============================================================
 
       const initialSetup = document.getElementById('initialSetup');
-      const stepLocalPath = document.getElementById('stepLocalPath');
-      const stepAuth = document.getElementById('stepAuth');
-      const stepRepoSelection = document.getElementById('stepRepoSelection');
+      const quickSetup = document.getElementById('quickSetup');
 
-      const localPathInput = document.getElementById('localPath');
-      const selectDirBtn = document.getElementById('selectDirBtn');
-      const nextToAuthBtn = document.getElementById('nextToAuthBtn');
-      const startAuthBtn = document.getElementById('startAuthBtn');
-      const backToPathBtn = document.getElementById('backToPathBtn');
-      const backToAuthBtn = document.getElementById('backToAuthBtn');
-
-      const selectedPath = document.getElementById('selectedPath');
-      const selectedPath2 = document.getElementById('selectedPath2');
+      // Quick setup elements
+      const quickLocalPathInput = document.getElementById('quickLocalPath');
+      const selectQuickDirBtn = document.getElementById('selectQuickDirBtn');
+      const quickStartBtn = document.getElementById('quickStartBtn');
 
       const progressContainer = document.getElementById('progressContainer');
       const progressFill = document.getElementById('progressFill');
       const progressText = document.getElementById('progressText');
-      const repoList = document.getElementById('repoList');
-      const cloneSelectedBtn = document.getElementById('cloneSelectedBtn');
 
-      let selectedRepository = null;
-      let repositories = [];
       let setupProgress = null;
-      let currentLocalPath = '';
 
       // ローカル設定の管理
-      function loadLocalSettings() {
+      async function loadLocalSettings() {
         const saved = localStorage.getItem('cmsLocalSettings');
         if (saved) {
           try {
             const settings = JSON.parse(saved);
-            localPathInput.value = settings.localPath || '';
-            currentLocalPath = settings.localPath || '';
-            updateNextButton();
+            // クイックセットアップ用のパスを設定
+            if (settings.localPath) {
+              quickLocalPathInput.value = settings.localPath;
+              updateQuickStartButton();
+            }
           } catch (error) {
             console.error('Failed to load local settings:', error);
+          }
+        } else {
+          // デフォルトパスをAPIから取得
+          try {
+            const result = await window.api.getDefaultLocalPath();
+            if (result.success && result.path) {
+              quickLocalPathInput.value = result.path;
+              updateQuickStartButton();
+            }
+          } catch (error) {
+            console.error('Failed to get default path:', error);
+            // フォールバック
+            quickLocalPathInput.value = '/Documents/morinolab';
+            updateQuickStartButton();
           }
         }
       }
 
-      function saveLocalSettings() {
+      function saveLocalSettings(pathToSave = null) {
         const settings = {
-          localPath: currentLocalPath,
+          localPath: pathToSave || quickLocalPathInput.value,
           timestamp: Date.now(),
         };
         localStorage.setItem('cmsLocalSettings', JSON.stringify(settings));
@@ -1228,13 +1128,16 @@
         } else {
           // 初回またはリセットが必要な場合はセットアップ画面を表示
           showInitialSetup();
-          loadLocalSettings();
+          await loadLocalSettings();
         }
       }
 
       function showInitialSetup() {
         initialSetup.classList.remove('hidden');
-        showStep('localPath');
+        showStep('quick');
+        // リセット: 前回セットアップ時に変更されたボタン状態を元に戻す
+        quickStartBtn.disabled = false;
+        quickStartBtn.textContent = 'GitHubでログインして開始';
       }
 
       function hideInitialSetup() {
@@ -1242,53 +1145,28 @@
       }
 
       function showStep(step) {
-        stepLocalPath.style.display = step === 'localPath' ? 'block' : 'none';
-        stepAuth.style.display = step === 'auth' ? 'block' : 'none';
-        stepRepoSelection.style.display = step === 'repoSelection' ? 'block' : 'none';
+        quickSetup.style.display = step === 'quick' ? 'block' : 'none';
       }
 
-      function updateNextButton() {
-        const hasPath = currentLocalPath.trim().length > 0;
-        nextToAuthBtn.disabled = !hasPath;
+      function updateQuickStartButton() {
+        const hasPath = quickLocalPathInput.value.trim().length > 0;
+        quickStartBtn.disabled = !hasPath;
       }
 
-      // Step 1: Local Path Events
-      localPathInput.addEventListener('input', (e) => {
-        currentLocalPath = e.target.value;
-        updateNextButton();
-      });
+      // Quick Setup Events
+      quickLocalPathInput.addEventListener('input', updateQuickStartButton);
 
-      selectDirBtn.onclick = async () => {
+      selectQuickDirBtn.onclick = async () => {
         try {
           const result = await window.api.selectDirectory();
           if (result.success && result.path) {
-            localPathInput.value = result.path;
-            currentLocalPath = result.path;
-            updateNextButton();
-          } else {
-            console.log('ディレクトリ選択がキャンセルされました');
+            quickLocalPathInput.value = result.path;
+            updateQuickStartButton();
           }
         } catch (error) {
           console.error('ディレクトリ選択エラー:', error);
           alert('ディレクトリ選択でエラーが発生しました');
         }
-      };
-
-      nextToAuthBtn.onclick = () => {
-        if (currentLocalPath.trim()) {
-          saveLocalSettings();
-          selectedPath.textContent = currentLocalPath;
-          selectedPath2.textContent = currentLocalPath;
-          showStep('auth');
-        }
-      };
-
-      backToPathBtn.onclick = () => {
-        showStep('localPath');
-      };
-
-      backToAuthBtn.onclick = () => {
-        showStep('auth');
       };
 
       function showProgress(message, percent) {
@@ -1301,171 +1179,92 @@
         progressContainer.classList.remove('show');
       }
 
-      // GitHub認証開始
-      startAuthBtn.onclick = async () => {
-        if (!currentLocalPath.trim()) {
+      // Quick Start - Default Repository Setup
+      quickStartBtn.onclick = async () => {
+        const quickPath = quickLocalPathInput.value.trim();
+        if (!quickPath) {
           alert('ローカル保存先を設定してください');
-          showStep('localPath');
           return;
         }
 
-        startAuthBtn.disabled = true;
-        startAuthBtn.textContent = 'GitHubでログイン中...';
+        quickStartBtn.disabled = true;
+        quickStartBtn.textContent = 'セットアップ中...';
 
         try {
           showProgress('GitHub認証を開始中...', 10);
 
-          // OAuth認証（設定は内部で管理）
+          // OAuth認証
           const authResult = await window.api.githubOAuthAuthenticate();
-
           if (!authResult.success) {
             throw new Error(authResult.error || '認証に失敗しました');
           }
 
-          showProgress('リポジトリ一覧を取得中...', 40);
+          showProgress('デフォルトリポジトリをセットアップ中...', 40);
 
-          // リポジトリ一覧を取得
-          const repoResult = await window.api.githubGetUserRepositories();
+          // デフォルトリポジトリの設定
+          const defaultOwner = 'MorinoLab-SIT';
+          const defaultRepo = 'morinolab_hp';
+          const finalLocalPath = quickPath + '/' + defaultRepo;
 
-          if (!repoResult.success) {
-            throw new Error(repoResult.error || 'リポジトリの取得に失敗しました');
-          }
+          // リポジトリ設定
+          await window.api.githubSetRepository(
+            defaultOwner,
+            defaultRepo,
+            finalLocalPath,
+            authResult.token,
+          );
 
-          repositories = repoResult.data;
-
-          hideProgress();
-          showRepositorySelection(repositories, authResult.token);
-        } catch (error) {
-          console.error('Setup error:', error);
-          alert('セットアップに失敗しました: ' + error.message);
-          startAuthBtn.disabled = false;
-          startAuthBtn.textContent = 'GitHubでログイン';
-          hideProgress();
-        }
-      };
-
-      // リポジトリ選択画面を表示
-      function showRepositorySelection(repos, token) {
-        showStep('repoSelection');
-        repoList.innerHTML = '';
-
-        repos.forEach((repo) => {
-          const repoItem = document.createElement('div');
-          repoItem.className = 'repo-item';
-          repoItem.dataset.repoId = repo.id;
-
-          const repoName = document.createElement('div');
-          repoName.className = 'repo-name';
-          repoName.textContent = repo.full_name;
-
-          const repoDescription = document.createElement('div');
-          repoDescription.className = 'repo-description';
-          repoDescription.textContent = repo.description || '説明なし';
-
-          const repoMeta = document.createElement('div');
-          repoMeta.className = 'repo-meta';
-
-          if (repo.private) {
-            const privateLabel = document.createElement('span');
-            privateLabel.className = 'repo-private';
-            privateLabel.textContent = 'Private';
-            repoMeta.appendChild(privateLabel);
-          }
-
-          repoItem.appendChild(repoName);
-          repoItem.appendChild(repoDescription);
-          repoItem.appendChild(repoMeta);
-
-          repoItem.onclick = () => selectRepository(repo, repoItem);
-
-          repoList.appendChild(repoItem);
-        });
-
-        // クローンボタンのイベント
-        cloneSelectedBtn.onclick = () => {
-          if (selectedRepository) {
-            startCloning(selectedRepository, token);
-          }
-        };
-      }
-
-      // リポジトリ選択
-      function selectRepository(repo, element) {
-        // 既存の選択を解除
-        document.querySelectorAll('.repo-item').forEach((item) => {
-          item.classList.remove('selected');
-        });
-
-        // 新しい選択を設定
-        element.classList.add('selected');
-        selectedRepository = {
-          ...repo,
-          localBasePath: currentLocalPath,
-          localPath: currentLocalPath + '/' + repo.name,
-        };
-        cloneSelectedBtn.disabled = false;
-      }
-
-      // クローン開始
-      async function startCloning(repo, token) {
-        cloneSelectedBtn.disabled = true;
-        cloneSelectedBtn.textContent = 'セットアップ中...';
-
-        try {
-          // リポジトリ設定（階層構造で保存）
-          const [owner, repoName] = repo.full_name.split('/');
-          const finalLocalPath = repo.localPath; // /base/path/repo-name
-
-          await window.api.githubSetRepository(owner, repoName, finalLocalPath, token);
+          showProgress('リポジトリをクローン中...', 60);
 
           // プログレスリスナーを設定
           const removeProgressListener = window.api.onGitHubCloneProgress((data) => {
-            showProgress(data.message, data.percent);
+            const adjustedPercent = 60 + data.percent * 0.35; // 60% から 95% までの範囲
+            showProgress(data.message, adjustedPercent);
           });
-
-          showProgress('リポジトリをクローン中...', 0);
 
           // クローン実行
           const cloneResult = await window.api.githubCloneWithProgress();
-
           removeProgressListener();
 
-          if (cloneResult.success) {
-            showProgress('セットアップ完了', 100);
-
-            // 設定を保存（ローカル設定と統合）
-            const config = {
-              token,
-              owner,
-              repo: repoName,
-              localPath: finalLocalPath,
-              localBasePath: repo.localBasePath,
-            };
-            localStorage.setItem('githubConfig', JSON.stringify(config));
-
-            // 短い待機後に完了
-            setTimeout(() => {
-              hideInitialSetup();
-              hideProgress();
-
-              // サイドバーの状態を更新
-              githubConfig = config;
-              updateSidebarGitHubStatus('接続済み', githubConfig);
-
-              // 成功メッセージは非表示（ユーザー要望）
-              console.log('GitHub連携のセットアップが完了しました');
-            }, 1000);
-          } else {
+          if (!cloneResult.success) {
             throw new Error(cloneResult.error || 'クローンに失敗しました');
           }
+
+          showProgress('セットアップ完了', 100);
+
+          // 設定を保存
+          const config = {
+            token: authResult.token,
+            owner: defaultOwner,
+            repo: defaultRepo,
+            localPath: finalLocalPath,
+            localBasePath: quickPath,
+          };
+          localStorage.setItem('githubConfig', JSON.stringify(config));
+
+          // ローカル設定も保存
+          saveLocalSettings(quickPath);
+
+          // GitHubの設定を反映
+          githubConfig = config;
+
+          setTimeout(() => {
+            hideInitialSetup();
+            hideProgress();
+            updateSidebarGitHubStatus('接続済み', githubConfig);
+            // メイン画面でコンテンツを再読み込み
+            if (currentType) {
+              loadItems(currentType);
+            }
+          }, 1000);
         } catch (error) {
-          console.error('Clone error:', error);
+          console.error('Quick setup error:', error);
           alert('セットアップに失敗しました: ' + error.message);
-          cloneSelectedBtn.disabled = false;
-          cloneSelectedBtn.textContent = 'セットアップ完了';
+          quickStartBtn.disabled = false;
+          quickStartBtn.textContent = 'GitHubでログインして開始';
           hideProgress();
         }
-      }
+      };
 
       // ============================================================
       // Conflict Resolution
@@ -1645,7 +1444,6 @@
             if (currentType) {
               loadItems();
             }
-            alert('✅ マージコンフリクトが正常に解決されました！');
           } else {
             alert('マージ完了に失敗: ' + result.error);
           }

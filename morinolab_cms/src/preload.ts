@@ -81,6 +81,8 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.invoke('update-content-root'),
   selectDirectory: (): Promise<{ success: boolean; path?: string; error?: string }> =>
     ipcRenderer.invoke('select-directory'),
+  getDefaultLocalPath: (): Promise<{ success: boolean; path?: string; error?: string }> =>
+    ipcRenderer.invoke('get-default-local-path'),
 
   // GitHub API functions
   githubAuthenticate: (token: string): Promise<GitHubResponse> =>
@@ -180,6 +182,7 @@ declare global {
       getFontURL(): Promise<string | null>;
       updateContentRoot(): Promise<{ success: boolean; contentRoot?: string; error?: string }>;
       selectDirectory(): Promise<{ success: boolean; path?: string; error?: string }>;
+      getDefaultLocalPath(): Promise<{ success: boolean; path?: string; error?: string }>;
 
       // GitHub API function types
       githubAuthenticate(token: string): Promise<GitHubResponse>;

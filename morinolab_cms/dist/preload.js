@@ -16,6 +16,7 @@ electron_1.contextBridge.exposeInMainWorld('api', {
     getFontURL: () => electron_1.ipcRenderer.invoke('get-font-url'),
     updateContentRoot: () => electron_1.ipcRenderer.invoke('update-content-root'),
     selectDirectory: () => electron_1.ipcRenderer.invoke('select-directory'),
+    getDefaultLocalPath: () => electron_1.ipcRenderer.invoke('get-default-local-path'),
     // GitHub API functions
     githubAuthenticate: (token) => electron_1.ipcRenderer.invoke('github-authenticate', token),
     githubSetRepository: (owner, repo, localPath, token) => electron_1.ipcRenderer.invoke('github-set-repository', owner, repo, localPath, token),

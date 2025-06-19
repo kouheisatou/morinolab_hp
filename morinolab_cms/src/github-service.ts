@@ -4,6 +4,7 @@ import { shell } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createServer } from 'node:http';
+import { AddressInfo } from 'node:net';
 
 export interface GitHubConfig {
   token: string;
@@ -28,6 +29,33 @@ export interface GitHubRepository {
   };
 }
 
+/**
+ * 利用可能なポートを見つける
+ */
+function findAvailablePort(startPort: number = 3000): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+
+    server.listen(startPort, () => {
+      const port = (server.address() as AddressInfo).port;
+      server.close(() => {
+        resolve(port);
+      });
+    });
+
+    server.on('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE') {
+        // ポートが使用中の場合、次のポートを試す
+        findAvailablePort(startPort + 1)
+          .then(resolve)
+          .catch(reject);
+      } else {
+        reject(err);
+      }
+    });
+  });
+}
+
 export class GitHubService {
   private octokit: Octokit | null = null;
   private git: SimpleGit | null = null;
@@ -43,62 +71,85 @@ export class GitHubService {
     clientSecret: string,
   ): Promise<{ success: boolean; token?: string; error?: string }> {
     return new Promise((resolve) => {
-      const redirectUri = 'http://localhost:3000/auth/callback';
-      const scope = 'repo,user';
-      const state = Math.random().toString(36).substring(7);
+      (async () => {
+        try {
+          // 利用可能なポートを動的に見つける
+          const port = await findAvailablePort(3000);
+          const redirectUri = `http://localhost:${port}/auth/callback`;
+          const scope = 'repo,user';
+          const state = Math.random().toString(36).substring(7);
 
-      // ローカルサーバーを起動してコールバックを受信
-      const server = createServer((req, res) => {
-        const url = new URL(req.url!, 'http://localhost:3000');
+          console.log(`Starting OAuth server on port ${port}`);
 
-        if (url.pathname === '/auth/callback') {
-          const code = url.searchParams.get('code');
-          const returnedState = url.searchParams.get('state');
+          // ローカルサーバーを起動してコールバックを受信
+          const server = createServer((req, res) => {
+            const url = new URL(req.url!, `http://localhost:${port}`);
 
-          if (returnedState !== state) {
-            res.writeHead(400, { 'Content-Type': 'text/html' });
-            res.end('<h1>認証エラー</h1><p>不正なリクエストです。</p>');
-            server.close();
-            resolve({ success: false, error: 'Invalid state parameter' });
-            return;
-          }
+            if (url.pathname === '/auth/callback') {
+              const code = url.searchParams.get('code');
+              const returnedState = url.searchParams.get('state');
 
-          if (code) {
-            // アクセストークンを取得
-            this.exchangeCodeForToken(code, clientId, clientSecret, redirectUri)
-              .then((token) => {
-                res.writeHead(200, { 'Content-Type': 'text/html' });
-                res.end(
-                  '<h1>認証完了</h1><p>アプリケーションに戻ってください。</p><script>window.close();</script>',
-                );
-                server.close();
-                resolve({ success: true, token });
-              })
-              .catch((error) => {
+              if (returnedState !== state) {
                 res.writeHead(400, { 'Content-Type': 'text/html' });
-                res.end('<h1>認証エラー</h1><p>トークンの取得に失敗しました。</p>');
+                res.end('<h1>認証エラー</h1><p>不正なリクエストです。</p>');
                 server.close();
-                resolve({ success: false, error: error.message });
-              });
-          } else {
-            res.writeHead(400, { 'Content-Type': 'text/html' });
-            res.end('<h1>認証エラー</h1><p>認証コードが取得できませんでした。</p>');
+                resolve({ success: false, error: 'Invalid state parameter' });
+                return;
+              }
+
+              if (code) {
+                // アクセストークンを取得
+                this.exchangeCodeForToken(code, clientId, clientSecret, redirectUri)
+                  .then((token) => {
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(
+                      '<h1>認証完了</h1><p>アプリケーションに戻ってください。</p><script>window.close();</script>',
+                    );
+                    server.close();
+                    resolve({ success: true, token });
+                  })
+                  .catch((error) => {
+                    res.writeHead(400, { 'Content-Type': 'text/html' });
+                    res.end('<h1>認証エラー</h1><p>トークンの取得に失敗しました。</p>');
+                    server.close();
+                    resolve({ success: false, error: error.message });
+                  });
+              } else {
+                res.writeHead(400, { 'Content-Type': 'text/html' });
+                res.end('<h1>認証エラー</h1><p>認証コードが取得できませんでした。</p>');
+                server.close();
+                resolve({ success: false, error: 'No authorization code received' });
+              }
+            }
+          });
+
+          // エラーハンドリングを追加
+          server.on('error', (err) => {
+            console.error('Server error:', err);
             server.close();
-            resolve({ success: false, error: 'No authorization code received' });
-          }
+            resolve({ success: false, error: `Server error: ${err.message}` });
+          });
+
+          server.listen(port, () => {
+            console.log(`OAuth server listening on port ${port}`);
+            const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}`;
+            shell.openExternal(authUrl);
+          });
+
+          // タイムアウト設定
+          setTimeout(() => {
+            console.log('OAuth authentication timeout');
+            server.close();
+            resolve({ success: false, error: 'Authentication timeout' });
+          }, 300000); // 5分でタイムアウト
+        } catch (error) {
+          console.error('Failed to find available port:', error);
+          resolve({
+            success: false,
+            error: `Failed to start OAuth server: ${(error as Error).message}`,
+          });
         }
-      });
-
-      server.listen(3000, () => {
-        const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}`;
-        shell.openExternal(authUrl);
-      });
-
-      // タイムアウト設定
-      setTimeout(() => {
-        server.close();
-        resolve({ success: false, error: 'Authentication timeout' });
-      }, 300000); // 5分でタイムアウト
+      })(); // immediately invoked async function to keep executor sync
     });
   }
 

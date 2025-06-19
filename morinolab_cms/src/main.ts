@@ -527,6 +527,18 @@ ipcMain.handle('select-directory', async () => {
   }
 });
 
+// デフォルトパスの取得
+ipcMain.handle('get-default-local-path', () => {
+  try {
+    const homeDir = app.getPath('documents');
+    const defaultPath = path.join(homeDir, 'morinolab');
+    return { success: true, path: defaultPath };
+  } catch (error) {
+    console.error('Failed to get default path:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
 ipcMain.on('save-content', (_event, type: string, id: string, content: string) => {
   saveContent(type, id, content);
 });

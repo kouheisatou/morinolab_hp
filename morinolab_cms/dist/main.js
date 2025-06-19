@@ -487,6 +487,18 @@ electron_1.ipcMain.handle('select-directory', async () => {
         return { success: false, error: error.message };
     }
 });
+// デフォルトパスの取得
+electron_1.ipcMain.handle('get-default-local-path', () => {
+    try {
+        const homeDir = electron_1.app.getPath('documents');
+        const defaultPath = node_path_1.default.join(homeDir, 'morinolab');
+        return { success: true, path: defaultPath };
+    }
+    catch (error) {
+        console.error('Failed to get default path:', error);
+        return { success: false, error: error.message };
+    }
+});
 electron_1.ipcMain.on('save-content', (_event, type, id, content) => {
     saveContent(type, id, content);
 });
