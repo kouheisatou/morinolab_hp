@@ -12,7 +12,7 @@
     "package": "npm run build && npm run rebuild && electron-forge package && npm run copy-deps",
     "make": "npm run build && npm run rebuild && electron-forge make && npm run copy-deps-make",
     "copy-deps": "node copy-deps.js",
-    "copy-deps-make": "node copy-deps.js $(find out/make -name 'app' -type d | head -1)",
+    "copy-deps-make": "node copy-deps.js",
     "start": "npm run build && npx electron . --contents=../contents",
     "dev": "npm run build && npx electron . --contents=../contents --dev"
   },

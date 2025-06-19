@@ -6,13 +6,17 @@ module.exports = {
     asar: false,
     extraResource: [
       './Sango-JA-CPAL.ttf'
-    ]
+    ],
+    // Only build for the current platform to prevent cross-platform issues
+    platform: process.platform,
+    arch: process.arch
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
       config: {},
+      platforms: ['win32']
     },
     {
       name: '@electron-forge/maker-zip',
@@ -21,16 +25,19 @@ module.exports = {
     {
       name: '@electron-forge/maker-deb',
       config: {},
+      platforms: ['linux']
     },
     {
       name: '@electron-forge/maker-rpm',
       config: {},
+      platforms: ['linux']
     },
     {
       name: '@electron-forge/maker-dmg',
       config: {},
+      platforms: ['darwin']
     },
-  ],
+  ].filter(maker => !maker.platforms || maker.platforms.includes(process.platform)),
   plugins: [
     new FusesPlugin({
       version: FuseVersion.V1,
