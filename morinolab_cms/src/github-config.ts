@@ -2,7 +2,11 @@
 // 暗号化された設定ファイルまたは環境変数から認証情報を取得
 
 import { SecureGitHubConfig } from './config-manager';
-import { GitHubOAuthConfig } from '@/types/common';
+
+export interface GitHubOAuthConfig {
+  clientId: string;
+  clientSecret: string;
+}
 
 // セキュアな設定管理のインスタンス
 const secureConfig = new SecureGitHubConfig();

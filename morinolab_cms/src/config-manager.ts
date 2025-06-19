@@ -3,7 +3,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
-import { EncryptedConfig } from '@/types/common';
+interface EncryptedConfig {
+  github: {
+    clientId: string;
+    clientSecret: string;
+  };
+}
 
 export class ConfigManager {
   private readonly configPath: string;

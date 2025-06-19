@@ -41,4 +41,3 @@ electron_1.contextBridge.exposeInMainWorld('api', {
         return () => electron_1.ipcRenderer.removeAllListeners('github-clone-progress');
     },
 });
-//# sourceMappingURL=preload.js.map

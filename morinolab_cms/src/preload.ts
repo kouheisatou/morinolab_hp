@@ -1,13 +1,54 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-// Import types from common types file
-import {
-  GitHubResponse,
-  GitHubStatusResponse,
-  GitHubInfoResponse,
-  GitHubRepository,
-  GitHubConfig,
-} from '@/types/common';
+// Define proper types for GitHub API responses
+interface GitHubResponse {
+  success: boolean;
+  error: string | null;
+}
+
+interface GitHubStatusResponse extends GitHubResponse {
+  data: {
+    ahead: number;
+    behind: number;
+    current: string;
+    tracking: string;
+    files: Array<{
+      path: string;
+      index: string;
+      working_dir: string;
+    }>;
+  } | null;
+}
+
+interface GitHubInfoResponse extends GitHubResponse {
+  data: {
+    owner: string;
+    repo: string;
+    localPath: string;
+    isCloned: boolean;
+    lastSync?: string;
+  } | null;
+}
+
+interface GitHubRepository {
+  id: number;
+  name: string;
+  full_name: string;
+  description: string | null;
+  private: boolean;
+  html_url: string;
+  clone_url: string;
+  default_branch: string;
+}
+
+interface GitHubConfig {
+  clientId?: string;
+  clientSecret?: string;
+  owner?: string;
+  repo?: string;
+  localPath?: string;
+  token?: string;
+}
 
 contextBridge.exposeInMainWorld('api', {
   getContentTypes: (): Promise<string[]> => ipcRenderer.invoke('get-content-types'),

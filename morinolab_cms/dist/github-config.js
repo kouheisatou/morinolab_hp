@@ -84,4 +84,3 @@ GitHub OAuth アプリケーションの設定が必要です:
   `;
 };
 exports.showGitHubSetupGuide = showGitHubSetupGuide;
-//# sourceMappingURL=github-config.js.map
