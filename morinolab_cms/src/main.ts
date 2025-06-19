@@ -146,6 +146,9 @@ let CONTENT_ROOT = path.join(process.cwd(), '../contents');
 
 // Update content root based on GitHub repository configuration
 async function updateContentRoot() {
+  console.log('=== updateContentRoot() called ===');
+  const previousContentRoot = CONTENT_ROOT;
+
   try {
     // Check if GitHub service has a configured repository
     const config = githubService.getConfig();
@@ -163,6 +166,10 @@ async function updateContentRoot() {
         if (fs.existsSync(clonedContentsPath)) {
           CONTENT_ROOT = clonedContentsPath;
           console.log(`✅ Using GitHub cloned contents at: ${CONTENT_ROOT}`);
+
+          if (previousContentRoot !== CONTENT_ROOT) {
+            console.log(`📂 Content root changed from: ${previousContentRoot} to: ${CONTENT_ROOT}`);
+          }
           return;
         } else {
           console.log(
@@ -179,7 +186,14 @@ async function updateContentRoot() {
     console.log('❌ Error checking GitHub repository configuration:', error);
   }
 
+  // Fallback to default if no GitHub config
+  const defaultContentRoot = path.join(process.cwd(), '../contents');
+  CONTENT_ROOT = defaultContentRoot;
   console.log(`📁 Using default contents at: ${CONTENT_ROOT}`);
+
+  if (previousContentRoot !== CONTENT_ROOT) {
+    console.log(`📂 Content root changed from: ${previousContentRoot} to: ${CONTENT_ROOT}`);
+  }
 }
 
 // GitHub service instance
@@ -242,7 +256,11 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  // Try to restore GitHub configuration on startup
+  await tryRestoreGitHubConfiguration();
+  await updateContentRoot();
+
   createWindow();
 
   app.on('activate', () => {
@@ -259,22 +277,63 @@ app.on('window-all-closed', () => {
 // ============================================================
 
 async function ensureContentRoot() {
-  // Try to restore GitHub configuration from browser's localStorage
-  await tryRestoreGitHubConfiguration();
+  // Update content root based on current GitHub configuration
   await updateContentRoot();
+
+  // Ensure the content root directory exists
   if (!fs.existsSync(CONTENT_ROOT)) {
+    console.log(`Creating content root directory: ${CONTENT_ROOT}`);
     fs.mkdirSync(CONTENT_ROOT, { recursive: true });
   }
+
+  console.log(`Using content root: ${CONTENT_ROOT}`);
 }
 
-// Restore GitHub configuration from the UI's localStorage
+// Restore GitHub configuration from stored config
 async function tryRestoreGitHubConfiguration() {
   try {
-    // This will be called by the renderer process if needed
-    // For now, we'll handle this via IPC from the renderer
-    console.log('DEBUG: Checking if GitHub configuration needs restoration...');
+    console.log('DEBUG: Attempting to restore GitHub configuration on startup...');
+
+    // Try to get OAuth config
+    const oauthConfig = await getGitHubOAuthConfig();
+    if (!oauthConfig || !validateGitHubConfig(oauthConfig)) {
+      console.log('DEBUG: No valid OAuth config found, skipping GitHub restore');
+      return;
+    }
+
+    // Check if there's a stored repository configuration in user data
+    const userDataPath = app.getPath('userData');
+    const configPath = path.join(userDataPath, 'github-repo-config.json');
+
+    if (fs.existsSync(configPath)) {
+      try {
+        const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        console.log('DEBUG: Found stored repository config:', {
+          owner: configData.owner,
+          repo: configData.repo,
+          localPath: configData.localPath,
+          hasToken: !!configData.token,
+        });
+
+        // Restore GitHub service configuration
+        if (configData.token) {
+          await githubService.authenticate(configData.token);
+          githubService.setRepositoryConfig(
+            configData.owner,
+            configData.repo,
+            configData.localPath,
+            configData.token,
+          );
+          console.log('✅ GitHub configuration restored from storage');
+        }
+      } catch (error) {
+        console.log('❌ Failed to parse stored config:', error);
+      }
+    } else {
+      console.log('DEBUG: No stored repository config found');
+    }
   } catch (error) {
-    console.log('DEBUG: No GitHub configuration to restore:', error);
+    console.log('DEBUG: Error during GitHub configuration restoration:', error);
   }
 }
 
@@ -436,6 +495,17 @@ ipcMain.handle('create-item', wrap(createItem));
 ipcMain.handle('delete-item', wrap(deleteItem));
 ipcMain.handle('load-content', wrap(loadContent));
 
+// Add handler to manually update content root
+ipcMain.handle('update-content-root', async () => {
+  try {
+    await updateContentRoot();
+    return { success: true, contentRoot: CONTENT_ROOT };
+  } catch (error) {
+    console.error('Failed to update content root:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
 ipcMain.on('save-content', (_event, type: string, id: string, content: string) => {
   saveContent(type, id, content);
 });
@@ -559,6 +629,18 @@ ipcMain.handle(
   async (_, owner: string, repo: string, localPath: string, token: string) => {
     try {
       githubService.setRepositoryConfig(owner, repo, localPath, token);
+
+      // Save configuration to persistent storage
+      const userDataPath = app.getPath('userData');
+      const configPath = path.join(userDataPath, 'github-repo-config.json');
+      const configData = { owner, repo, localPath, token };
+
+      fs.writeFileSync(configPath, JSON.stringify(configData, null, 2), 'utf8');
+      console.log('✅ GitHub repository configuration saved to storage');
+
+      // Update content root immediately
+      await updateContentRoot();
+
       return { success: true, error: null };
     } catch (error) {
       console.error('GitHub repository config error:', error);
@@ -571,6 +653,10 @@ ipcMain.handle(
 ipcMain.handle('github-clone-repository', async () => {
   try {
     const success = await githubService.cloneRepository();
+    if (success) {
+      // Update content root after successful clone
+      await updateContentRoot();
+    }
     return { success, error: success ? null : 'Clone failed' };
   } catch (error) {
     console.error('GitHub clone error:', error);
@@ -685,6 +771,10 @@ ipcMain.handle('github-clone-with-progress', async () => {
         percent,
       });
     });
+    if (success) {
+      // Update content root after successful clone
+      await updateContentRoot();
+    }
     return { success, error: success ? null : 'Clone failed' };
   } catch (error) {
     console.error('GitHub clone with progress error:', error);
@@ -738,6 +828,13 @@ ipcMain.handle(
         configData.localPath,
         configData.token,
       );
+
+      // Save configuration to persistent storage
+      const userDataPath = app.getPath('userData');
+      const configPath = path.join(userDataPath, 'github-repo-config.json');
+
+      fs.writeFileSync(configPath, JSON.stringify(configData, null, 2), 'utf8');
+      console.log('✅ GitHub repository configuration saved to storage');
 
       // CONTENT_ROOTを更新
       await updateContentRoot();

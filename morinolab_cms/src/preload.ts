@@ -77,6 +77,8 @@ contextBridge.exposeInMainWorld('api', {
   resolvePath: (type: string, rel: string): Promise<string> =>
     ipcRenderer.invoke('resolve-path', type, rel),
   getFontURL: (): Promise<string | null> => ipcRenderer.invoke('get-font-url'),
+  updateContentRoot: (): Promise<{ success: boolean; contentRoot?: string; error?: string }> =>
+    ipcRenderer.invoke('update-content-root'),
 
   // GitHub API functions
   githubAuthenticate: (token: string): Promise<GitHubResponse> =>
@@ -160,6 +162,7 @@ declare global {
       selectThumbnail(type: string, id: string): Promise<string | null>;
       resolvePath(type: string, rel: string): Promise<string>;
       getFontURL(): Promise<string | null>;
+      updateContentRoot(): Promise<{ success: boolean; contentRoot?: string; error?: string }>;
 
       // GitHub API function types
       githubAuthenticate(token: string): Promise<GitHubResponse>;
