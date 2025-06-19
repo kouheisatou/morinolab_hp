@@ -15,6 +15,7 @@ electron_1.contextBridge.exposeInMainWorld('api', {
     resolvePath: (type, rel) => electron_1.ipcRenderer.invoke('resolve-path', type, rel),
     getFontURL: () => electron_1.ipcRenderer.invoke('get-font-url'),
     updateContentRoot: () => electron_1.ipcRenderer.invoke('update-content-root'),
+    selectDirectory: () => electron_1.ipcRenderer.invoke('select-directory'),
     // GitHub API functions
     githubAuthenticate: (token) => electron_1.ipcRenderer.invoke('github-authenticate', token),
     githubSetRepository: (owner, repo, localPath, token) => electron_1.ipcRenderer.invoke('github-set-repository', owner, repo, localPath, token),
@@ -41,4 +42,10 @@ electron_1.contextBridge.exposeInMainWorld('api', {
         electron_1.ipcRenderer.on('github-clone-progress', (_, data) => callback(data));
         return () => electron_1.ipcRenderer.removeAllListeners('github-clone-progress');
     },
+    // コンフリクト解決API
+    githubGetConflicts: () => electron_1.ipcRenderer.invoke('github-get-conflicts'),
+    githubGetConflictContent: (filePath) => electron_1.ipcRenderer.invoke('github-get-conflict-content', filePath),
+    githubResolveConflict: (filePath, resolvedContent) => electron_1.ipcRenderer.invoke('github-resolve-conflict', filePath, resolvedContent),
+    githubCompleteMerge: (message) => electron_1.ipcRenderer.invoke('github-complete-merge', message),
+    githubCheckConflictsResolved: () => electron_1.ipcRenderer.invoke('github-check-conflicts-resolved'),
 });

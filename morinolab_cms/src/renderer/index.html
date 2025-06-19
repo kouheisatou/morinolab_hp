@@ -257,8 +257,16 @@
         border-top-color: #fff;
         border-left-color: #fff;
         padding: 24px;
-        max-width: 500px;
+        max-width: 700px;
         width: 90%;
+      }
+
+      .setup-step {
+        background: #f8f8f8;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 20px;
+        margin-bottom: 20px;
       }
 
       .setup-title {
@@ -423,29 +431,61 @@
     <div id="initialSetup">
       <div class="setup-container">
         <h1 class="setup-title">GitHub CMS セットアップ</h1>
-        <p class="setup-description">
-          GitHubリポジトリと連携してコンテンツ管理を開始します。<br />
-          下のボタンをクリックしてGitHubにログインしてください。
-        </p>
 
-        <div class="setup-form">
+        <!-- Step 1: Local Directory Setup -->
+        <div id="stepLocalPath" class="setup-step">
+          <h2 style="font-size: 16px; margin: 0 0 12px 0">📁 ステップ1: ローカル保存先の設定</h2>
+          <p style="margin: 0 0 16px 0; color: #666">
+            GitHubからクローンしたリポジトリを保存するディレクトリを指定してください。<br />
+            選択したディレクトリの下に各リポジトリのフォルダが作成されます。
+          </p>
+
           <div class="form-group">
-            <label for="localPath">ローカルクローン先:</label>
-            <input
-              type="text"
-              id="localPath"
-              value="/tmp/github-cms-repo"
-              placeholder="ローカルディレクトリパス"
-            />
-            <div class="note">クローンしたリポジトリが保存されるローカルディレクトリ</div>
+            <label for="localPath">保存先ディレクトリ:</label>
+            <div style="display: flex; gap: 8px; margin-top: 4px">
+              <input
+                type="text"
+                id="localPath"
+                style="flex: 1"
+                placeholder="例: /Users/username/Documents/github-repos"
+              />
+              <button id="selectDirBtn" class="btn" style="padding: 8px 12px">フォルダ選択</button>
+            </div>
+            <div class="note" style="margin-top: 8px">
+              💡 例: /Users/username/Documents/github-repos を選択した場合、<br />
+              リポジトリは /Users/username/Documents/github-repos/repo-name/ に保存されます
+            </div>
           </div>
 
           <button
-            id="startAuthBtn"
+            id="nextToAuthBtn"
             class="btn"
             style="padding: 12px 24px; margin-top: 16px; background: #c0d6c0"
+            disabled
           >
+            次へ：GitHubにログイン
+          </button>
+        </div>
+
+        <!-- Step 2: GitHub Authentication -->
+        <div id="stepAuth" class="setup-step" style="display: none">
+          <h2 style="font-size: 16px; margin: 0 0 12px 0">🔐 ステップ2: GitHub認証</h2>
+          <p style="margin: 0 0 16px 0; color: #666">
+            GitHubアカウントにログインして、リポジトリにアクセスする権限を取得します。
+          </p>
+
+          <div
+            style="background: #f0f0f0; padding: 12px; margin-bottom: 16px; border: 1px solid #ccc"
+          >
+            <strong>保存先:</strong> <span id="selectedPath" style="font-family: monospace"></span>
+          </div>
+
+          <button id="startAuthBtn" class="btn" style="padding: 12px 24px; background: #c0d6c0">
             GitHubでログイン
+          </button>
+
+          <button id="backToPathBtn" class="btn" style="padding: 8px 16px; margin-left: 8px">
+            ← 戻る
           </button>
         </div>
 
@@ -457,18 +497,33 @@
           <div id="progressText" class="progress-text">準備中...</div>
         </div>
 
-        <!-- Repository Selection -->
-        <div id="repoSelection" style="display: none">
-          <h3>リポジトリを選択してください:</h3>
-          <div id="repoList" class="repo-list"></div>
-          <button
-            id="cloneSelectedBtn"
-            class="btn"
-            style="padding: 8px 16px; margin-top: 12px"
-            disabled
+        <!-- Step 3: Repository Selection -->
+        <div id="stepRepoSelection" class="setup-step" style="display: none">
+          <h2 style="font-size: 16px; margin: 0 0 12px 0">📚 ステップ3: リポジトリ選択</h2>
+          <p style="margin: 0 0 16px 0; color: #666">
+            使用するGitHubリポジトリを選択してください。
+          </p>
+
+          <div
+            style="background: #f0f0f0; padding: 12px; margin-bottom: 16px; border: 1px solid #ccc"
           >
-            選択したリポジトリをクローン
-          </button>
+            <strong>保存先:</strong> <span id="selectedPath2" style="font-family: monospace"></span>
+          </div>
+
+          <div id="repoList" class="repo-list"></div>
+          <div style="margin-top: 16px">
+            <button
+              id="cloneSelectedBtn"
+              class="btn"
+              style="padding: 12px 24px; background: #c0d6c0"
+              disabled
+            >
+              セットアップ完了
+            </button>
+            <button id="backToAuthBtn" class="btn" style="padding: 8px 16px; margin-left: 8px">
+              ← 戻る
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -490,9 +545,6 @@
             display: none;
           "
         ></div>
-        <button id="githubSetupBtn" class="btn" style="width: 100%; margin: 2px 0; font-size: 11px">
-          初期設定
-        </button>
         <button
           id="githubSyncBtn"
           class="btn"
@@ -501,20 +553,16 @@
         >
           同期
         </button>
+        <button id="githubSetupBtn" class="btn" style="width: 100%; margin: 2px 0; font-size: 11px">
+          リポジトリ選択
+        </button>
         <button
           id="githubCommitBtn"
           class="btn"
           style="width: 100%; margin: 2px 0; font-size: 11px; background: #c0d6c0"
           disabled
         >
-          コミット&プッシュ
-        </button>
-        <button
-          id="githubResetBtn"
-          class="btn danger"
-          style="width: 100%; margin: 2px 0; font-size: 10px; display: none"
-        >
-          設定リセット
+          アップロード
         </button>
       </div>
     </div>
@@ -542,6 +590,66 @@
     </div>
     <div id="popupOverlay">
       <div id="popup"></div>
+    </div>
+
+    <!-- Conflict Resolution Modal -->
+    <div
+      id="conflictModal"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      "
+    >
+      <div
+        style="
+          background: #d4d0c8;
+          border: 2px solid #808080;
+          width: 90%;
+          max-width: 800px;
+          max-height: 90%;
+          overflow: auto;
+          padding: 16px;
+        "
+      >
+        <h2 style="margin: 0 0 16px 0; border-bottom: 1px solid #808080; padding-bottom: 8px">
+          📋 マージコンフリクトの解決
+        </h2>
+
+        <div style="margin-bottom: 16px; padding: 8px; background: #fff; border: 1px solid #808080">
+          <strong>📖 説明:</strong><br />
+          他の人が同じファイルを編集していたため、変更を統合する必要があります。<br />
+          各ファイルについて、どちらの変更を採用するか選択してください。
+        </div>
+
+        <div id="conflictFiles"></div>
+
+        <div
+          style="
+            margin-top: 16px;
+            text-align: center;
+            border-top: 1px solid #808080;
+            padding-top: 16px;
+          "
+        >
+          <button
+            id="completeConflictResolution"
+            class="btn"
+            style="margin-right: 8px; background: #c0d6c0"
+            disabled
+          >
+            ✅ 解決完了
+          </button>
+          <button id="cancelConflictResolution" class="btn">❌ キャンセル</button>
+        </div>
+      </div>
     </div>
     <script>
       const sidebar = document.getElementById('sidebar');
@@ -896,23 +1004,12 @@
       const githubSetupBtn = document.getElementById('githubSetupBtn');
       const githubSyncBtn = document.getElementById('githubSyncBtn');
       const githubCommitBtn = document.getElementById('githubCommitBtn');
-      const githubResetBtn = document.getElementById('githubResetBtn');
 
       let githubConfig = null;
 
-      // GitHub初期設定ボタン（初回セットアップ画面を表示）
+      // GitHub リポジトリ選択ボタン（初回セットアップ画面を表示）
       githubSetupBtn.onclick = () => {
         showInitialSetup();
-      };
-
-      // GitHub設定リセット
-      githubResetBtn.onclick = () => {
-        if (confirm('GitHub設定をリセットしますか？\n再度初期設定が必要になります。')) {
-          localStorage.removeItem('githubConfig');
-          githubConfig = null;
-          updateSidebarGitHubStatus('未接続', null);
-          showInitialSetup();
-        }
       };
 
       // 同期（プル）
@@ -930,6 +1027,9 @@
             if (currentType) {
               loadItems();
             }
+          } else if (result.hasConflicts) {
+            // コンフリクトが発生した場合、解決UIを表示
+            showConflictResolutionModal(result.conflicts || []);
           } else {
             alert('同期に失敗しました: ' + result.error);
           }
@@ -942,30 +1042,33 @@
         githubSyncBtn.textContent = '同期';
       };
 
-      // コミット&プッシュ
+      // アップロード
       githubCommitBtn.onclick = async () => {
         if (!githubConfig) return;
 
-        const message = prompt('コミットメッセージを入力してください:', 'Update content from CMS');
+        const message = prompt(
+          'アップロードメッセージを入力してください:',
+          'Update content from CMS',
+        );
         if (!message) return;
 
         githubCommitBtn.disabled = true;
-        githubCommitBtn.textContent = 'プッシュ中...';
+        githubCommitBtn.textContent = 'アップロード中...';
 
         try {
           const result = await window.api.githubCommitPush(message);
           if (result.success) {
-            updateGitHubStatus('プッシュ完了');
+            updateGitHubStatus('アップロード完了');
           } else {
-            alert('プッシュに失敗しました: ' + result.error);
+            alert('アップロードに失敗しました: ' + result.error);
           }
         } catch (error) {
-          console.error('プッシュエラー:', error);
-          alert('プッシュエラー: ' + error.message);
+          console.error('アップロードエラー:', error);
+          alert('アップロードエラー: ' + error.message);
         }
 
         githubCommitBtn.disabled = false;
-        githubCommitBtn.textContent = 'コミット&プッシュ';
+        githubCommitBtn.textContent = 'アップロード';
       };
 
       // 初期チェックと初期化を実行
@@ -994,16 +1097,14 @@
         if (config) {
           githubRepoInfo.textContent = `${config.owner}/${config.repo}`;
           githubRepoInfo.style.display = 'block';
-          githubSetupBtn.textContent = '再設定';
+          githubSetupBtn.textContent = 'リポジトリ選択';
           githubSyncBtn.disabled = false;
           githubCommitBtn.disabled = false;
-          githubResetBtn.style.display = 'block';
         } else {
           githubRepoInfo.style.display = 'none';
-          githubSetupBtn.textContent = '初期設定';
+          githubSetupBtn.textContent = 'リポジトリ選択';
           githubSyncBtn.disabled = true;
           githubCommitBtn.disabled = true;
-          githubResetBtn.style.display = 'none';
         }
       }
 
@@ -1068,18 +1169,53 @@
       // ============================================================
 
       const initialSetup = document.getElementById('initialSetup');
-      const startAuthBtn = document.getElementById('startAuthBtn');
+      const stepLocalPath = document.getElementById('stepLocalPath');
+      const stepAuth = document.getElementById('stepAuth');
+      const stepRepoSelection = document.getElementById('stepRepoSelection');
+
       const localPathInput = document.getElementById('localPath');
+      const selectDirBtn = document.getElementById('selectDirBtn');
+      const nextToAuthBtn = document.getElementById('nextToAuthBtn');
+      const startAuthBtn = document.getElementById('startAuthBtn');
+      const backToPathBtn = document.getElementById('backToPathBtn');
+      const backToAuthBtn = document.getElementById('backToAuthBtn');
+
+      const selectedPath = document.getElementById('selectedPath');
+      const selectedPath2 = document.getElementById('selectedPath2');
+
       const progressContainer = document.getElementById('progressContainer');
       const progressFill = document.getElementById('progressFill');
       const progressText = document.getElementById('progressText');
-      const repoSelection = document.getElementById('repoSelection');
       const repoList = document.getElementById('repoList');
       const cloneSelectedBtn = document.getElementById('cloneSelectedBtn');
 
       let selectedRepository = null;
       let repositories = [];
       let setupProgress = null;
+      let currentLocalPath = '';
+
+      // ローカル設定の管理
+      function loadLocalSettings() {
+        const saved = localStorage.getItem('cmsLocalSettings');
+        if (saved) {
+          try {
+            const settings = JSON.parse(saved);
+            localPathInput.value = settings.localPath || '';
+            currentLocalPath = settings.localPath || '';
+            updateNextButton();
+          } catch (error) {
+            console.error('Failed to load local settings:', error);
+          }
+        }
+      }
+
+      function saveLocalSettings() {
+        const settings = {
+          localPath: currentLocalPath,
+          timestamp: Date.now(),
+        };
+        localStorage.setItem('cmsLocalSettings', JSON.stringify(settings));
+      }
 
       // 初回起動時の判定
       async function checkInitialSetup() {
@@ -1092,16 +1228,68 @@
         } else {
           // 初回またはリセットが必要な場合はセットアップ画面を表示
           showInitialSetup();
+          loadLocalSettings();
         }
       }
 
       function showInitialSetup() {
         initialSetup.classList.remove('hidden');
+        showStep('localPath');
       }
 
       function hideInitialSetup() {
         initialSetup.classList.add('hidden');
       }
+
+      function showStep(step) {
+        stepLocalPath.style.display = step === 'localPath' ? 'block' : 'none';
+        stepAuth.style.display = step === 'auth' ? 'block' : 'none';
+        stepRepoSelection.style.display = step === 'repoSelection' ? 'block' : 'none';
+      }
+
+      function updateNextButton() {
+        const hasPath = currentLocalPath.trim().length > 0;
+        nextToAuthBtn.disabled = !hasPath;
+      }
+
+      // Step 1: Local Path Events
+      localPathInput.addEventListener('input', (e) => {
+        currentLocalPath = e.target.value;
+        updateNextButton();
+      });
+
+      selectDirBtn.onclick = async () => {
+        try {
+          const result = await window.api.selectDirectory();
+          if (result.success && result.path) {
+            localPathInput.value = result.path;
+            currentLocalPath = result.path;
+            updateNextButton();
+          } else {
+            console.log('ディレクトリ選択がキャンセルされました');
+          }
+        } catch (error) {
+          console.error('ディレクトリ選択エラー:', error);
+          alert('ディレクトリ選択でエラーが発生しました');
+        }
+      };
+
+      nextToAuthBtn.onclick = () => {
+        if (currentLocalPath.trim()) {
+          saveLocalSettings();
+          selectedPath.textContent = currentLocalPath;
+          selectedPath2.textContent = currentLocalPath;
+          showStep('auth');
+        }
+      };
+
+      backToPathBtn.onclick = () => {
+        showStep('localPath');
+      };
+
+      backToAuthBtn.onclick = () => {
+        showStep('auth');
+      };
 
       function showProgress(message, percent) {
         progressContainer.classList.add('show');
@@ -1115,10 +1303,9 @@
 
       // GitHub認証開始
       startAuthBtn.onclick = async () => {
-        const localPath = localPathInput.value.trim();
-
-        if (!localPath) {
-          alert('ローカルクローン先を入力してください');
+        if (!currentLocalPath.trim()) {
+          alert('ローカル保存先を設定してください');
+          showStep('localPath');
           return;
         }
 
@@ -1147,7 +1334,7 @@
           repositories = repoResult.data;
 
           hideProgress();
-          showRepositorySelection(repositories, localPath, authResult.token);
+          showRepositorySelection(repositories, authResult.token);
         } catch (error) {
           console.error('Setup error:', error);
           alert('セットアップに失敗しました: ' + error.message);
@@ -1158,8 +1345,8 @@
       };
 
       // リポジトリ選択画面を表示
-      function showRepositorySelection(repos, localPath, token) {
-        repoSelection.style.display = 'block';
+      function showRepositorySelection(repos, token) {
+        showStep('repoSelection');
         repoList.innerHTML = '';
 
         repos.forEach((repo) => {
@@ -1197,7 +1384,7 @@
         // クローンボタンのイベント
         cloneSelectedBtn.onclick = () => {
           if (selectedRepository) {
-            startCloning(selectedRepository, localPath, token);
+            startCloning(selectedRepository, token);
           }
         };
       }
@@ -1211,26 +1398,32 @@
 
         // 新しい選択を設定
         element.classList.add('selected');
-        selectedRepository = repo;
+        selectedRepository = {
+          ...repo,
+          localBasePath: currentLocalPath,
+          localPath: currentLocalPath + '/' + repo.name,
+        };
         cloneSelectedBtn.disabled = false;
       }
 
       // クローン開始
-      async function startCloning(repo, localPath, token) {
+      async function startCloning(repo, token) {
         cloneSelectedBtn.disabled = true;
-        cloneSelectedBtn.textContent = 'クローン中...';
+        cloneSelectedBtn.textContent = 'セットアップ中...';
 
         try {
-          // リポジトリ設定
+          // リポジトリ設定（階層構造で保存）
           const [owner, repoName] = repo.full_name.split('/');
-          await window.api.githubSetRepository(owner, repoName, localPath, token);
+          const finalLocalPath = repo.localPath; // /base/path/repo-name
+
+          await window.api.githubSetRepository(owner, repoName, finalLocalPath, token);
 
           // プログレスリスナーを設定
           const removeProgressListener = window.api.onGitHubCloneProgress((data) => {
             showProgress(data.message, data.percent);
           });
 
-          showProgress('クローンを開始中...', 0);
+          showProgress('リポジトリをクローン中...', 0);
 
           // クローン実行
           const cloneResult = await window.api.githubCloneWithProgress();
@@ -1238,12 +1431,19 @@
           removeProgressListener();
 
           if (cloneResult.success) {
-            showProgress('セットアップ完了！', 100);
+            showProgress('セットアップ完了', 100);
 
-            // 設定を保存
-            const config = { token, owner, repo: repoName, localPath };
+            // 設定を保存（ローカル設定と統合）
+            const config = {
+              token,
+              owner,
+              repo: repoName,
+              localPath: finalLocalPath,
+              localBasePath: repo.localBasePath,
+            };
             localStorage.setItem('githubConfig', JSON.stringify(config));
 
+            // 短い待機後に完了
             setTimeout(() => {
               hideInitialSetup();
               hideProgress();
@@ -1252,20 +1452,215 @@
               githubConfig = config;
               updateSidebarGitHubStatus('接続済み', githubConfig);
 
-              // 成功メッセージ
-              alert('GitHub連携のセットアップが完了しました！');
-            }, 2000);
+              // 成功メッセージは非表示（ユーザー要望）
+              console.log('GitHub連携のセットアップが完了しました');
+            }, 1000);
           } else {
             throw new Error(cloneResult.error || 'クローンに失敗しました');
           }
         } catch (error) {
           console.error('Clone error:', error);
-          alert('クローンに失敗しました: ' + error.message);
+          alert('セットアップに失敗しました: ' + error.message);
           cloneSelectedBtn.disabled = false;
-          cloneSelectedBtn.textContent = '選択したリポジトリをクローン';
+          cloneSelectedBtn.textContent = 'セットアップ完了';
           hideProgress();
         }
       }
+
+      // ============================================================
+      // Conflict Resolution
+      // ============================================================
+
+      const conflictModal = document.getElementById('conflictModal');
+      const conflictFiles = document.getElementById('conflictFiles');
+      const completeConflictResolution = document.getElementById('completeConflictResolution');
+      const cancelConflictResolution = document.getElementById('cancelConflictResolution');
+
+      let currentConflicts = [];
+      let resolvedConflicts = new Set();
+
+      // コンフリクト解決モーダルを表示
+      async function showConflictResolutionModal(conflicts) {
+        currentConflicts = conflicts;
+        resolvedConflicts.clear();
+
+        // コンフリクトファイルリストを構築
+        conflictFiles.innerHTML = '';
+
+        for (const filePath of conflicts) {
+          await createConflictFileUI(filePath);
+        }
+
+        updateCompleteButton();
+        conflictModal.style.display = 'flex';
+      }
+
+      // 個別ファイルのコンフリクト解決UIを作成
+      async function createConflictFileUI(filePath) {
+        try {
+          const contentResult = await window.api.githubGetConflictContent(filePath);
+          if (!contentResult.success || !contentResult.data) {
+            console.error('Failed to get conflict content for', filePath);
+            return;
+          }
+
+          const content = contentResult.data;
+          const { ours, theirs, merged } = parseConflictMarkers(content);
+
+          const fileDiv = document.createElement('div');
+          fileDiv.style.cssText = `
+            margin-bottom: 20px;
+            border: 2px solid #808080;
+            background: #fff;
+            padding: 12px;
+          `;
+
+          fileDiv.innerHTML = `
+            <h3 style="margin: 0 0 12px 0; color: #000; border-bottom: 1px solid #ccc; padding-bottom: 4px;">
+              📄 ${filePath}
+            </h3>
+            
+            <div style="margin-bottom: 12px;">
+              <label style="font-weight: bold; margin-bottom: 4px; display: block;">
+                <input type="radio" name="conflict-${CSS.escape(filePath)}" value="ours" style="margin-right: 8px;">
+                🟢 あなたの変更を採用
+              </label>
+              <div style="background: #e6ffe6; border: 1px solid #90EE90; padding: 8px; margin-left: 20px; font-family: monospace; font-size: 12px; white-space: pre-wrap; max-height: 150px; overflow: auto;">${ours.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-weight: bold; margin-bottom: 4px; display: block;">
+                <input type="radio" name="conflict-${CSS.escape(filePath)}" value="theirs" style="margin-right: 8px;">
+                🔴 他の人の変更を採用
+              </label>
+              <div style="background: #ffe6e6; border: 1px solid #FFB6C1; padding: 8px; margin-left: 20px; font-family: monospace; font-size: 12px; white-space: pre-wrap; max-height: 150px; overflow: auto;">${theirs.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-weight: bold; margin-bottom: 4px; display: block;">
+                <input type="radio" name="conflict-${CSS.escape(filePath)}" value="manual" style="margin-right: 8px;">
+                ✏️ 手動で編集
+              </label>
+              <textarea 
+                id="manual-${CSS.escape(filePath)}" 
+                style="width: 100%; height: 150px; margin-left: 20px; font-family: monospace; font-size: 12px; padding: 8px; border: 1px solid #808080;"
+                placeholder="手動で内容を編集してください..."
+              >${merged.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
+            </div>
+          `;
+
+          // ラジオボタンの変更イベント
+          const radios = fileDiv.querySelectorAll(`input[name="conflict-${CSS.escape(filePath)}"]`);
+          radios.forEach((radio) => {
+            radio.addEventListener('change', () => {
+              resolveConflictFile(filePath, radio.value, ours, theirs);
+            });
+          });
+
+          conflictFiles.appendChild(fileDiv);
+        } catch (error) {
+          console.error('Error creating conflict UI for', filePath, error);
+        }
+      }
+
+      // コンフリクトマーカーをパース
+      function parseConflictMarkers(content) {
+        const lines = content.split('\n');
+        let ours = '';
+        let theirs = '';
+        let merged = '';
+        let currentSection = 'normal';
+
+        for (const line of lines) {
+          if (line.startsWith('<<<<<<<')) {
+            currentSection = 'ours';
+            continue;
+          } else if (line.startsWith('=======')) {
+            currentSection = 'theirs';
+            continue;
+          } else if (line.startsWith('>>>>>>>')) {
+            currentSection = 'normal';
+            continue;
+          }
+
+          if (currentSection === 'ours') {
+            ours += line + '\n';
+          } else if (currentSection === 'theirs') {
+            theirs += line + '\n';
+          }
+
+          merged += line + '\n';
+        }
+
+        return {
+          ours: ours.trim(),
+          theirs: theirs.trim(),
+          merged: merged.trim(),
+        };
+      }
+
+      // 個別ファイルのコンフリクト解決
+      async function resolveConflictFile(filePath, choice, oursContent, theirsContent) {
+        try {
+          let resolvedContent = '';
+
+          if (choice === 'ours') {
+            resolvedContent = oursContent;
+          } else if (choice === 'theirs') {
+            resolvedContent = theirsContent;
+          } else if (choice === 'manual') {
+            const textarea = document.getElementById(`manual-${CSS.escape(filePath)}`);
+            resolvedContent = textarea.value.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+          }
+
+          const result = await window.api.githubResolveConflict(filePath, resolvedContent);
+          if (result.success) {
+            resolvedConflicts.add(filePath);
+            console.log(`Conflict resolved for ${filePath}`);
+          } else {
+            alert(`コンフリクト解決に失敗: ${result.error}`);
+            return;
+          }
+
+          updateCompleteButton();
+        } catch (error) {
+          console.error('Error resolving conflict:', error);
+          alert('コンフリクト解決エラー: ' + error.message);
+        }
+      }
+
+      // 完了ボタンの状態更新
+      function updateCompleteButton() {
+        const allResolved = resolvedConflicts.size === currentConflicts.length;
+        completeConflictResolution.disabled = !allResolved;
+      }
+
+      // コンフリクト解決完了
+      completeConflictResolution.onclick = async () => {
+        try {
+          const result = await window.api.githubCompleteMerge('Resolve merge conflicts via CMS');
+          if (result.success) {
+            conflictModal.style.display = 'none';
+            updateGitHubStatus('マージ完了');
+            if (currentType) {
+              loadItems();
+            }
+            alert('✅ マージコンフリクトが正常に解決されました！');
+          } else {
+            alert('マージ完了に失敗: ' + result.error);
+          }
+        } catch (error) {
+          console.error('Error completing merge:', error);
+          alert('マージ完了エラー: ' + error.message);
+        }
+      };
+
+      // コンフリクト解決キャンセル
+      cancelConflictResolution.onclick = () => {
+        if (confirm('コンフリクト解決をキャンセルしますか？\n解決していない変更は失われます。')) {
+          conflictModal.style.display = 'none';
+        }
+      };
     </script>
   </body>
 </html>

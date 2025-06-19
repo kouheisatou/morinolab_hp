@@ -506,6 +506,27 @@ ipcMain.handle('update-content-root', async () => {
   }
 });
 
+// ディレクトリ選択ダイアログ
+ipcMain.handle('select-directory', async () => {
+  try {
+    const mainWindow = BrowserWindow.getAllWindows()[0];
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory', 'createDirectory'],
+      title: 'GitHub リポジトリ保存先を選択',
+      message: 'リポジトリをクローンするディレクトリを選択してください',
+    });
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      return { success: true, path: result.filePaths[0] };
+    } else {
+      return { success: false, error: 'ディレクトリが選択されませんでした' };
+    }
+  } catch (error) {
+    console.error('Directory selection error:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
 ipcMain.on('save-content', (_event, type: string, id: string, content: string) => {
   saveContent(type, id, content);
 });

@@ -79,6 +79,8 @@ contextBridge.exposeInMainWorld('api', {
   getFontURL: (): Promise<string | null> => ipcRenderer.invoke('get-font-url'),
   updateContentRoot: (): Promise<{ success: boolean; contentRoot?: string; error?: string }> =>
     ipcRenderer.invoke('update-content-root'),
+  selectDirectory: (): Promise<{ success: boolean; path?: string; error?: string }> =>
+    ipcRenderer.invoke('select-directory'),
 
   // GitHub API functions
   githubAuthenticate: (token: string): Promise<GitHubResponse> =>
@@ -140,6 +142,20 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.on('github-clone-progress', (_, data) => callback(data));
     return () => ipcRenderer.removeAllListeners('github-clone-progress');
   },
+
+  // コンフリクト解決API
+  githubGetConflicts: (): Promise<{ success: boolean; data: string[]; error?: string }> =>
+    ipcRenderer.invoke('github-get-conflicts'),
+  githubGetConflictContent: (
+    filePath: string,
+  ): Promise<{ success: boolean; data: string | null; error?: string }> =>
+    ipcRenderer.invoke('github-get-conflict-content', filePath),
+  githubResolveConflict: (filePath: string, resolvedContent: string): Promise<GitHubResponse> =>
+    ipcRenderer.invoke('github-resolve-conflict', filePath, resolvedContent),
+  githubCompleteMerge: (message?: string): Promise<GitHubResponse> =>
+    ipcRenderer.invoke('github-complete-merge', message),
+  githubCheckConflictsResolved: (): Promise<{ success: boolean; data: boolean; error?: string }> =>
+    ipcRenderer.invoke('github-check-conflicts-resolved'),
 });
 
 declare global {
@@ -163,6 +179,7 @@ declare global {
       resolvePath(type: string, rel: string): Promise<string>;
       getFontURL(): Promise<string | null>;
       updateContentRoot(): Promise<{ success: boolean; contentRoot?: string; error?: string }>;
+      selectDirectory(): Promise<{ success: boolean; path?: string; error?: string }>;
 
       // GitHub API function types
       githubAuthenticate(token: string): Promise<GitHubResponse>;
@@ -207,6 +224,15 @@ declare global {
       onGitHubCloneProgress(
         callback: (data: { message: string; percent: number }) => void,
       ): () => void;
+
+      // コンフリクト解決API の型定義
+      githubGetConflicts(): Promise<{ success: boolean; data: string[]; error?: string }>;
+      githubGetConflictContent(
+        filePath: string,
+      ): Promise<{ success: boolean; data: string | null; error?: string }>;
+      githubResolveConflict(filePath: string, resolvedContent: string): Promise<GitHubResponse>;
+      githubCompleteMerge(message?: string): Promise<GitHubResponse>;
+      githubCheckConflictsResolved(): Promise<{ success: boolean; data: boolean; error?: string }>;
     };
   }
 }

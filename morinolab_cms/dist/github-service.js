@@ -211,19 +211,122 @@ class GitHubService {
         }
     }
     /**
-     * 最新の変更をプル
+     * 最新の変更をプル（マージコンフリクト対応）
      */
     async pullLatest() {
         if (!this.git) {
             throw new Error('Git configuration required');
         }
         try {
+            // まず、リモートの変更をフェッチ
+            await this.git.fetch('origin', 'main');
+            // 現在のブランチの状況を確認
+            const status = await this.git.status();
+            // ローカルに変更がある場合は、まずコミット
+            if (status.files.length > 0) {
+                await this.git.add('.');
+                await this.git.commit('Auto-commit before pull');
+            }
+            // プルを実行
             await this.git.pull('origin', 'main');
             console.log('Latest changes pulled successfully');
-            return true;
+            return { success: true };
         }
         catch (error) {
             console.error('Pull failed:', error);
+            // マージコンフリクトの検出
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            if (errorMessage.includes('CONFLICTS')) {
+                const conflicts = await this.getConflictFiles();
+                return {
+                    success: false,
+                    hasConflicts: true,
+                    conflicts,
+                    error: 'マージコンフリクトが発生しました',
+                };
+            }
+            return { success: false, error: errorMessage || 'プルに失敗しました' };
+        }
+    }
+    /**
+     * コンフリクトが発生しているファイルを取得
+     */
+    async getConflictFiles() {
+        if (!this.git) {
+            return [];
+        }
+        try {
+            const status = await this.git.status();
+            return status.conflicted || [];
+        }
+        catch (error) {
+            console.error('Failed to get conflict files:', error);
+            return [];
+        }
+    }
+    /**
+     * コンフリクトファイルの内容を取得
+     */
+    async getConflictContent(filePath) {
+        if (!this.config) {
+            return null;
+        }
+        try {
+            const fullPath = node_path_1.default.join(this.config.localPath, filePath);
+            if (node_fs_1.default.existsSync(fullPath)) {
+                return node_fs_1.default.readFileSync(fullPath, 'utf8');
+            }
+            return null;
+        }
+        catch (error) {
+            console.error('Failed to read conflict file:', error);
+            return null;
+        }
+    }
+    /**
+     * コンフリクトを解決（指定された内容で上書き）
+     */
+    async resolveConflict(filePath, resolvedContent) {
+        if (!this.config || !this.git) {
+            return false;
+        }
+        try {
+            const fullPath = node_path_1.default.join(this.config.localPath, filePath);
+            node_fs_1.default.writeFileSync(fullPath, resolvedContent, 'utf8');
+            await this.git.add(filePath);
+            console.log(`Conflict resolved for ${filePath}`);
+            return true;
+        }
+        catch (error) {
+            console.error('Failed to resolve conflict:', error);
+            return false;
+        }
+    }
+    /**
+     * すべてのコンフリクトが解決されたかチェック
+     */
+    async areAllConflictsResolved() {
+        const conflicts = await this.getConflictFiles();
+        return conflicts.length === 0;
+    }
+    /**
+     * マージを完了
+     */
+    async completeMerge(message = 'Resolve merge conflicts') {
+        if (!this.git) {
+            return false;
+        }
+        try {
+            const allResolved = await this.areAllConflictsResolved();
+            if (!allResolved) {
+                throw new Error('すべてのコンフリクトを解決してください');
+            }
+            await this.git.commit(message);
+            console.log('Merge completed successfully');
+            return true;
+        }
+        catch (error) {
+            console.error('Failed to complete merge:', error);
             return false;
         }
     }

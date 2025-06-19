@@ -298,7 +298,7 @@ async function tryRestoreGitHubConfiguration() {
                     owner: configData.owner,
                     repo: configData.repo,
                     localPath: configData.localPath,
-                    hasToken: !!configData.token
+                    hasToken: !!configData.token,
                 });
                 // Restore GitHub service configuration
                 if (configData.token) {
@@ -463,6 +463,27 @@ electron_1.ipcMain.handle('update-content-root', async () => {
     }
     catch (error) {
         console.error('Failed to update content root:', error);
+        return { success: false, error: error.message };
+    }
+});
+// ディレクトリ選択ダイアログ
+electron_1.ipcMain.handle('select-directory', async () => {
+    try {
+        const mainWindow = electron_1.BrowserWindow.getAllWindows()[0];
+        const result = await electron_1.dialog.showOpenDialog(mainWindow, {
+            properties: ['openDirectory', 'createDirectory'],
+            title: 'GitHub リポジトリ保存先を選択',
+            message: 'リポジトリをクローンするディレクトリを選択してください',
+        });
+        if (!result.canceled && result.filePaths.length > 0) {
+            return { success: true, path: result.filePaths[0] };
+        }
+        else {
+            return { success: false, error: 'ディレクトリが選択されませんでした' };
+        }
+    }
+    catch (error) {
+        console.error('Directory selection error:', error);
         return { success: false, error: error.message };
     }
 });
