@@ -444,16 +444,21 @@ class GitHubService {
             // 2. ユーザーにブラウザで認証を促す
             const openUrl = verificationUriComplete || verificationUri;
             electron_1.shell.openExternal(openUrl);
-            // after shell.openExternal(openUrl);
-            electron_1.BrowserWindow.getAllWindows()[0]?.webContents.send('github-device-code', {
-                code: userCode,
-                url: openUrl,
-            });
             // ユーザーコードをクリップボードにコピーし、ダイアログ表示
             try {
                 electron_1.clipboard.writeText(userCode);
             }
-            catch { /* ignore */ }
+            catch {
+                /* ignore */
+            }
+            await electron_1.dialog.showMessageBox({
+                type: 'info',
+                buttons: ['OK'],
+                title: 'GitHub Device Flow',
+                message: 'ブラウザに表示された入力欄に以下のコードを貼り付けてください。',
+                detail: `認証コード: ${userCode}\n(コードはクリップボードへコピーされています)`,
+                noLink: true,
+            });
             // 3. ポーリングでトークン取得を試みる
             const started = Date.now();
             let pollingIntervalMs = interval * 1000;

@@ -56,8 +56,4 @@ electron_1.contextBridge.exposeInMainWorld('api', {
     githubCheckConflictsResolved: () => electron_1.ipcRenderer.invoke('github-check-conflicts-resolved'),
     // Git log
     githubGetLog: (limit = 20) => electron_1.ipcRenderer.invoke('github-get-log', limit),
-    onGitHubDeviceCode: (callback) => {
-        electron_1.ipcRenderer.on('github-device-code', (_, data) => callback(data));
-        return () => electron_1.ipcRenderer.removeAllListeners('github-device-code');
-    },
 });
