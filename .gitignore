@@ -9,3 +9,4 @@
 /morinolab_cms/build/
 /morinolab_cms/out/
 morinolab_cms/.npm-cache/
+morinolab_cms/.env

@@ -1,14 +1,40 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+Promise.resolve().then(() => __importStar(require('dotenv'))).then((dotenv) => dotenv.config());
 const electron_1 = require("electron");
 const node_path_1 = __importDefault(require("node:path"));
 const node_fs_1 = __importDefault(require("node:fs"));
 const node_url_1 = require("node:url");
 const gray_matter_1 = __importDefault(require("gray-matter"));
 const papaparse_1 = __importDefault(require("papaparse"));
+const github_service_1 = require("./github-service");
+const github_config_1 = require("./github-config");
 // Image processing using renderer process
 async function processImage(inputPath, outputPath, maxWidth = 1600, quality = 0.8) {
     try {
@@ -128,6 +154,8 @@ async function processImage(inputPath, outputPath, maxWidth = 1600, quality = 0.
 }
 // Root directory that contains the various content folders
 const CONTENT_ROOT = node_path_1.default.join(process.cwd(), '../contents');
+// GitHub service instance
+const githubService = new github_service_1.GitHubService();
 function createWindow() {
     const win = new electron_1.BrowserWindow({
         width: 1200,
@@ -396,4 +424,145 @@ electron_1.ipcMain.handle('get-font-url', () => {
     console.warn('__dirname:', __dirname);
     console.warn('process.cwd():', process.cwd());
     return null;
+});
+// ============================================================
+// GitHub API handlers
+// ============================================================
+// GitHub認証
+electron_1.ipcMain.handle('github-authenticate', async (_, token) => {
+    try {
+        const success = await githubService.authenticate(token);
+        return { success, error: success ? null : 'Authentication failed' };
+    }
+    catch (error) {
+        console.error('GitHub authentication error:', error);
+        return { success: false, error: error.message };
+    }
+});
+// リポジトリ設定
+electron_1.ipcMain.handle('github-set-repository', async (_, owner, repo, localPath, token) => {
+    try {
+        githubService.setRepositoryConfig(owner, repo, localPath, token);
+        return { success: true, error: null };
+    }
+    catch (error) {
+        console.error('GitHub repository config error:', error);
+        return { success: false, error: error.message };
+    }
+});
+// リポジトリクローン
+electron_1.ipcMain.handle('github-clone-repository', async () => {
+    try {
+        const success = await githubService.cloneRepository();
+        return { success, error: success ? null : 'Clone failed' };
+    }
+    catch (error) {
+        console.error('GitHub clone error:', error);
+        return { success: false, error: error.message };
+    }
+});
+// コミット&プッシュ
+electron_1.ipcMain.handle('github-commit-push', async (_, message) => {
+    try {
+        const success = await githubService.commitAndPush(message);
+        return { success, error: success ? null : 'Commit and push failed' };
+    }
+    catch (error) {
+        console.error('GitHub commit and push error:', error);
+        return { success: false, error: error.message };
+    }
+});
+// リポジトリステータス取得
+electron_1.ipcMain.handle('github-get-status', async () => {
+    try {
+        const status = await githubService.getRepositoryStatus();
+        return { success: true, data: status, error: null };
+    }
+    catch (error) {
+        console.error('GitHub status error:', error);
+        return { success: false, data: null, error: error.message };
+    }
+});
+// 最新変更をプル
+electron_1.ipcMain.handle('github-pull-latest', async () => {
+    try {
+        const success = await githubService.pullLatest();
+        return { success, error: success ? null : 'Pull failed' };
+    }
+    catch (error) {
+        console.error('GitHub pull error:', error);
+        return { success: false, error: error.message };
+    }
+});
+// リポジトリ情報取得
+electron_1.ipcMain.handle('github-get-info', async () => {
+    try {
+        const info = await githubService.getRepositoryInfo();
+        return { success: true, data: info, error: null };
+    }
+    catch (error) {
+        console.error('GitHub info error:', error);
+        return { success: false, data: null, error: error.message };
+    }
+});
+// GitHub認証状態確認
+electron_1.ipcMain.handle('github-is-authenticated', () => {
+    return githubService.isAuthenticated();
+});
+// GitHub設定状態確認
+electron_1.ipcMain.handle('github-is-configured', () => {
+    return githubService.isConfigured();
+});
+// GitHub設定情報取得
+electron_1.ipcMain.handle('github-get-config', () => {
+    return githubService.getConfig();
+});
+// GitHub OAuth認証（設定を内部で取得）
+electron_1.ipcMain.handle('github-oauth-authenticate', async () => {
+    try {
+        const oauthConfig = (0, github_config_1.getGitHubOAuthConfig)();
+        if (!(0, github_config_1.validateGitHubConfig)(oauthConfig)) {
+            return {
+                success: false,
+                error: 'GitHub OAuth設定が正しくありません。github-config.tsを確認してください。',
+            };
+        }
+        const result = await githubService.authenticateWithOAuth(oauthConfig.clientId, oauthConfig.clientSecret);
+        if (result.success && result.token) {
+            await githubService.authenticate(result.token);
+        }
+        return result;
+    }
+    catch (error) {
+        console.error('GitHub OAuth authentication error:', error);
+        return { success: false, error: error.message };
+    }
+});
+// ユーザーリポジトリ一覧取得
+electron_1.ipcMain.handle('github-get-user-repositories', async () => {
+    try {
+        const repositories = await githubService.getUserRepositories();
+        return { success: true, data: repositories, error: null };
+    }
+    catch (error) {
+        console.error('GitHub repositories error:', error);
+        return { success: false, data: [], error: error.message };
+    }
+});
+// プログレス付きクローン
+electron_1.ipcMain.handle('github-clone-with-progress', async () => {
+    try {
+        const success = await githubService.cloneRepositoryWithProgress((message, percent) => {
+            // レンダラープロセスにプログレス情報を送信
+            electron_1.BrowserWindow.getAllWindows()[0]?.webContents.send('github-clone-progress', {
+                message,
+                percent,
+            });
+        });
+        return { success, error: success ? null : 'Clone failed' };
+    }
+    catch (error) {
+        console.error('GitHub clone with progress error:', error);
+        return { success: false, error: error.message };
+    }
 });

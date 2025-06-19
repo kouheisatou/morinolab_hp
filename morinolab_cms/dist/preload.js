@@ -14,4 +14,24 @@ electron_1.contextBridge.exposeInMainWorld('api', {
     selectThumbnail: (type, id) => electron_1.ipcRenderer.invoke('select-thumbnail', type, id),
     resolvePath: (type, rel) => electron_1.ipcRenderer.invoke('resolve-path', type, rel),
     getFontURL: () => electron_1.ipcRenderer.invoke('get-font-url'),
+    // GitHub API functions
+    githubAuthenticate: (token) => electron_1.ipcRenderer.invoke('github-authenticate', token),
+    githubSetRepository: (owner, repo, localPath, token) => electron_1.ipcRenderer.invoke('github-set-repository', owner, repo, localPath, token),
+    githubCloneRepository: () => electron_1.ipcRenderer.invoke('github-clone-repository'),
+    githubCommitPush: (message) => electron_1.ipcRenderer.invoke('github-commit-push', message),
+    githubGetStatus: () => electron_1.ipcRenderer.invoke('github-get-status'),
+    githubPullLatest: () => electron_1.ipcRenderer.invoke('github-pull-latest'),
+    githubGetInfo: () => electron_1.ipcRenderer.invoke('github-get-info'),
+    githubIsAuthenticated: () => electron_1.ipcRenderer.invoke('github-is-authenticated'),
+    githubIsConfigured: () => electron_1.ipcRenderer.invoke('github-is-configured'),
+    githubGetConfig: () => electron_1.ipcRenderer.invoke('github-get-config'),
+    // OAuth認証
+    githubOAuthAuthenticate: () => electron_1.ipcRenderer.invoke('github-oauth-authenticate'),
+    githubGetUserRepositories: () => electron_1.ipcRenderer.invoke('github-get-user-repositories'),
+    githubCloneWithProgress: () => electron_1.ipcRenderer.invoke('github-clone-with-progress'),
+    // プログレスイベントのリスナー
+    onGitHubCloneProgress: (callback) => {
+        electron_1.ipcRenderer.on('github-clone-progress', (_, data) => callback(data));
+        return () => electron_1.ipcRenderer.removeAllListeners('github-clone-progress');
+    },
 });

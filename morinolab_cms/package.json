@@ -19,10 +19,13 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@octokit/rest": "^20.0.2",
+    "dotenv": "^16.5.0",
     "electron-squirrel-startup": "^1.0.1",
     "gray-matter": "^4.0.3",
     "papaparse": "^5.5.3",
-    "pica": "^9.0.1"
+    "pica": "^9.0.1",
+    "simple-git": "^3.21.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.8.1",

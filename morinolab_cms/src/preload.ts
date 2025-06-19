@@ -1,5 +1,55 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+// Define proper types for GitHub API responses
+interface GitHubResponse {
+  success: boolean;
+  error: string | null;
+}
+
+interface GitHubStatusResponse extends GitHubResponse {
+  data: {
+    ahead: number;
+    behind: number;
+    current: string;
+    tracking: string;
+    files: Array<{
+      path: string;
+      index: string;
+      working_dir: string;
+    }>;
+  } | null;
+}
+
+interface GitHubInfoResponse extends GitHubResponse {
+  data: {
+    owner: string;
+    repo: string;
+    localPath: string;
+    isCloned: boolean;
+    lastSync?: string;
+  } | null;
+}
+
+interface GitHubRepository {
+  id: number;
+  name: string;
+  full_name: string;
+  description: string | null;
+  private: boolean;
+  html_url: string;
+  clone_url: string;
+  default_branch: string;
+}
+
+interface GitHubConfig {
+  clientId?: string;
+  clientSecret?: string;
+  owner?: string;
+  repo?: string;
+  localPath?: string;
+  token?: string;
+}
+
 contextBridge.exposeInMainWorld('api', {
   getContentTypes: (): Promise<string[]> => ipcRenderer.invoke('get-content-types'),
   getItems: (type: string): Promise<Array<{ id: string; title: string }>> =>
@@ -27,6 +77,44 @@ contextBridge.exposeInMainWorld('api', {
   resolvePath: (type: string, rel: string): Promise<string> =>
     ipcRenderer.invoke('resolve-path', type, rel),
   getFontURL: (): Promise<string | null> => ipcRenderer.invoke('get-font-url'),
+
+  // GitHub API functions
+  githubAuthenticate: (token: string): Promise<GitHubResponse> =>
+    ipcRenderer.invoke('github-authenticate', token),
+  githubSetRepository: (
+    owner: string,
+    repo: string,
+    localPath: string,
+    token: string,
+  ): Promise<GitHubResponse> =>
+    ipcRenderer.invoke('github-set-repository', owner, repo, localPath, token),
+  githubCloneRepository: (): Promise<GitHubResponse> =>
+    ipcRenderer.invoke('github-clone-repository'),
+  githubCommitPush: (message: string): Promise<GitHubResponse> =>
+    ipcRenderer.invoke('github-commit-push', message),
+  githubGetStatus: (): Promise<GitHubStatusResponse> => ipcRenderer.invoke('github-get-status'),
+  githubPullLatest: (): Promise<GitHubResponse> => ipcRenderer.invoke('github-pull-latest'),
+  githubGetInfo: (): Promise<GitHubInfoResponse> => ipcRenderer.invoke('github-get-info'),
+  githubIsAuthenticated: (): Promise<boolean> => ipcRenderer.invoke('github-is-authenticated'),
+  githubIsConfigured: (): Promise<boolean> => ipcRenderer.invoke('github-is-configured'),
+  githubGetConfig: (): Promise<GitHubConfig> => ipcRenderer.invoke('github-get-config'),
+
+  // OAuth認証
+  githubOAuthAuthenticate: (): Promise<{ success: boolean; token?: string; error?: string }> =>
+    ipcRenderer.invoke('github-oauth-authenticate'),
+  githubGetUserRepositories: (): Promise<{
+    success: boolean;
+    data: GitHubRepository[];
+    error: string | null;
+  }> => ipcRenderer.invoke('github-get-user-repositories'),
+  githubCloneWithProgress: (): Promise<GitHubResponse> =>
+    ipcRenderer.invoke('github-clone-with-progress'),
+
+  // プログレスイベントのリスナー
+  onGitHubCloneProgress: (callback: (data: { message: string; percent: number }) => void) => {
+    ipcRenderer.on('github-clone-progress', (_, data) => callback(data));
+    return () => ipcRenderer.removeAllListeners('github-clone-progress');
+  },
 });
 
 declare global {
@@ -49,6 +137,35 @@ declare global {
       selectThumbnail(type: string, id: string): Promise<string | null>;
       resolvePath(type: string, rel: string): Promise<string>;
       getFontURL(): Promise<string | null>;
+
+      // GitHub API function types
+      githubAuthenticate(token: string): Promise<GitHubResponse>;
+      githubSetRepository(
+        owner: string,
+        repo: string,
+        localPath: string,
+        token: string,
+      ): Promise<GitHubResponse>;
+      githubCloneRepository(): Promise<GitHubResponse>;
+      githubCommitPush(message: string): Promise<GitHubResponse>;
+      githubGetStatus(): Promise<GitHubStatusResponse>;
+      githubPullLatest(): Promise<GitHubResponse>;
+      githubGetInfo(): Promise<GitHubInfoResponse>;
+      githubIsAuthenticated(): Promise<boolean>;
+      githubIsConfigured(): Promise<boolean>;
+      githubGetConfig(): Promise<GitHubConfig>;
+
+      // OAuth認証関数の型定義
+      githubOAuthAuthenticate(): Promise<{ success: boolean; token?: string; error?: string }>;
+      githubGetUserRepositories(): Promise<{
+        success: boolean;
+        data: GitHubRepository[];
+        error: string | null;
+      }>;
+      githubCloneWithProgress(): Promise<GitHubResponse>;
+      onGitHubCloneProgress(
+        callback: (data: { message: string; percent: number }) => void,
+      ): () => void;
     };
   }
 }

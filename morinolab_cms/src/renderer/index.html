@@ -234,10 +234,290 @@
         border-bottom-color: #fff;
         border-right-color: #fff;
       }
+
+      /* Initial Setup Screen */
+      #initialSetup {
+        position: fixed;
+        inset: 0;
+        background: #c0c0c0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      }
+
+      #initialSetup.hidden {
+        display: none;
+      }
+
+      .setup-container {
+        background: #d4d0c8;
+        border: 2px solid #808080;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        padding: 24px;
+        max-width: 500px;
+        width: 90%;
+      }
+
+      .setup-title {
+        margin: 0 0 16px 0;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .setup-description {
+        margin: 0 0 20px 0;
+        font-size: 14px;
+        line-height: 1.4;
+        text-align: center;
+        color: #333;
+      }
+
+      .setup-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .setup-form label {
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
+
+      .setup-form input {
+        padding: 4px;
+        border: 1px solid #808080;
+        border-top-color: #000;
+        border-left-color: #000;
+        font-size: 14px;
+      }
+
+      .setup-form .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .setup-form .note {
+        font-size: 12px;
+        color: #666;
+        margin-top: 4px;
+      }
+
+      /* Progress Bar */
+      .progress-container {
+        margin: 20px 0;
+        display: none;
+      }
+
+      .progress-container.show {
+        display: block;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 20px;
+        border: 1px solid #808080;
+        border-top-color: #000;
+        border-left-color: #000;
+        background: #c0c0c0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: #000080;
+        width: 0%;
+        transition: width 0.3s ease;
+        position: relative;
+      }
+
+      .progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 2px,
+          rgba(255, 255, 255, 0.2) 2px,
+          rgba(255, 255, 255, 0.2) 4px
+        );
+      }
+
+      .progress-text {
+        text-align: center;
+        margin-top: 8px;
+        font-size: 12px;
+        color: #333;
+      }
+
+      /* Repository Selection */
+      .repo-list {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #808080;
+        border-top-color: #000;
+        border-left-color: #000;
+        background: #fff;
+        margin: 12px 0;
+      }
+
+      .repo-item {
+        padding: 8px;
+        border-bottom: 1px solid #d0d0d0;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .repo-item:hover {
+        background: #e0e0e0;
+      }
+
+      .repo-item.selected {
+        background: #000080;
+        color: #fff;
+      }
+
+      .repo-name {
+        font-weight: bold;
+        margin-bottom: 2px;
+      }
+
+      .repo-description {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .repo-item.selected .repo-description {
+        color: #ccc;
+      }
+
+      .repo-meta {
+        font-size: 11px;
+        margin-top: 4px;
+        display: flex;
+        gap: 8px;
+      }
+
+      .repo-private {
+        background: #d6c0c0;
+        padding: 1px 4px;
+        border-radius: 2px;
+      }
+
+      .repo-item.selected .repo-private {
+        background: rgba(255, 255, 255, 0.2);
+      }
     </style>
   </head>
   <body>
-    <div id="sidebar"></div>
+    <!-- Initial Setup Screen -->
+    <div id="initialSetup">
+      <div class="setup-container">
+        <h1 class="setup-title">GitHub CMS セットアップ</h1>
+        <p class="setup-description">
+          GitHubリポジトリと連携してコンテンツ管理を開始します。<br />
+          下のボタンをクリックしてGitHubにログインしてください。
+        </p>
+
+        <div class="setup-form">
+          <div class="form-group">
+            <label for="localPath">ローカルクローン先:</label>
+            <input
+              type="text"
+              id="localPath"
+              value="/tmp/github-cms-repo"
+              placeholder="ローカルディレクトリパス"
+            />
+            <div class="note">クローンしたリポジトリが保存されるローカルディレクトリ</div>
+          </div>
+
+          <button
+            id="startAuthBtn"
+            class="btn"
+            style="padding: 12px 24px; margin-top: 16px; background: #c0d6c0"
+          >
+            GitHubでログイン
+          </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div id="progressContainer" class="progress-container">
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <div id="progressText" class="progress-text">準備中...</div>
+        </div>
+
+        <!-- Repository Selection -->
+        <div id="repoSelection" style="display: none">
+          <h3>リポジトリを選択してください:</h3>
+          <div id="repoList" class="repo-list"></div>
+          <button
+            id="cloneSelectedBtn"
+            class="btn"
+            style="padding: 8px 16px; margin-top: 12px"
+            disabled
+          >
+            選択したリポジトリをクローン
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="sidebar">
+      <div
+        id="githubSection"
+        style="border-bottom: 2px solid #808080; padding: 8px; margin-bottom: 8px"
+      >
+        <h3 style="margin: 0 0 8px 0; font-size: 12px">GitHub統合</h3>
+        <div id="githubStatus" style="font-size: 10px; margin-bottom: 4px; color: #666">未接続</div>
+        <div
+          id="githubRepoInfo"
+          style="
+            font-size: 9px;
+            margin-bottom: 4px;
+            color: #333;
+            word-break: break-all;
+            display: none;
+          "
+        ></div>
+        <button id="githubSetupBtn" class="btn" style="width: 100%; margin: 2px 0; font-size: 11px">
+          初期設定
+        </button>
+        <button
+          id="githubSyncBtn"
+          class="btn"
+          style="width: 100%; margin: 2px 0; font-size: 11px"
+          disabled
+        >
+          同期
+        </button>
+        <button
+          id="githubCommitBtn"
+          class="btn"
+          style="width: 100%; margin: 2px 0; font-size: 11px; background: #c0d6c0"
+          disabled
+        >
+          コミット&プッシュ
+        </button>
+        <button
+          id="githubResetBtn"
+          class="btn danger"
+          style="width: 100%; margin: 2px 0; font-size: 10px; display: none"
+        >
+          設定リセット
+        </button>
+      </div>
+    </div>
     <div id="main">
       <div id="items">
         <button id="addBtn" class="btn add">+ 追加</button>
@@ -606,6 +886,366 @@
         body, button, table, textarea, input, select { font-family: 'CustomFont', sans-serif; }`;
         document.head.appendChild(style);
       });
+
+      // ============================================================
+      // GitHub Integration
+      // ============================================================
+
+      const githubStatus = document.getElementById('githubStatus');
+      const githubRepoInfo = document.getElementById('githubRepoInfo');
+      const githubSetupBtn = document.getElementById('githubSetupBtn');
+      const githubSyncBtn = document.getElementById('githubSyncBtn');
+      const githubCommitBtn = document.getElementById('githubCommitBtn');
+      const githubResetBtn = document.getElementById('githubResetBtn');
+
+      let githubConfig = null;
+
+      // GitHub初期設定ボタン（初回セットアップ画面を表示）
+      githubSetupBtn.onclick = () => {
+        showInitialSetup();
+      };
+
+      // GitHub設定リセット
+      githubResetBtn.onclick = () => {
+        if (confirm('GitHub設定をリセットしますか？\n再度初期設定が必要になります。')) {
+          localStorage.removeItem('githubConfig');
+          githubConfig = null;
+          updateSidebarGitHubStatus('未接続', null);
+          showInitialSetup();
+        }
+      };
+
+      // 同期（プル）
+      githubSyncBtn.onclick = async () => {
+        if (!githubConfig) return;
+
+        githubSyncBtn.disabled = true;
+        githubSyncBtn.textContent = '同期中...';
+
+        try {
+          const result = await window.api.githubPullLatest();
+          if (result.success) {
+            updateGitHubStatus('同期完了');
+            // リストを再読み込み
+            if (currentType) {
+              loadItems();
+            }
+          } else {
+            alert('同期に失敗しました: ' + result.error);
+          }
+        } catch (error) {
+          console.error('同期エラー:', error);
+          alert('同期エラー: ' + error.message);
+        }
+
+        githubSyncBtn.disabled = false;
+        githubSyncBtn.textContent = '同期';
+      };
+
+      // コミット&プッシュ
+      githubCommitBtn.onclick = async () => {
+        if (!githubConfig) return;
+
+        const message = prompt('コミットメッセージを入力してください:', 'Update content from CMS');
+        if (!message) return;
+
+        githubCommitBtn.disabled = true;
+        githubCommitBtn.textContent = 'プッシュ中...';
+
+        try {
+          const result = await window.api.githubCommitPush(message);
+          if (result.success) {
+            updateGitHubStatus('プッシュ完了');
+          } else {
+            alert('プッシュに失敗しました: ' + result.error);
+          }
+        } catch (error) {
+          console.error('プッシュエラー:', error);
+          alert('プッシュエラー: ' + error.message);
+        }
+
+        githubCommitBtn.disabled = false;
+        githubCommitBtn.textContent = 'コミット&プッシュ';
+      };
+
+      // 初期チェックと初期化を実行
+      checkInitialSetup().then(() => {
+        // 既に設定済みの場合のみGitHub初期化を実行
+        const existingConfig = localStorage.getItem('githubConfig');
+        if (existingConfig) {
+          initializeGitHub();
+        }
+      });
+
+      // GitHubステータス更新
+      function updateGitHubStatus(status) {
+        githubStatus.textContent = status;
+        setTimeout(() => {
+          if (githubConfig) {
+            githubStatus.textContent = `接続済み (${githubConfig.owner}/${githubConfig.repo})`;
+          }
+        }, 3000);
+      }
+
+      // サイドバーのGitHub状態更新
+      function updateSidebarGitHubStatus(status, config) {
+        githubStatus.textContent = status;
+
+        if (config) {
+          githubRepoInfo.textContent = `${config.owner}/${config.repo}`;
+          githubRepoInfo.style.display = 'block';
+          githubSetupBtn.textContent = '再設定';
+          githubSyncBtn.disabled = false;
+          githubCommitBtn.disabled = false;
+          githubResetBtn.style.display = 'block';
+        } else {
+          githubRepoInfo.style.display = 'none';
+          githubSetupBtn.textContent = '初期設定';
+          githubSyncBtn.disabled = true;
+          githubCommitBtn.disabled = true;
+          githubResetBtn.style.display = 'none';
+        }
+      }
+
+      // 初期化時に保存された設定を読み込み
+      async function initializeGitHub() {
+        const savedConfig = localStorage.getItem('githubConfig');
+        if (savedConfig) {
+          try {
+            githubConfig = JSON.parse(savedConfig);
+
+            // 認証状態確認
+            const isAuth = await window.api.githubIsAuthenticated();
+            const isConfig = await window.api.githubIsConfigured();
+
+            if (isAuth && isConfig) {
+              updateSidebarGitHubStatus('接続済み', githubConfig);
+            } else {
+              // 再認証が必要
+              if (githubConfig.token) {
+                await window.api.githubAuthenticate(githubConfig.token);
+                await window.api.githubSetRepository(
+                  githubConfig.owner,
+                  githubConfig.repo,
+                  githubConfig.localPath,
+                  githubConfig.token,
+                );
+                updateSidebarGitHubStatus('接続済み', githubConfig);
+              }
+            }
+          } catch (error) {
+            console.error('GitHub設定読み込みエラー:', error);
+            localStorage.removeItem('githubConfig');
+            updateSidebarGitHubStatus('未接続', null);
+          }
+        } else {
+          updateSidebarGitHubStatus('未接続', null);
+        }
+      }
+
+      // ============================================================
+      // Initial Setup Screen Logic
+      // ============================================================
+
+      const initialSetup = document.getElementById('initialSetup');
+      const startAuthBtn = document.getElementById('startAuthBtn');
+      const localPathInput = document.getElementById('localPath');
+      const progressContainer = document.getElementById('progressContainer');
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      const repoSelection = document.getElementById('repoSelection');
+      const repoList = document.getElementById('repoList');
+      const cloneSelectedBtn = document.getElementById('cloneSelectedBtn');
+
+      let selectedRepository = null;
+      let repositories = [];
+      let setupProgress = null;
+
+      // 初回起動時の判定
+      async function checkInitialSetup() {
+        const existingConfig = localStorage.getItem('githubConfig');
+        const isAuthenticated = await window.api.githubIsAuthenticated();
+
+        if (existingConfig && isAuthenticated) {
+          // 既に設定済みの場合はセットアップ画面を非表示
+          initialSetup.classList.add('hidden');
+        } else {
+          // 初回またはリセットが必要な場合はセットアップ画面を表示
+          showInitialSetup();
+        }
+      }
+
+      function showInitialSetup() {
+        initialSetup.classList.remove('hidden');
+      }
+
+      function hideInitialSetup() {
+        initialSetup.classList.add('hidden');
+      }
+
+      function showProgress(message, percent) {
+        progressContainer.classList.add('show');
+        progressFill.style.width = percent + '%';
+        progressText.textContent = message;
+      }
+
+      function hideProgress() {
+        progressContainer.classList.remove('show');
+      }
+
+      // GitHub認証開始
+      startAuthBtn.onclick = async () => {
+        const localPath = localPathInput.value.trim();
+
+        if (!localPath) {
+          alert('ローカルクローン先を入力してください');
+          return;
+        }
+
+        startAuthBtn.disabled = true;
+        startAuthBtn.textContent = 'GitHubでログイン中...';
+
+        try {
+          showProgress('GitHub認証を開始中...', 10);
+
+          // OAuth認証（設定は内部で管理）
+          const authResult = await window.api.githubOAuthAuthenticate();
+
+          if (!authResult.success) {
+            throw new Error(authResult.error || '認証に失敗しました');
+          }
+
+          showProgress('リポジトリ一覧を取得中...', 40);
+
+          // リポジトリ一覧を取得
+          const repoResult = await window.api.githubGetUserRepositories();
+
+          if (!repoResult.success) {
+            throw new Error(repoResult.error || 'リポジトリの取得に失敗しました');
+          }
+
+          repositories = repoResult.data;
+
+          hideProgress();
+          showRepositorySelection(repositories, localPath, authResult.token);
+        } catch (error) {
+          console.error('Setup error:', error);
+          alert('セットアップに失敗しました: ' + error.message);
+          startAuthBtn.disabled = false;
+          startAuthBtn.textContent = 'GitHubでログイン';
+          hideProgress();
+        }
+      };
+
+      // リポジトリ選択画面を表示
+      function showRepositorySelection(repos, localPath, token) {
+        repoSelection.style.display = 'block';
+        repoList.innerHTML = '';
+
+        repos.forEach((repo) => {
+          const repoItem = document.createElement('div');
+          repoItem.className = 'repo-item';
+          repoItem.dataset.repoId = repo.id;
+
+          const repoName = document.createElement('div');
+          repoName.className = 'repo-name';
+          repoName.textContent = repo.full_name;
+
+          const repoDescription = document.createElement('div');
+          repoDescription.className = 'repo-description';
+          repoDescription.textContent = repo.description || '説明なし';
+
+          const repoMeta = document.createElement('div');
+          repoMeta.className = 'repo-meta';
+
+          if (repo.private) {
+            const privateLabel = document.createElement('span');
+            privateLabel.className = 'repo-private';
+            privateLabel.textContent = 'Private';
+            repoMeta.appendChild(privateLabel);
+          }
+
+          repoItem.appendChild(repoName);
+          repoItem.appendChild(repoDescription);
+          repoItem.appendChild(repoMeta);
+
+          repoItem.onclick = () => selectRepository(repo, repoItem);
+
+          repoList.appendChild(repoItem);
+        });
+
+        // クローンボタンのイベント
+        cloneSelectedBtn.onclick = () => {
+          if (selectedRepository) {
+            startCloning(selectedRepository, localPath, token);
+          }
+        };
+      }
+
+      // リポジトリ選択
+      function selectRepository(repo, element) {
+        // 既存の選択を解除
+        document.querySelectorAll('.repo-item').forEach((item) => {
+          item.classList.remove('selected');
+        });
+
+        // 新しい選択を設定
+        element.classList.add('selected');
+        selectedRepository = repo;
+        cloneSelectedBtn.disabled = false;
+      }
+
+      // クローン開始
+      async function startCloning(repo, localPath, token) {
+        cloneSelectedBtn.disabled = true;
+        cloneSelectedBtn.textContent = 'クローン中...';
+
+        try {
+          // リポジトリ設定
+          const [owner, repoName] = repo.full_name.split('/');
+          await window.api.githubSetRepository(owner, repoName, localPath, token);
+
+          // プログレスリスナーを設定
+          const removeProgressListener = window.api.onGitHubCloneProgress((data) => {
+            showProgress(data.message, data.percent);
+          });
+
+          showProgress('クローンを開始中...', 0);
+
+          // クローン実行
+          const cloneResult = await window.api.githubCloneWithProgress();
+
+          removeProgressListener();
+
+          if (cloneResult.success) {
+            showProgress('セットアップ完了！', 100);
+
+            // 設定を保存
+            const config = { token, owner, repo: repoName, localPath };
+            localStorage.setItem('githubConfig', JSON.stringify(config));
+
+            setTimeout(() => {
+              hideInitialSetup();
+              hideProgress();
+
+              // サイドバーの状態を更新
+              githubConfig = config;
+              updateSidebarGitHubStatus('接続済み', githubConfig);
+
+              // 成功メッセージ
+              alert('GitHub連携のセットアップが完了しました！');
+            }, 2000);
+          } else {
+            throw new Error(cloneResult.error || 'クローンに失敗しました');
+          }
+        } catch (error) {
+          console.error('Clone error:', error);
+          alert('クローンに失敗しました: ' + error.message);
+          cloneSelectedBtn.disabled = false;
+          cloneSelectedBtn.textContent = '選択したリポジトリをクローン';
+          hideProgress();
+        }
+      }
     </script>
   </body>
 </html>

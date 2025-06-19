@@ -1,9 +1,13 @@
+import('dotenv').then((dotenv) => dotenv.config());
+
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'node:path';
 import fs from 'node:fs';
 import { format } from 'node:url';
 import matter from 'gray-matter';
 import Papa from 'papaparse';
+import { GitHubService } from './github-service';
+import { getGitHubOAuthConfig, validateGitHubConfig } from './github-config';
 // Image processing using renderer process
 async function processImage(
   inputPath: string,
@@ -133,6 +137,9 @@ async function processImage(
 
 // Root directory that contains the various content folders
 const CONTENT_ROOT = path.join(process.cwd(), '../contents');
+
+// GitHub service instance
+const githubService = new GitHubService();
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -417,7 +424,7 @@ ipcMain.handle('get-font-url', () => {
   // Check multiple possible locations for the font file
   const appPath = app.getAppPath();
   const resourcesPath = process.resourcesPath || path.join(appPath, '..', 'Resources');
-  
+
   const possiblePaths = [
     path.join(process.cwd(), 'Sango-JA-CPAL.ttf'), // Development
     path.join(appPath, 'Sango-JA-CPAL.ttf'), // Packaged app root
@@ -425,18 +432,171 @@ ipcMain.handle('get-font-url', () => {
     path.join(__dirname, '..', 'Sango-JA-CPAL.ttf'), // One level up from dist
     path.join(__dirname, 'Sango-JA-CPAL.ttf'), // Same directory as main.js
   ];
-  
+
   for (const fontPath of possiblePaths) {
     if (fs.existsSync(fontPath)) {
       console.log('Font found at:', fontPath);
       return 'file://' + fontPath;
     }
   }
-  
+
   console.warn('Font file not found in any of the expected locations:', possiblePaths);
   console.warn('App path:', appPath);
   console.warn('Resources path:', resourcesPath);
   console.warn('__dirname:', __dirname);
   console.warn('process.cwd():', process.cwd());
   return null;
+});
+
+// ============================================================
+// GitHub API handlers
+// ============================================================
+
+// GitHub認証
+ipcMain.handle('github-authenticate', async (_, token: string) => {
+  try {
+    const success = await githubService.authenticate(token);
+    return { success, error: success ? null : 'Authentication failed' };
+  } catch (error) {
+    console.error('GitHub authentication error:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+// リポジトリ設定
+ipcMain.handle(
+  'github-set-repository',
+  async (_, owner: string, repo: string, localPath: string, token: string) => {
+    try {
+      githubService.setRepositoryConfig(owner, repo, localPath, token);
+      return { success: true, error: null };
+    } catch (error) {
+      console.error('GitHub repository config error:', error);
+      return { success: false, error: (error as Error).message };
+    }
+  },
+);
+
+// リポジトリクローン
+ipcMain.handle('github-clone-repository', async () => {
+  try {
+    const success = await githubService.cloneRepository();
+    return { success, error: success ? null : 'Clone failed' };
+  } catch (error) {
+    console.error('GitHub clone error:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+// コミット&プッシュ
+ipcMain.handle('github-commit-push', async (_, message: string) => {
+  try {
+    const success = await githubService.commitAndPush(message);
+    return { success, error: success ? null : 'Commit and push failed' };
+  } catch (error) {
+    console.error('GitHub commit and push error:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+// リポジトリステータス取得
+ipcMain.handle('github-get-status', async () => {
+  try {
+    const status = await githubService.getRepositoryStatus();
+    return { success: true, data: status, error: null };
+  } catch (error) {
+    console.error('GitHub status error:', error);
+    return { success: false, data: null, error: (error as Error).message };
+  }
+});
+
+// 最新変更をプル
+ipcMain.handle('github-pull-latest', async () => {
+  try {
+    const success = await githubService.pullLatest();
+    return { success, error: success ? null : 'Pull failed' };
+  } catch (error) {
+    console.error('GitHub pull error:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+// リポジトリ情報取得
+ipcMain.handle('github-get-info', async () => {
+  try {
+    const info = await githubService.getRepositoryInfo();
+    return { success: true, data: info, error: null };
+  } catch (error) {
+    console.error('GitHub info error:', error);
+    return { success: false, data: null, error: (error as Error).message };
+  }
+});
+
+// GitHub認証状態確認
+ipcMain.handle('github-is-authenticated', () => {
+  return githubService.isAuthenticated();
+});
+
+// GitHub設定状態確認
+ipcMain.handle('github-is-configured', () => {
+  return githubService.isConfigured();
+});
+
+// GitHub設定情報取得
+ipcMain.handle('github-get-config', () => {
+  return githubService.getConfig();
+});
+
+// GitHub OAuth認証（設定を内部で取得）
+ipcMain.handle('github-oauth-authenticate', async () => {
+  try {
+    const oauthConfig = getGitHubOAuthConfig();
+
+    if (!validateGitHubConfig(oauthConfig)) {
+      return {
+        success: false,
+        error: 'GitHub OAuth設定が正しくありません。github-config.tsを確認してください。',
+      };
+    }
+
+    const result = await githubService.authenticateWithOAuth(
+      oauthConfig.clientId,
+      oauthConfig.clientSecret,
+    );
+    if (result.success && result.token) {
+      await githubService.authenticate(result.token);
+    }
+    return result;
+  } catch (error) {
+    console.error('GitHub OAuth authentication error:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+// ユーザーリポジトリ一覧取得
+ipcMain.handle('github-get-user-repositories', async () => {
+  try {
+    const repositories = await githubService.getUserRepositories();
+    return { success: true, data: repositories, error: null };
+  } catch (error) {
+    console.error('GitHub repositories error:', error);
+    return { success: false, data: [], error: (error as Error).message };
+  }
+});
+
+// プログレス付きクローン
+ipcMain.handle('github-clone-with-progress', async () => {
+  try {
+    const success = await githubService.cloneRepositoryWithProgress((message, percent) => {
+      // レンダラープロセスにプログレス情報を送信
+      BrowserWindow.getAllWindows()[0]?.webContents.send('github-clone-progress', {
+        message,
+        percent,
+      });
+    });
+    return { success, error: success ? null : 'Clone failed' };
+  } catch (error) {
+    console.error('GitHub clone with progress error:', error);
+    return { success: false, error: (error as Error).message };
+  }
 });
