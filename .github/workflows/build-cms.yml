@@ -1,0 +1,36 @@
+name: Build morinolab_cms and upload binaries
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and upload binaries
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies (workspace root)
+        run: npm ci
+
+      - name: Build Electron binaries (morinolab_cms)
+        run: npm run make_cms
+
+      - name: Upload binaries as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: morinolab_cms-${{ matrix.os }}
+          path: morinolab_cms/out/make/**/* 
