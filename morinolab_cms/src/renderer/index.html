@@ -568,6 +568,13 @@
       let saveTimer = null;
 
       async function init() {
+        // Remove previously generated type buttons to avoid duplication when re-initialising
+        Array.from(sidebar.querySelectorAll('button')).forEach((b) => {
+          if (b.dataset && b.dataset.type) {
+            b.remove();
+          }
+        });
+
         const types = await window.api.getContentTypes();
         types.forEach((t) => {
           const btn = document.createElement('button');
@@ -1090,6 +1097,9 @@
       function updateSidebarGitHubStatus(status, config) {
         githubStatus.textContent = status;
 
+        // Ensure the setup/logout button is always clickable
+        githubSetupBtn.disabled = false;
+
         if (config) {
           githubRepoInfo.textContent = `${config.owner}/${config.repo}`;
           githubRepoInfo.style.display = 'block';
@@ -1097,7 +1107,7 @@
           githubCommitBtn.disabled = false;
         } else {
           githubRepoInfo.style.display = 'none';
-          githubSetupBtn.textContent = 'ログアウト';
+          githubSetupBtn.textContent = 'ログイン/セットアップ';
           githubCommitBtn.disabled = true;
         }
       }
@@ -1384,10 +1394,8 @@
             hideInitialSetup();
             hideProgress();
             updateSidebarGitHubStatus('接続済み', githubConfig);
-            // メイン画面でコンテンツを再読み込み
-            if (currentType) {
-              loadItems(currentType);
-            }
+            // Re-initialise sidebar and item list so that freshly cloned contents appear
+            init();
           }, 1000);
         } catch (error) {
           console.error('Quick setup error:', error);

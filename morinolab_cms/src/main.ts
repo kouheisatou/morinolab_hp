@@ -622,6 +622,9 @@ ipcMain.handle('get-font-url', () => {
     path.join(process.cwd(), 'Sango-JA-CPAL.ttf'), // Development
     path.join(appPath, 'Sango-JA-CPAL.ttf'), // Packaged app root
     path.join(resourcesPath, 'Sango-JA-CPAL.ttf'), // extraResource location
+    path.join(resourcesPath, 'fonts', 'Sango-JA-CPAL.ttf'), // fonts subfolder inside resources (common on Windows)
+    path.join(resourcesPath, 'app.asar.unpacked', 'Sango-JA-CPAL.ttf'), // unpacked resources
+    path.join(appPath, 'fonts', 'Sango-JA-CPAL.ttf'), // fonts folder next to executable
     path.join(__dirname, '..', 'Sango-JA-CPAL.ttf'), // One level up from dist
     path.join(__dirname, 'Sango-JA-CPAL.ttf'), // Same directory as main.js
   ];
