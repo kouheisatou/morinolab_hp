@@ -487,6 +487,18 @@ electron_1.ipcMain.handle('select-directory', async () => {
         return { success: false, error: error.message };
     }
 });
+// デフォルトパスの取得
+electron_1.ipcMain.handle('get-default-local-path', () => {
+    try {
+        const homeDir = electron_1.app.getPath('documents');
+        const defaultPath = node_path_1.default.join(homeDir, 'morinolab');
+        return { success: true, path: defaultPath };
+    }
+    catch (error) {
+        console.error('Failed to get default path:', error);
+        return { success: false, error: error.message };
+    }
+});
 electron_1.ipcMain.on('save-content', (_event, type, id, content) => {
     saveContent(type, id, content);
 });
@@ -627,11 +639,14 @@ electron_1.ipcMain.handle('github-clone-repository', async () => {
         return { success: false, error: error.message };
     }
 });
-// コミット&プッシュ
+// コミット&プッシュ（pull → merge → commit → push を一連で実行）
 electron_1.ipcMain.handle('github-commit-push', async (_, message) => {
     try {
-        const success = await githubService.commitAndPush(message);
-        return { success, error: success ? null : 'Commit and push failed' };
+        const win = electron_1.BrowserWindow.getAllWindows()[0];
+        const result = await githubService.commitAndPush(message, (msg, percent) => {
+            win?.webContents.send('github-commit-progress', { message: msg, percent });
+        });
+        return result;
     }
     catch (error) {
         console.error('GitHub commit and push error:', error);
@@ -809,5 +824,69 @@ electron_1.ipcMain.handle('github-get-oauth-config', async () => {
     catch (error) {
         console.error('Failed to get GitHub OAuth config:', error);
         return { success: false, data: null, error: error.message };
+    }
+});
+// コミットログ取得
+electron_1.ipcMain.handle('github-get-log', async (_event, limit = 20) => {
+    try {
+        const logs = await githubService.getCommitLog(limit);
+        return { success: true, data: logs, error: null };
+    }
+    catch (error) {
+        console.error('GitHub get log error:', error);
+        return { success: false, data: null, error: error.message };
+    }
+});
+// ===============================
+//   Git Conflict Resolution API
+// ===============================
+// 未解決コンフリクト一覧
+electron_1.ipcMain.handle('github-get-conflicts', async () => {
+    try {
+        const files = await githubService.getConflictFiles();
+        return { success: true, data: files, error: null };
+    }
+    catch (error) {
+        return { success: false, data: [], error: error.message };
+    }
+});
+// コンフリクトファイル内容取得
+electron_1.ipcMain.handle('github-get-conflict-content', async (_e, filePath) => {
+    try {
+        const data = await githubService.getConflictContent(filePath);
+        return { success: true, data, error: null };
+    }
+    catch (error) {
+        return { success: false, data: null, error: error.message };
+    }
+});
+// コンフリクト解決（内容を保存）
+electron_1.ipcMain.handle('github-resolve-conflict', async (_e, filePath, content) => {
+    try {
+        const ok = await githubService.resolveConflict(filePath, content);
+        return { success: ok, error: ok ? null : 'Failed to resolve conflict' };
+    }
+    catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+// すべて解消後のマージコミット作成
+electron_1.ipcMain.handle('github-complete-merge', async (_e, message) => {
+    try {
+        const ok = await githubService.completeMerge(message);
+        return { success: ok, error: ok ? null : 'Complete merge failed' };
+    }
+    catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+// 全コンフリクト解決済みか確認
+electron_1.ipcMain.handle('github-check-conflicts-resolved', async () => {
+    try {
+        const resolved = await githubService.areAllConflictsResolved();
+        return { success: true, data: resolved, error: null };
+    }
+    catch (error) {
+        return { success: false, data: false, error: error.message };
     }
 });
