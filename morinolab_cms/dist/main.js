@@ -575,6 +575,9 @@ electron_1.ipcMain.handle('get-font-url', () => {
         node_path_1.default.join(process.cwd(), 'Sango-JA-CPAL.ttf'), // Development
         node_path_1.default.join(appPath, 'Sango-JA-CPAL.ttf'), // Packaged app root
         node_path_1.default.join(resourcesPath, 'Sango-JA-CPAL.ttf'), // extraResource location
+        node_path_1.default.join(resourcesPath, 'fonts', 'Sango-JA-CPAL.ttf'), // fonts subfolder inside resources (common on Windows)
+        node_path_1.default.join(resourcesPath, 'app.asar.unpacked', 'Sango-JA-CPAL.ttf'), // unpacked resources
+        node_path_1.default.join(appPath, 'fonts', 'Sango-JA-CPAL.ttf'), // fonts folder next to executable
         node_path_1.default.join(__dirname, '..', 'Sango-JA-CPAL.ttf'), // One level up from dist
         node_path_1.default.join(__dirname, 'Sango-JA-CPAL.ttf'), // Same directory as main.js
     ];

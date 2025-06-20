@@ -89,11 +89,15 @@
         font-weight: bold;
       }
       #editor textarea {
-        flex: 1;
+        width: 50%;
+        flex: 0 0 50%;
         resize: none;
         font-family: monospace;
         font-size: 14px;
         padding: 12px;
+        height: 100%;
+        box-sizing: border-box;
+        overflow-y: auto;
       }
       table {
         width: max-content; /* prevent squeezing, enable horizontal scroll */
@@ -366,7 +370,32 @@
         font-size: 12px;
         color: #333;
       }
+
+      /* Split view container */
+      #editorBody {
+        flex: 0 0 600px; /* fixed height; adjust as needed */
+        display: flex;
+        overflow: hidden; /* prevent page scroll; children scroll instead */
+      }
+      /* Preview area */
+      #previewArea {
+        flex: 1;
+        padding: 12px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        background: #ffffff;
+        border-left: 2px solid #808080;
+        height: 100%;
+        box-sizing: border-box;
+      }
+      #previewArea img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
     </style>
+    <!-- Added Markdown renderer -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   </head>
   <body>
     <!-- Initial Setup Screen -->
@@ -485,7 +514,11 @@
           <h2 id="editorTitle"></h2>
           <button id="deleteBtn" class="btn danger">削除</button>
         </div>
-        <textarea id="contentArea"></textarea>
+        <!-- Split editor body -->
+        <div id="editorBody">
+          <textarea id="contentArea"></textarea>
+          <div id="previewArea"></div>
+        </div>
       </div>
     </div>
     <div id="popupOverlay">
@@ -562,6 +595,7 @@
       const deleteBtn = document.getElementById('deleteBtn');
       const contentArea = document.getElementById('contentArea');
       const editorTitle = document.getElementById('editorTitle');
+      const previewArea = document.getElementById('previewArea');
 
       let currentType = null;
       let currentId = null;
@@ -774,6 +808,7 @@
         editorTitle.textContent = `${currentType} / ${id} - ${title}`;
         const content = await window.api.loadContent(currentType, id);
         contentArea.value = content;
+        updatePreview();
 
         // Set delete handler each time
         deleteBtn.onclick = async () => {
@@ -801,6 +836,7 @@
         saveTimer = setTimeout(() => {
           window.api.saveContent(currentType, currentId, contentArea.value);
         }, 500);
+        updatePreview();
       });
 
       // Drag & Drop image insertion
@@ -836,6 +872,7 @@
         contentArea.selectionStart = contentArea.selectionEnd = newPos;
         // trigger save
         window.api.saveContent(currentType, currentId, contentArea.value);
+        updatePreview();
       });
 
       init();
@@ -1603,6 +1640,33 @@
           refreshConflictState();
         }
       };
+
+      function updatePreview() {
+        if (window.marked && previewArea) {
+          previewArea.innerHTML = window.marked.parse(contentArea.value);
+        } else if (previewArea) {
+          previewArea.textContent = contentArea.value;
+        }
+
+        // Fix image sources to absolute file URLs
+        if (!currentType || !currentId) return;
+        const imgs = previewArea.querySelectorAll('img');
+        imgs.forEach((img) => {
+          const srcAttr = img.getAttribute('src');
+          if (!srcAttr) return;
+          // Skip if already absolute (http/https/data/file)
+          if (/^(https?:|data:|file:)/i.test(srcAttr)) return;
+
+          // Build relative path within type/id folder
+          const combinedRel = `${currentId}/${srcAttr.replace(/^\.\//, '')}`;
+          window.api
+            .resolvePath(currentType, combinedRel)
+            .then((url) => {
+              if (url) img.src = url + '?' + Date.now();
+            })
+            .catch(() => {});
+        });
+      }
     </script>
   </body>
 </html>
