@@ -161,6 +161,13 @@ contextBridge.exposeInMainWorld('api', {
     filePath: string,
   ): Promise<{ success: boolean; data: string | null; error?: string }> =>
     ipcRenderer.invoke('github-get-conflict-content', filePath),
+  githubGetConflictVersions: (
+    filePath: string,
+  ): Promise<{
+    success: boolean;
+    data: { current: string | null; incoming: string | null; base: string | null } | null;
+    error?: string;
+  }> => ipcRenderer.invoke('github-get-conflict-versions', filePath),
   githubResolveConflict: (filePath: string, resolvedContent: string): Promise<GitHubResponse> =>
     ipcRenderer.invoke('github-resolve-conflict', filePath, resolvedContent),
   githubCompleteMerge: (message?: string): Promise<GitHubResponse> =>
@@ -254,6 +261,11 @@ declare global {
       githubGetConflictContent(
         filePath: string,
       ): Promise<{ success: boolean; data: string | null; error?: string }>;
+      githubGetConflictVersions(filePath: string): Promise<{
+        success: boolean;
+        data: { current: string | null; incoming: string | null; base: string | null } | null;
+        error?: string;
+      }>;
       githubResolveConflict(filePath: string, resolvedContent: string): Promise<GitHubResponse>;
       githubCompleteMerge(message?: string): Promise<GitHubResponse>;
       githubCheckConflictsResolved(): Promise<{ success: boolean; data: boolean; error?: string }>;

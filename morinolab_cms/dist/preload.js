@@ -51,6 +51,7 @@ electron_1.contextBridge.exposeInMainWorld('api', {
     // コンフリクト解決API
     githubGetConflicts: () => electron_1.ipcRenderer.invoke('github-get-conflicts'),
     githubGetConflictContent: (filePath) => electron_1.ipcRenderer.invoke('github-get-conflict-content', filePath),
+    githubGetConflictVersions: (filePath) => electron_1.ipcRenderer.invoke('github-get-conflict-versions', filePath),
     githubResolveConflict: (filePath, resolvedContent) => electron_1.ipcRenderer.invoke('github-resolve-conflict', filePath, resolvedContent),
     githubCompleteMerge: (message) => electron_1.ipcRenderer.invoke('github-complete-merge', message),
     githubCheckConflictsResolved: () => electron_1.ipcRenderer.invoke('github-check-conflicts-resolved'),

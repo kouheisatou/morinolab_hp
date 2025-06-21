@@ -14,12 +14,17 @@ export interface IGitRepository {
   /** クローン */
   clone(progress?: (p: CloneProgress) => void): Promise<boolean>;
   /** 最新を取得 */
-  pull(): Promise<{ success: boolean; error?: string }>;
+  pull(): Promise<{
+    success: boolean;
+    error?: string;
+    hasConflicts?: boolean;
+    conflicts?: string[];
+  }>;
   /** 変更を commit & push */
   commitAndPush(
     message: string,
     progress?: (p: CloneProgress) => void,
-  ): Promise<{ success: boolean; error?: string }>;
+  ): Promise<{ success: boolean; error?: string; hasConflicts?: boolean; conflicts?: string[] }>;
 
   /** リポジトリ情報 */
   getInfo(): Promise<RepositoryInfo | null>;

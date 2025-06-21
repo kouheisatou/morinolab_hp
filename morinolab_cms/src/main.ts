@@ -816,6 +816,16 @@ ipcMain.handle('github-get-conflict-content', async (_e, filePath: string) => {
   }
 });
 
+// コンフリクトファイルの両バージョン取得
+ipcMain.handle('github-get-conflict-versions', async (_e, filePath: string) => {
+  try {
+    const versions = await githubService.getConflictVersions(filePath);
+    return { success: true, data: versions, error: null };
+  } catch (error) {
+    return { success: false, data: null, error: (error as Error).message };
+  }
+});
+
 // コンフリクト解決（内容を保存）
 ipcMain.handle('github-resolve-conflict', async (_e, filePath: string, content: string) => {
   try {

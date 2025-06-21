@@ -19,14 +19,19 @@ export class GitRepository implements IGitRepository {
     );
   }
 
-  pull(): Promise<{ success: boolean; error?: string }> {
+  pull(): Promise<{
+    success: boolean;
+    error?: string;
+    hasConflicts?: boolean;
+    conflicts?: string[];
+  }> {
     return this.service.pullLatest();
   }
 
   commitAndPush(
     message: string,
     onProgress?: (p: CloneProgress) => void,
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ success: boolean; error?: string; hasConflicts?: boolean; conflicts?: string[] }> {
     return this.service.commitAndPush(message, (msg, percent) =>
       onProgress?.({ message: msg, percent }),
     );

@@ -486,6 +486,14 @@
           ログアウト
         </button>
         <button
+          id="githubSyncBtn"
+          class="btn"
+          style="width: 100%; margin: 2px 0; font-size: 11px; background: #c0c8d6"
+          disabled
+        >
+          同期
+        </button>
+        <button
           id="githubCommitBtn"
           class="btn"
           style="width: 100%; margin: 2px 0; font-size: 11px; background: #c0d6c0"
@@ -1009,6 +1017,7 @@
       const githubStatus = document.getElementById('githubStatus');
       const githubRepoInfo = document.getElementById('githubRepoInfo');
       const githubSetupBtn = document.getElementById('githubSetupBtn');
+      const githubSyncBtn = document.getElementById('githubSyncBtn');
       const githubCommitBtn = document.getElementById('githubCommitBtn');
       const conflictResolveBtn = document.getElementById('conflictResolveBtn');
 
@@ -1032,6 +1041,45 @@
 
         // セットアップ画面を表示
         showInitialSetup();
+      };
+
+      // 同期（pull）
+      githubSyncBtn.onclick = async () => {
+        if (!githubConfig) return;
+
+        try {
+          githubSyncBtn.disabled = true;
+          githubSyncBtn.textContent = '同期中...';
+
+          showProgress('リモートから最新の変更を取得中...', 10);
+
+          // pullを実行
+          const pullRes = await window.api.githubPullLatest();
+
+          if (!pullRes.success) {
+            // エラーの場合、コンフリクトかどうかチェック
+            if (pullRes.hasConflicts && pullRes.conflicts && pullRes.conflicts.length > 0) {
+              hideProgress();
+              showConflictResolutionModal(pullRes.conflicts);
+            } else {
+              hideProgress();
+              alert('同期に失敗しました: ' + (pullRes.error || 'Unknown error'));
+            }
+          } else {
+            showProgress('同期完了', 100);
+            updateGitHubStatus('同期完了');
+            if (currentType) loadItems(); // コンテンツリストを更新
+            await refreshConflictState();
+            setTimeout(hideProgress, 1000);
+          }
+        } catch (error) {
+          console.error('同期エラー:', error);
+          alert('同期エラー: ' + error.message);
+          hideProgress();
+        } finally {
+          githubSyncBtn.disabled = false;
+          githubSyncBtn.textContent = '同期';
+        }
       };
 
       // アップロード
@@ -1141,10 +1189,12 @@
           githubRepoInfo.textContent = `${config.owner}/${config.repo}`;
           githubRepoInfo.style.display = 'block';
           githubSetupBtn.textContent = 'ログアウト';
+          githubSyncBtn.disabled = false;
           githubCommitBtn.disabled = false;
         } else {
           githubRepoInfo.style.display = 'none';
           githubSetupBtn.textContent = 'ログイン/セットアップ';
+          githubSyncBtn.disabled = true;
           githubCommitBtn.disabled = true;
         }
       }
@@ -1471,16 +1521,16 @@
         conflictModal.style.display = 'flex';
       }
 
-      // 個別ファイルのコンフリクト解決UIを作成（全文表示&直接編集方式）
+      // 個別ファイルのコンフリクト解決UIを作成（3カラム比較方式）
       async function createConflictFileUI(filePath) {
         try {
-          const contentResult = await window.api.githubGetConflictContent(filePath);
-          if (!contentResult.success || !contentResult.data) {
-            console.error('Failed to get conflict content for', filePath);
+          const versionsResult = await window.api.githubGetConflictVersions(filePath);
+          if (!versionsResult.success || !versionsResult.data) {
+            console.error('Failed to get conflict versions for', filePath);
             return;
           }
 
-          const originalContent = contentResult.data;
+          const { current, incoming, base } = versionsResult.data;
 
           const fileDiv = document.createElement('div');
           fileDiv.style.cssText = `margin-bottom: 20px; border: 2px solid #808080; background: #fff; padding: 12px;`;
@@ -1489,29 +1539,104 @@
           const header = document.createElement('h3');
           header.textContent = `📄 ${filePath}`;
           header.style.cssText =
-            'margin:0 0 8px 0; border-bottom:1px solid #ccc; padding-bottom:4px;';
+            'margin:0 0 12px 0; border-bottom:1px solid #ccc; padding-bottom:4px;';
           fileDiv.appendChild(header);
 
-          // Textarea
+          // 選択ボタン群
+          const buttonGroup = document.createElement('div');
+          buttonGroup.style.cssText =
+            'margin-bottom: 12px; display: flex; gap: 8px; flex-wrap: wrap;';
+
+          const useCurrentBtn = document.createElement('button');
+          useCurrentBtn.textContent = '現在のバージョンを採用';
+          useCurrentBtn.className = 'btn';
+          useCurrentBtn.style.background = '#c0d6c0';
+
+          const useIncomingBtn = document.createElement('button');
+          useIncomingBtn.textContent = 'リモートのバージョンを採用';
+          useIncomingBtn.className = 'btn';
+          useIncomingBtn.style.background = '#d6c0c0';
+
+          const manualEditBtn = document.createElement('button');
+          manualEditBtn.textContent = '手動編集';
+          manualEditBtn.className = 'btn';
+          manualEditBtn.style.background = '#c0c8d6';
+
+          buttonGroup.appendChild(useCurrentBtn);
+          buttonGroup.appendChild(useIncomingBtn);
+          buttonGroup.appendChild(manualEditBtn);
+          fileDiv.appendChild(buttonGroup);
+
+          // 比較表示
+          const compareDiv = document.createElement('div');
+          compareDiv.style.cssText =
+            'display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;';
+
+          // 現在のバージョン
+          const currentDiv = document.createElement('div');
+          currentDiv.style.cssText = 'border: 1px solid #808080; background: #f0f8f0;';
+          const currentLabel = document.createElement('div');
+          currentLabel.textContent = '現在のバージョン (ローカル変更)';
+          currentLabel.style.cssText =
+            'background: #c0d6c0; padding: 4px 8px; font-weight: bold; font-size: 11px;';
+          const currentContent = document.createElement('pre');
+          currentContent.style.cssText =
+            'padding: 8px; margin: 0; font-family: monospace; font-size: 11px; white-space: pre-wrap; max-height: 200px; overflow: auto;';
+          currentContent.textContent = current || '(内容なし)';
+          currentDiv.appendChild(currentLabel);
+          currentDiv.appendChild(currentContent);
+
+          // リモートのバージョン
+          const incomingDiv = document.createElement('div');
+          incomingDiv.style.cssText = 'border: 1px solid #808080; background: #f8f0f0;';
+          const incomingLabel = document.createElement('div');
+          incomingLabel.textContent = 'リモートのバージョン (origin/main)';
+          incomingLabel.style.cssText =
+            'background: #d6c0c0; padding: 4px 8px; font-weight: bold; font-size: 11px;';
+          const incomingContent = document.createElement('pre');
+          incomingContent.style.cssText =
+            'padding: 8px; margin: 0; font-family: monospace; font-size: 11px; white-space: pre-wrap; max-height: 200px; overflow: auto;';
+          incomingContent.textContent = incoming || '(内容なし)';
+          incomingDiv.appendChild(incomingLabel);
+          incomingDiv.appendChild(incomingContent);
+
+          compareDiv.appendChild(currentDiv);
+          compareDiv.appendChild(incomingDiv);
+          fileDiv.appendChild(compareDiv);
+
+          // 手動編集エリア（初期は非表示）
+          const editDiv = document.createElement('div');
+          editDiv.style.cssText = 'display: none; margin-bottom: 12px;';
+          const editLabel = document.createElement('div');
+          editLabel.textContent = '手動編集:';
+          editLabel.style.cssText = 'margin-bottom: 4px; font-weight: bold;';
           const textarea = document.createElement('textarea');
           textarea.id = `edit-${CSS.escape(filePath)}`;
           textarea.style.cssText =
-            'width:100%; height:300px; font-family:monospace; font-size:12px; margin-bottom:8px;';
-          textarea.value = originalContent;
-          fileDiv.appendChild(textarea);
+            'width:100%; height:250px; font-family:monospace; font-size:12px; margin-bottom:8px;';
+          textarea.value = current || incoming || '';
+          editDiv.appendChild(editLabel);
+          editDiv.appendChild(textarea);
+          fileDiv.appendChild(editDiv);
 
-          // Save button & status
-          const saveBtn = document.createElement('button');
-          saveBtn.textContent = '保存';
-          saveBtn.className = 'btn';
+          // ステータス表示
+          const statusDiv = document.createElement('div');
+          statusDiv.style.cssText =
+            'margin-top: 8px; padding: 8px; background: #f0f0f0; border: 1px solid #ccc;';
           const statusSpan = document.createElement('span');
-          statusSpan.style.marginLeft = '8px';
+          statusSpan.textContent = '⏳ 選択してください';
+          statusDiv.appendChild(statusSpan);
+          fileDiv.appendChild(statusDiv);
 
-          saveBtn.onclick = async () => {
-            const newContent = textarea.value;
-            const res = await window.api.githubResolveConflict(filePath, newContent);
+          // イベントハンドラ
+          let selectedContent = null;
+
+          useCurrentBtn.onclick = async () => {
+            selectedContent = current || '';
+            const res = await window.api.githubResolveConflict(filePath, selectedContent);
             if (res.success) {
-              statusSpan.textContent = '✅ 解決済み';
+              statusSpan.textContent = '✅ 現在のバージョンで解決済み';
+              statusDiv.style.background = '#e8f5e8';
               resolvedConflicts.add(filePath);
               updateCompleteButton();
             } else {
@@ -1519,8 +1644,45 @@
             }
           };
 
-          fileDiv.appendChild(saveBtn);
-          fileDiv.appendChild(statusSpan);
+          useIncomingBtn.onclick = async () => {
+            selectedContent = incoming || '';
+            const res = await window.api.githubResolveConflict(filePath, selectedContent);
+            if (res.success) {
+              statusSpan.textContent = '✅ リモートのバージョンで解決済み';
+              statusDiv.style.background = '#e8f5e8';
+              resolvedConflicts.add(filePath);
+              updateCompleteButton();
+            } else {
+              alert('保存に失敗: ' + res.error);
+            }
+          };
+
+          manualEditBtn.onclick = () => {
+            editDiv.style.display = 'block';
+            statusSpan.textContent = '✏️ 手動編集モード';
+            statusDiv.style.background = '#f8f8e8';
+
+            // 手動編集保存ボタンを追加
+            if (!editDiv.querySelector('.manual-save-btn')) {
+              const saveBtn = document.createElement('button');
+              saveBtn.textContent = '保存';
+              saveBtn.className = 'btn manual-save-btn';
+              saveBtn.style.background = '#c0d6c0';
+              saveBtn.onclick = async () => {
+                const newContent = textarea.value;
+                const res = await window.api.githubResolveConflict(filePath, newContent);
+                if (res.success) {
+                  statusSpan.textContent = '✅ 手動編集で解決済み';
+                  statusDiv.style.background = '#e8f5e8';
+                  resolvedConflicts.add(filePath);
+                  updateCompleteButton();
+                } else {
+                  alert('保存に失敗: ' + res.error);
+                }
+              };
+              editDiv.appendChild(saveBtn);
+            }
+          };
 
           conflictFiles.appendChild(fileDiv);
         } catch (error) {
@@ -1538,31 +1700,51 @@
       completeConflictResolution.onclick = async () => {
         try {
           showProgress('マージコミットを作成中...', 10);
+
+          // ボタンを無効化してダブルクリック防止
+          completeConflictResolution.disabled = true;
+
           const mergeRes = await window.api.githubCompleteMerge('Resolve merge conflicts via CMS');
-          if (!mergeRes.success) {
-            hideProgress();
-            alert('マージ完了に失敗: ' + mergeRes.error);
-            return;
-          }
 
-          showProgress('リモートへプッシュ中...', 30);
-          const pushRes = await window.api.githubCommitPush('Resolve merge conflicts');
-
-          if (pushRes.success) {
-            showProgress('プッシュ完了', 100);
-            setTimeout(hideProgress, 1000);
-            conflictModal.style.display = 'none';
-            updateGitHubStatus('マージ完了');
-            if (currentType) loadItems();
-            await refreshConflictState();
+          if (mergeRes.success) {
+            showProgress('マージ完了・プッシュ完了', 100);
+            setTimeout(() => {
+              hideProgress();
+              conflictModal.style.display = 'none';
+              updateGitHubStatus('マージ完了');
+              if (currentType) loadItems();
+              refreshConflictState();
+            }, 1000);
           } else {
             hideProgress();
-            alert('プッシュに失敗: ' + (pushRes.error || 'Unknown error'));
+            console.error('Merge completion failed:', mergeRes.error);
+
+            // エラーの種類に応じたメッセージ
+            let errorMessage = 'マージ完了に失敗しました。';
+            if (mergeRes.error && mergeRes.error.includes('GitPushError')) {
+              errorMessage =
+                'リモートリポジトリで新しい変更があったため、マージを完了できませんでした。\n再度同期ボタンを押してから、もう一度お試しください。';
+            } else if (mergeRes.error && mergeRes.error.includes('cannot lock ref')) {
+              errorMessage =
+                'リモートブランチがロックされています。\n少し時間をおいてから再度お試しください。';
+            } else if (mergeRes.error) {
+              errorMessage += '\n詳細: ' + mergeRes.error;
+            }
+
+            alert(errorMessage);
+
+            // ボタンを再有効化
+            const allResolved = resolvedConflicts.size === currentConflicts.length;
+            completeConflictResolution.disabled = !allResolved;
           }
         } catch (error) {
           hideProgress();
           console.error('Error completing merge:', error);
-          alert('エラー: ' + error.message);
+          alert('予期しないエラーが発生しました: ' + error.message);
+
+          // ボタンを再有効化
+          const allResolved = resolvedConflicts.size === currentConflicts.length;
+          completeConflictResolution.disabled = !allResolved;
         }
       };
 
@@ -1616,11 +1798,15 @@
           const has = res.success && res.data && res.data.length > 0;
           if (has) {
             conflictResolveBtn.style.display = 'block';
+            githubSyncBtn.disabled = true;
             githubCommitBtn.disabled = true;
           } else {
             conflictResolveBtn.style.display = 'none';
-            // アップロードボタン有効化は接続状態に依存
-            if (githubConfig) githubCommitBtn.disabled = false;
+            // ボタン有効化は接続状態に依存
+            if (githubConfig) {
+              githubSyncBtn.disabled = false;
+              githubCommitBtn.disabled = false;
+            }
           }
         } catch (e) {
           console.error('Failed to check conflicts', e);
