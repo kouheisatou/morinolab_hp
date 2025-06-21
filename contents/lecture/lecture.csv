@@ -1,3 +1,16 @@
 id,nameJa,nameEn,thumbnail,descJa,descEn,type
 1,AI研究最前線,Frontiers in AI Research,1.jpg,AI研究の最新動向について講演,A talk about the latest trends in AI research,専門講義
-3,fefefe,fwe,3.png,wf,ef,選択必修
+2,機械学習基礎,Machine Learning Fundamentals,2.jpg,機械学習の基本概念と手法を学ぶ,Learn basic concepts and methods of machine learning,必修
+3,深層学習入門,Introduction to Deep Learning,3.jpg,ニューラルネットワークと深層学習の基礎,Fundamentals of neural networks and deep learning,選択必修
+4,自然言語処理,Natural Language Processing,4.jpg,言語データの解析と処理技術,Analysis and processing techniques for linguistic data,専門講義
+5,コンピュータビジョン,Computer Vision,5.jpg,画像認識と画像処理の理論と実践,Theory and practice of image recognition and processing,専門講義
+6,データサイエンス実習,Data Science Practice,6.jpg,実データを用いた分析手法の習得,Learning analysis methods using real data,実習
+7,ロボティクス工学,Robotics Engineering,7.jpg,ロボット制御と設計の基礎理論,Basic theory of robot control and design,専門講義
+8,IoTシステム設計,IoT System Design,8.jpg,IoTデバイスとシステムの設計手法,Design methods for IoT devices and systems,専門講義
+9,サイバーセキュリティ,Cybersecurity,9.jpg,情報セキュリティの理論と実装,Theory and implementation of information security,専門講義
+10,ブロックチェーン技術,Blockchain Technology,10.jpg,分散台帳技術の原理と応用,Principles and applications of distributed ledger technology,選択
+11,量子コンピューティング入門,Introduction to Quantum Computing,11.jpg,量子計算の基礎と量子アルゴリズム,Fundamentals of quantum computation and quantum algorithms,専門講義
+12,HCIデザイン,HCI Design,12.jpg,ヒューマンコンピュータインタラクションの設計,Design of human-computer interaction,専門講義
+13,ソフトウェア工学,Software Engineering,13.jpg,大規模ソフトウェア開発の手法と管理,Methods and management of large-scale software development,必修
+14,データベースシステム,Database Systems,14.jpg,データベース設計と管理の理論,Theory of database design and management,必修
+15,分散システム,Distributed Systems,15.jpg,分散コンピューティングの理論と実装,Theory and implementation of distributed computing,専門講義

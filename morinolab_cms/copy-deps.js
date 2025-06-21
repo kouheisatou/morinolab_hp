@@ -188,7 +188,8 @@ try {
     'dotenv',
     '@octokit/rest',
     'pica',
-    'simple-git'
+    'isomorphic-git',
+    '@electron-utils/electron-oauth-github'
   ];
 
   // Find all dependencies including sub-dependencies
