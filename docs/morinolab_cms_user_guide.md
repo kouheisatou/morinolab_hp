@@ -4,55 +4,12 @@
 
 Morinolab CMSは、GitHubリポジトリと連携するElectronベースのデスクトップCMSアプリケーションです。直感的なUIでコンテンツを管理し、GitHubとの同期を簡単に行えます。
 
-## 主な特徴
-
-- 🖥️ **デスクトップアプリ**: Electronベースの使いやすいGUI
-- 🔄 **GitHub連携**: リポジトリとの同期、プル/プッシュ操作
-- 📁 **階層管理**: 任意のディレクトリに複数リポジトリを管理
-- 🔧 **ゼロ設定**: 初回起動時の3ステップセットアップ
-- 💾 **自動保存**: 0.5秒ごとの自動保存機能
-- 🎨 **レスポンシブUI**: Win95風のレトロなデザイン
-- 🖼️ **画像処理**: 自動圧縮・リサイズ機能
-- 📊 **CSVメタデータ**: ファイルベースのコンテンツ管理
-
 ## システム要件
 
 - **OS**: macOS 10.15+, Windows 10+, Ubuntu 18.04+
 - **Node.js**: v18.x以上
 - **Git**: v2.0以上
 - **インターネット接続**: GitHub連携のため必要
-
-## インストール・セットアップ
-
-### 開発環境での実行
-
-1. **依存関係のインストール**
-   ```bash
-   cd morinolab_cms
-   npm install
-   ```
-
-2. **開発モードで起動**
-   ```bash
-   npm run dev
-   ```
-
-### パッケージ版の作成
-
-1. **アプリケーションをビルド**
-   ```bash
-   npm run build
-   ```
-
-2. **パッケージを作成**
-   ```bash
-   npm run package
-   ```
-
-3. **配布用インストーラーを作成**
-   ```bash
-   npm run make
-   ```
 
 ## 初回セットアップ
 
@@ -66,13 +23,8 @@ Morinolab CMSは、GitHubリポジトリと連携するElectronベースのデ�
 ### ステップ2: GitHub認証
 1. "GitHub でログイン" ボタンをクリック
 2. ブラウザが開き、GitHubの認証ページが表示
-3. Device Flow認証による安全なログイン
+3. Device Flow認証によるログイン
 4. 認証コードを入力して認証完了
-
-### ステップ3: リポジトリ選択
-1. アクセス可能なリポジトリ一覧が表示
-2. 管理したいリポジトリを選択
-3. 自動的にローカルにクローン
 
 ## 基本的な使い方
 
@@ -82,11 +34,11 @@ Morinolab CMSは、GitHubリポジトリと連携するElectronベースのデ�
 アプリケーションは以下のコンテンツタイプをサポートします：
 - `company`: 企業情報
 - `lecture`: 講義情報
-- `member`: メンバー情報
-- `membertype`: メンバータイプ
+- `member`: メンバー一覧
+- `membertype`: メンバータイプタグ管理
 - `news`: ニュース
 - `publication`: 発表・論文
-- `tags`: タグ管理
+- `tags`: 研究テーマタグ管理
 - `theme`: 研究テーマ
 
 #### 記事の作成・編集
@@ -102,7 +54,7 @@ Morinolab CMSは、GitHubリポジトリと連携するElectronベースのデ�
    - 内容は0.5秒ごとに自動保存
 
 3. **記事の削除**
-   - 一覧から「削除」ボタンをクリック
+   - 記事編集画面から「削除」ボタンをクリック
    - 確認ダイアログで削除を確定
 
 #### ファイル構造
@@ -172,10 +124,8 @@ contents/
 2. コミットメッセージを入力
 3. ローカルの変更をGitHubにプッシュ
 
-#### リポジトリ切り替え
-1. 設定画面からリポジトリを変更
-2. 新しいリポジトリを選択
-3. 自動的にクローンが実行される
+#### ログアウト
+githubからログアウトし、初期設定画面に戻る
 
 ### コンフリクト解決
 
@@ -189,60 +139,6 @@ contents/
 3. 各ファイルの内容を手動で編集
 4. すべてのコンフリクト解決後、マージコミットを作成
 
-### プログレス表示
-- クローン、プル、プッシュ操作中はプログレスバーを表示
-- リアルタイムでステータスメッセージを更新
-
-## 設定とカスタマイズ
-
-### フォント設定
-- アプリケーションは`Sango-JA-CPAL.ttf`フォントを使用
-- 日本語表示に最適化
-
-### ディレクトリ構成
-```
-morinolab_cms/
-├── src/
-│   ├── main.ts              # メインプロセス
-│   ├── preload.ts           # プリロードスクリプト
-│   ├── github-service.ts    # GitHub API サービス
-│   ├── domain/              # ドメインモデル
-│   ├── application/         # ユースケース
-│   ├── infrastructure/      # インフラストラクチャ
-│   └── renderer/
-│       └── index.html       # UI
-├── tests/                   # テストファイル
-├── images/                  # アプリアイコン
-└── dist/                    # ビルド出力
-```
-
-## アーキテクチャ
-
-### クリーンアーキテクチャ
-- **Domain**: ビジネスロジックとエンティティ
-- **Application**: ユースケースとアプリケーションロジック
-- **Infrastructure**: 外部システムとの接続
-- **Presentation**: UI層（Electron Renderer）
-
-### 主要なコンポーネント
-
-#### Domain Layer
-- `Article`: 記事エンティティ
-- `ContentType`: コンテンツタイプ定義
-- `RepositoryInfo`: リポジトリ情報
-- `IContentRepository`: コンテンツ操作インターフェース
-- `IGitRepository`: Git操作インターフェース
-
-#### Application Layer
-- `CloneRepositoryUseCase`: リポジトリクローン
-- `CommitAndPushUseCase`: コミット・プッシュ
-- `PullLatestUseCase`: 最新取得
-
-#### Infrastructure Layer
-- `ContentRepository`: ローカルファイルシステム操作
-- `GitRepository`: Git操作実装
-- `GitHubService`: GitHub API連携
-
 ## トラブルシューティング
 
 ### よくある問題
@@ -253,6 +149,7 @@ morinolab_cms/
 - ブラウザの設定でポップアップをブロックしていないか確認
 
 #### クローンに失敗する
+- githubアカウント`MorinoLab-SIT`でログインしているか確認
 - ディスクの空き容量を確認
 - リポジトリのアクセス権限を確認
 - ネットワーク接続を確認
@@ -303,6 +200,52 @@ morinolab_cms/
 詳細な型定義は`src/preload.ts`を参照
 
 ## 開発者向け情報
+
+### フォント設定
+- アプリケーションは`Sango-JA-CPAL.ttf`フォントを使用
+- 日本語表示に最適化
+
+### ディレクトリ構成
+```
+morinolab_cms/
+├── src/
+│   ├── main.ts              # メインプロセス
+│   ├── preload.ts           # プリロードスクリプト
+│   ├── github-service.ts    # GitHub API サービス
+│   ├── domain/              # ドメインモデル
+│   ├── application/         # ユースケース
+│   ├── infrastructure/      # インフラストラクチャ
+│   └── renderer/
+│       └── index.html       # UI
+├── tests/                   # テストファイル
+├── images/                  # アプリアイコン
+└── dist/                    # ビルド出力
+```
+
+### クリーンアーキテクチャ
+- **Domain**: ビジネスロジックとエンティティ
+- **Application**: ユースケースとアプリケーションロジック
+- **Infrastructure**: 外部システムとの接続
+- **Presentation**: UI層（Electron Renderer）
+
+### 主要なコンポーネント
+
+#### Domain Layer
+- `Article`: 記事エンティティ
+- `ContentType`: コンテンツタイプ定義
+- `RepositoryInfo`: リポジトリ情報
+- `IContentRepository`: コンテンツ操作インターフェース
+- `IGitRepository`: Git操作インターフェース
+
+#### Application Layer
+- `CloneRepositoryUseCase`: リポジトリクローン
+- `CommitAndPushUseCase`: コミット・プッシュ
+- `PullLatestUseCase`: 最新取得
+
+#### Infrastructure Layer
+- `ContentRepository`: ローカルファイルシステム操作
+- `GitRepository`: Git操作実装
+- `GitHubService`: GitHub API連携
 
 ### 開発環境セットアップ
 ```bash
