@@ -7,7 +7,7 @@ module.exports = {
     extraResource: [
       './Sango-JA-CPAL.ttf'
     ],
-    // Only build for the current platform to prevent cross-platform issues
+    icon: 'images/icon',
     platform: process.platform,
     arch: process.arch
   },
@@ -17,7 +17,7 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       config: {
         authors: 'Kohei Sato',
-        description: 'Desktop CMS for managing contents directory without DB (file-based) using Electron and TypeScript.'
+        description: 'Content Management System for Morino Lab HP',
       },
       platforms: ['win32']
     },
