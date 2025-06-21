@@ -5,6 +5,7 @@ export class Lecture {
   titleEn: string;
   descJa: string;
   descEn: string;
+  type: string;
 
   constructor(
     id: number,
@@ -13,6 +14,7 @@ export class Lecture {
     titleEn: string,
     descJa: string,
     descEn: string,
+    type: string,
   ) {
     this.id = id;
     this.thumbnail = thumbnail;
@@ -20,5 +22,6 @@ export class Lecture {
     this.titleEn = titleEn;
     this.descJa = descJa;
     this.descEn = descEn;
+    this.type = type;
   }
 }

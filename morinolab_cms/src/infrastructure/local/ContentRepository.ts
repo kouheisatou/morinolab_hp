@@ -20,7 +20,9 @@ export class ContentRepository implements IContentRepository {
     return fs
       .readdirSync(this.contentRoot, { withFileTypes: true })
       .filter((d) => d.isDirectory())
-      .map((d) => d.name);
+      .filter((d) => !d.name.startsWith('.')) // Exclude hidden directories like .DS_Store
+      .map((d) => d.name)
+      .sort();
   }
 
   async listItems(type: string): Promise<Array<{ id: string; title: string }>> {

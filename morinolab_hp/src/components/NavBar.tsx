@@ -47,7 +47,7 @@ const NavBar = () => {
     { path: "/access", label: t.Access },
     { path: "/publications", label: t.Publications },
     { path: "/class", label: t.Class },
-    { path: "/career", label: t.Career },
+    { path: "/awards", label: t.Awards },
   ];
 
   // When in `/articles/{type}/{id}` detail page, determine which nav tab to highlight.
@@ -63,6 +63,7 @@ const NavBar = () => {
       member: "/members",
       publication: "/publications",
       lecture: "/class",
+      award: "/awards",
     };
     activeAlias = map[type] ?? null;
   }

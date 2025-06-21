@@ -142,43 +142,53 @@ const Members = () => {
           <div key={cat}>
             <h2 className="section-title">{cat}</h2>
             <ul className="members-grid">
-              {filteredCategoryMap.get(cat)?.map((m) => (
-                <li
-                  key={m.id}
-                  className="clickable-card neu-container p-4 flex items-start gap-4"
-                  onClick={() => router.push(`/articles/member/${m.id}`)}
-                  role="link"
-                  tabIndex={0}
-                >
-                  {m.thumbnail && (
-                    <img
-                      src={m.thumbnail}
-                      alt={
-                        lang === "ja"
-                          ? `${m.name}の写真`
-                          : `${m.nameEnglish}'s photo`
-                      }
-                      className="w-16 h-16 rounded-full object-cover flex-shrink-0"
-                    />
-                  )}
-                  <div className="flex flex-col gap-1">
-                    <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {m.tagIds.map((id) => {
-                        const t = tagIdMap.get(id);
-                        return t ? (
-                          <span key={t.id} className="tag-badge">
-                            {tagLabel(t, lang)}
-                          </span>
-                        ) : null;
-                      })}
+              {filteredCategoryMap.get(cat)?.map((m) => {
+                const isClickable = m.memberTypeId === 1;
+                return (
+                  <li
+                    key={m.id}
+                    className={`neu-container p-4 flex items-start gap-4 ${
+                      isClickable ? "clickable-card" : ""
+                    }`}
+                    onClick={
+                      isClickable
+                        ? () => router.push(`/articles/member/${m.id}`)
+                        : undefined
+                    }
+                    role={isClickable ? "link" : undefined}
+                    tabIndex={isClickable ? 0 : undefined}
+                    style={isClickable ? {} : { cursor: "default" }}
+                  >
+                    {m.thumbnail && (
+                      <img
+                        src={m.thumbnail}
+                        alt={
+                          lang === "ja"
+                            ? `${m.name}の写真`
+                            : `${m.nameEnglish}'s photo`
+                        }
+                        className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                      />
+                    )}
+                    <div className="flex flex-col gap-1">
+                      <strong>{lang === "ja" ? m.name : m.nameEnglish}</strong>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {m.tagIds.map((id) => {
+                          const t = tagIdMap.get(id);
+                          return t ? (
+                            <span key={t.id} className="tag-badge">
+                              {tagLabel(t, lang)}
+                            </span>
+                          ) : null;
+                        })}
+                      </div>
+                      <div className="member-desc">
+                        {lang === "ja" ? m.desc : m.descEnglish}
+                      </div>
                     </div>
-                    <div className="member-desc">
-                      {lang === "ja" ? m.desc : m.descEnglish}
-                    </div>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}
