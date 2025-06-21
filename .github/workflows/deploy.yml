@@ -129,7 +129,7 @@ jobs:
           EOF
 
       - name: Build Next.js static site
-        run: npm run build_morinolab_hp
+        run: npm run build:morinolab_hp
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

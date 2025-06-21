@@ -4,7 +4,7 @@ import { Publication } from "@/models/publication";
 import { Tag } from "@/models/tag";
 import { Theme } from "@/models/theme";
 import { Lecture } from "@/models/lecture";
-import { Company } from "@/models/company";
+import { Award } from "@/models/award";
 import { MemberType } from "@/models/memberType";
 
 /**
@@ -214,20 +214,22 @@ export async function loadLectures(): Promise<Lecture[]> {
         r.nameEn,
         r.descJa,
         r.descEn,
+        r.type || "専門講義", // Default to "専門講義" if type is not specified
       ),
   );
 }
 
-export async function loadCompanies(): Promise<Company[]> {
-  const rows = await loadCsv("/generated_contents/company/company.csv");
+export async function loadAwards(): Promise<Award[]> {
+  const rows = await loadCsv("/generated_contents/award/award.csv");
   return rows.map(
     (r) =>
-      new Company(
+      new Award(
         Number(r.id),
-        resolveThumbnail(r.thumbnail, "company") ?? "",
+        resolveThumbnail(r.thumbnail, "award") ?? "",
         r.nameJa,
         r.nameEn,
-        Number(r.year),
+        parseIdList(r.memberIds),
+        new Date(r.date),
       ),
   );
 }

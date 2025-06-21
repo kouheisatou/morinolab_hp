@@ -17,7 +17,6 @@ const HERO_OVERLAY_THRESHOLD: number = Number(
 export default function HomePage() {
   const { lang } = useLang();
   const t = texts(lang).home;
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
 
   const [themes, setThemes] = useState<Theme[]>([]);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
@@ -176,71 +175,6 @@ export default function HomePage() {
             </Link>
           ))}
         </div>
-      </section>
-
-      {/* 5️⃣ CONTACT */}
-      <section className="px-4" id="contact">
-        <h2 className="text-2xl font-bold text-center mb-8">
-          {lang === "ja" ? "お問い合わせ" : "Contact"}
-        </h2>
-        <form
-          className="max-w-xl mx-auto space-y-4 neu-container p-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            alert(
-              lang === "ja"
-                ? "送信ありがとうございました！"
-                : "Thank you for your message!",
-            );
-            // TODO: send data to backend API
-          }}
-        >
-          <div className="flex flex-col gap-1">
-            <label htmlFor="name" className="text-sm font-medium">
-              {lang === "ja" ? "お名前" : "Name"}
-            </label>
-            <input
-              id="name"
-              type="text"
-              required
-              className="px-3 py-2 border rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="email" className="text-sm font-medium">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              className="px-3 py-2 border rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="message" className="text-sm font-medium">
-              {lang === "ja" ? "メッセージ" : "Message"}
-            </label>
-            <textarea
-              id="message"
-              rows={4}
-              required
-              className="px-3 py-2 border rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-          >
-            {lang === "ja" ? "送信" : "Send"}
-          </button>
-        </form>
       </section>
     </div>
   );

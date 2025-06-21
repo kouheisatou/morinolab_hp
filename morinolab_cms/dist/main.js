@@ -26,15 +26,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.showGitHubSetupGuide = exports.isGitHubConfigured = exports.saveGitHubOAuthConfig = exports.validateGitHubConfig = exports.getGitHubOAuthConfig = void 0;
 Promise.resolve().then(() => __importStar(require('dotenv'))).then((dotenv) => dotenv.config());
 const electron_1 = require("electron");
 const node_path_1 = __importDefault(require("node:path"));
 const node_fs_1 = __importDefault(require("node:fs"));
 const node_url_1 = require("node:url");
-const gray_matter_1 = __importDefault(require("gray-matter"));
-const papaparse_1 = __importDefault(require("papaparse"));
+// legacy imports removed (gray-matter, papaparse)
 const github_service_1 = require("./github-service");
-const github_config_1 = require("./github-config");
+const GitRepository_1 = require("./infrastructure/GitRepository");
+const CloneRepository_1 = require("./application/usecases/CloneRepository");
+const PullLatest_1 = require("./application/usecases/PullLatest");
+const CommitAndPush_1 = require("./application/usecases/CommitAndPush");
+const ContentRepository_1 = require("./infrastructure/local/ContentRepository");
+const DEFAULT_CLIENT_ID = 'Ov23ctlbBnAjnisOSCrm';
+const getGitHubOAuthConfig = async () => ({
+    clientId: DEFAULT_CLIENT_ID,
+});
+exports.getGitHubOAuthConfig = getGitHubOAuthConfig;
+const validateGitHubConfig = (config) => Boolean(config.clientId && config.clientId.trim().length > 0);
+exports.validateGitHubConfig = validateGitHubConfig;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const saveGitHubOAuthConfig = async (_clientId, _clientSecret) => {
+    // mark params as intentionally unused to satisfy eslint
+    void _clientId;
+    void _clientSecret;
+    /* no-op – Device Flow only requires a public clientId */
+};
+exports.saveGitHubOAuthConfig = saveGitHubOAuthConfig;
+const isGitHubConfigured = async () => true;
+exports.isGitHubConfigured = isGitHubConfigured;
+const showGitHubSetupGuide = () => `Morinolab CMS は GitHub Device Flow を使用して認証します。\n\n1. "GitHub でログイン" ボタンを押すとブラウザが開きます。\n2. 表示されたページの指示に従って認証コードを入力してください。\n3. 認証が完了すると、本アプリが自動的にログインを検知します。`;
+exports.showGitHubSetupGuide = showGitHubSetupGuide;
 // Image processing using renderer process
 async function processImage(inputPath, outputPath, maxWidth = 1600, quality = 0.8) {
     try {
@@ -171,6 +194,7 @@ async function updateContentRoot() {
                 console.log(`DEBUG: Contents path exists: ${node_fs_1.default.existsSync(clonedContentsPath)}`);
                 if (node_fs_1.default.existsSync(clonedContentsPath)) {
                     CONTENT_ROOT = clonedContentsPath;
+                    contentRepo.setRoot(CONTENT_ROOT);
                     console.log(`✅ Using GitHub cloned contents at: ${CONTENT_ROOT}`);
                     if (previousContentRoot !== CONTENT_ROOT) {
                         console.log(`📂 Content root changed from: ${previousContentRoot} to: ${CONTENT_ROOT}`);
@@ -195,6 +219,7 @@ async function updateContentRoot() {
     // Fallback to default if no GitHub config
     const defaultContentRoot = node_path_1.default.join(process.cwd(), '../contents');
     CONTENT_ROOT = defaultContentRoot;
+    contentRepo.setRoot(CONTENT_ROOT);
     console.log(`📁 Using default contents at: ${CONTENT_ROOT}`);
     if (previousContentRoot !== CONTENT_ROOT) {
         console.log(`📂 Content root changed from: ${previousContentRoot} to: ${CONTENT_ROOT}`);
@@ -202,6 +227,16 @@ async function updateContentRoot() {
 }
 // GitHub service instance
 const githubService = new github_service_1.GitHubService();
+// Clean Architecture adapters & use cases
+const gitRepoAdapter = new GitRepository_1.GitRepository(githubService);
+const cloneRepoUC = new CloneRepository_1.CloneRepositoryUseCase(gitRepoAdapter);
+const pullLatestUC = new PullLatest_1.PullLatestUseCase(gitRepoAdapter);
+const commitPushUC = new CommitAndPush_1.CommitAndPushUseCase(gitRepoAdapter);
+const contentRepo = new ContentRepository_1.ContentRepository(CONTENT_ROOT);
+// Utility to get path to specific item directory (used for media saving)
+function getItemDir(type, id) {
+    return node_path_1.default.join(CONTENT_ROOT, type, id);
+}
 function createWindow() {
     const win = new electron_1.BrowserWindow({
         width: 1200,
@@ -265,9 +300,9 @@ electron_1.app.on('window-all-closed', () => {
     if (process.platform !== 'darwin')
         electron_1.app.quit();
 });
-// ============================================================
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// Legacy utility functions retained for reference; no longer used after ContentRepository migration
 // Utility functions for interacting with file system
-// ============================================================
 async function ensureContentRoot() {
     // Update content root based on current GitHub configuration
     await updateContentRoot();
@@ -283,8 +318,8 @@ async function tryRestoreGitHubConfiguration() {
     try {
         console.log('DEBUG: Attempting to restore GitHub configuration on startup...');
         // Try to get OAuth config
-        const oauthConfig = await (0, github_config_1.getGitHubOAuthConfig)();
-        if (!oauthConfig || !(0, github_config_1.validateGitHubConfig)(oauthConfig)) {
+        const oauthConfig = await (0, exports.getGitHubOAuthConfig)();
+        if (!oauthConfig || !(0, exports.validateGitHubConfig)(oauthConfig)) {
             console.log('DEBUG: No valid OAuth config found, skipping GitHub restore');
             return;
         }
@@ -319,142 +354,12 @@ async function tryRestoreGitHubConfiguration() {
         console.log('DEBUG: Error during GitHub configuration restoration:', error);
     }
 }
-async function listContentTypes() {
-    await ensureContentRoot();
-    return node_fs_1.default
-        .readdirSync(CONTENT_ROOT, { withFileTypes: true })
-        .filter((d) => d.isDirectory())
-        .map((d) => d.name);
-}
-function getItemDir(type, id) {
-    return node_path_1.default.join(CONTENT_ROOT, type, id);
-}
-function listItems(type) {
-    const typeDir = node_path_1.default.join(CONTENT_ROOT, type);
-    if (!node_fs_1.default.existsSync(typeDir))
-        return [];
-    return node_fs_1.default
-        .readdirSync(typeDir, { withFileTypes: true })
-        .filter((d) => d.isDirectory())
-        .map((d) => {
-        const articlePath = node_path_1.default.join(typeDir, d.name, 'article.md');
-        let title = '';
-        if (node_fs_1.default.existsSync(articlePath)) {
-            try {
-                const file = node_fs_1.default.readFileSync(articlePath, 'utf8');
-                const { data } = (0, gray_matter_1.default)(file);
-                title = data.title || '';
-            }
-            catch {
-                /* ignore errors */
-            }
-        }
-        return { id: d.name, title };
-    })
-        .sort((a, b) => Number(a.id) - Number(b.id));
-}
-async function createItem(type) {
-    const typeDir = node_path_1.default.join(CONTENT_ROOT, type);
-    await ensureContentRoot();
-    if (!node_fs_1.default.existsSync(typeDir))
-        node_fs_1.default.mkdirSync(typeDir, { recursive: true });
-    // Pick next numeric id
-    const ids = node_fs_1.default
-        .readdirSync(typeDir, { withFileTypes: true })
-        .filter((d) => d.isDirectory())
-        .map((d) => Number(d.name))
-        .filter((n) => !isNaN(n));
-    const newId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
-    const itemDir = node_path_1.default.join(typeDir, String(newId));
-    node_fs_1.default.mkdirSync(itemDir);
-    const template = `---\ntitle: 新規記事\n---\n\n# 見出し\n\nここに本文を書いてください\n`;
-    node_fs_1.default.writeFileSync(node_path_1.default.join(itemDir, 'article.md'), template, 'utf8');
-    // CSV row
-    const { header, rows } = loadCsvTable(type);
-    if (!header.includes('id'))
-        header.unshift('id');
-    const newRow = {};
-    header.forEach((h) => {
-        newRow[h] = '';
-    });
-    newRow['id'] = String(newId);
-    rows.push(newRow);
-    saveCsvTable(type, header, rows);
-    return { id: String(newId), title: '新規記事' };
-}
-function deleteItem(type, id) {
-    const dir = getItemDir(type, id);
-    if (node_fs_1.default.existsSync(dir)) {
-        node_fs_1.default.rmSync(dir, { recursive: true, force: true });
-    }
-    // remove thumbnail file
-    const typeDir = node_path_1.default.join(CONTENT_ROOT, type);
-    const thumbPattern = new RegExp(`^${id}\\.(png|jpe?g|gif|webp)$`, 'i');
-    node_fs_1.default.readdirSync(typeDir)
-        .filter((f) => thumbPattern.test(f))
-        .forEach((f) => node_fs_1.default.rmSync(node_path_1.default.join(typeDir, f), { force: true }));
-    const { header, rows } = loadCsvTable(type);
-    const newRows = rows.filter((r) => String(r.id) !== String(id));
-    saveCsvTable(type, header, newRows);
-}
-function loadContent(type, id) {
-    const articlePath = node_path_1.default.join(getItemDir(type, id), 'article.md');
-    if (node_fs_1.default.existsSync(articlePath)) {
-        return node_fs_1.default.readFileSync(articlePath, 'utf8');
-    }
-    return '';
-}
-function saveContent(type, id, content) {
-    const articlePath = node_path_1.default.join(getItemDir(type, id), 'article.md');
-    node_fs_1.default.writeFileSync(articlePath, content, 'utf8');
-}
-// ================= CSV Utils =================
-function getCsvPath(type) {
-    return node_path_1.default.join(CONTENT_ROOT, type, `${type}.csv`);
-}
-function loadCsvTable(type) {
-    const csvPath = getCsvPath(type);
-    if (!node_fs_1.default.existsSync(csvPath)) {
-        return { header: ['id'], rows: [] };
-    }
-    const csvText = node_fs_1.default.readFileSync(csvPath, 'utf8');
-    const parsed = papaparse_1.default.parse(csvText.trim(), {
-        header: true,
-        skipEmptyLines: true,
-    });
-    const header = parsed.meta.fields ?? [];
-    const rows = parsed.data;
-    return { header, rows };
-}
-function saveCsvTable(type, header, rows) {
-    const csvPath = getCsvPath(type);
-    let csvText = '';
-    if (rows.length === 0) {
-        csvText = header.join(',') + '\n';
-    }
-    else {
-        csvText = papaparse_1.default.unparse(rows, { columns: header });
-    }
-    node_fs_1.default.writeFileSync(csvPath, csvText, 'utf8');
-}
-function getTableData(type) {
-    return loadCsvTable(type);
-}
-function updateCell(type, id, column, value) {
-    const { header, rows } = loadCsvTable(type);
-    const row = rows.find((r) => String(r.id) === String(id));
-    if (row) {
-        row[column] = value;
-        saveCsvTable(type, header, rows);
-    }
-}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const wrap = (fn) => (_event, ...args) => fn(...args);
-electron_1.ipcMain.handle('get-content-types', wrap(listContentTypes));
-electron_1.ipcMain.handle('get-items', wrap(listItems));
-electron_1.ipcMain.handle('create-item', wrap(createItem));
-electron_1.ipcMain.handle('delete-item', wrap(deleteItem));
-electron_1.ipcMain.handle('load-content', wrap(loadContent));
+// ================= IPC handlers =================
+electron_1.ipcMain.handle('get-content-types', async () => contentRepo.listContentTypes());
+electron_1.ipcMain.handle('get-items', (_e, type) => contentRepo.listItems(type));
+electron_1.ipcMain.handle('create-item', (_e, type) => contentRepo.createItem(type));
+electron_1.ipcMain.handle('delete-item', (_e, type, id) => contentRepo.deleteItem(type, id));
+electron_1.ipcMain.handle('load-content', (_e, type, id) => contentRepo.loadContent(type, id));
 // Add handler to manually update content root
 electron_1.ipcMain.handle('update-content-root', async () => {
     try {
@@ -499,8 +404,8 @@ electron_1.ipcMain.handle('get-default-local-path', () => {
         return { success: false, error: error.message };
     }
 });
-electron_1.ipcMain.on('save-content', (_event, type, id, content) => {
-    saveContent(type, id, content);
+electron_1.ipcMain.on('save-content', (_e, type, id, content) => {
+    contentRepo.saveContent(type, id, content);
 });
 // Handle image file copy from renderer
 electron_1.ipcMain.handle('save-image', async (_event, type, id, sourcePath, fileName) => {
@@ -536,8 +441,8 @@ electron_1.ipcMain.handle('save-image', async (_event, type, id, sourcePath, fil
         }
     }
 });
-electron_1.ipcMain.handle('get-table-data', wrap(getTableData));
-electron_1.ipcMain.handle('update-cell', wrap(updateCell));
+electron_1.ipcMain.handle('get-table-data', (_e, type) => contentRepo.getTableData(type));
+electron_1.ipcMain.handle('update-cell', (_e, type, id, column, value) => contentRepo.updateCell(type, id, column, value));
 electron_1.ipcMain.handle('select-thumbnail', async (_event, type, id) => {
     const result = await electron_1.dialog.showOpenDialog({
         properties: ['openFile'],
@@ -575,6 +480,9 @@ electron_1.ipcMain.handle('get-font-url', () => {
         node_path_1.default.join(process.cwd(), 'Sango-JA-CPAL.ttf'), // Development
         node_path_1.default.join(appPath, 'Sango-JA-CPAL.ttf'), // Packaged app root
         node_path_1.default.join(resourcesPath, 'Sango-JA-CPAL.ttf'), // extraResource location
+        node_path_1.default.join(resourcesPath, 'fonts', 'Sango-JA-CPAL.ttf'), // fonts subfolder inside resources (common on Windows)
+        node_path_1.default.join(resourcesPath, 'app.asar.unpacked', 'Sango-JA-CPAL.ttf'), // unpacked resources
+        node_path_1.default.join(appPath, 'fonts', 'Sango-JA-CPAL.ttf'), // fonts folder next to executable
         node_path_1.default.join(__dirname, '..', 'Sango-JA-CPAL.ttf'), // One level up from dist
         node_path_1.default.join(__dirname, 'Sango-JA-CPAL.ttf'), // Same directory as main.js
     ];
@@ -643,13 +551,23 @@ electron_1.ipcMain.handle('github-clone-repository', async () => {
 electron_1.ipcMain.handle('github-commit-push', async (_, message) => {
     try {
         const win = electron_1.BrowserWindow.getAllWindows()[0];
-        const result = await githubService.commitAndPush(message, (msg, percent) => {
+        const result = await commitPushUC.execute(message, (msg, percent) => {
             win?.webContents.send('github-commit-progress', { message: msg, percent });
         });
         return result;
     }
     catch (error) {
         console.error('GitHub commit and push error:', error);
+        return { success: false, error: error.message };
+    }
+});
+// 最新変更をプル
+electron_1.ipcMain.handle('github-pull-latest', async () => {
+    try {
+        return await pullLatestUC.execute();
+    }
+    catch (error) {
+        console.error('GitHub pull error:', error);
         return { success: false, error: error.message };
     }
 });
@@ -662,17 +580,6 @@ electron_1.ipcMain.handle('github-get-status', async () => {
     catch (error) {
         console.error('GitHub status error:', error);
         return { success: false, data: null, error: error.message };
-    }
-});
-// 最新変更をプル
-electron_1.ipcMain.handle('github-pull-latest', async () => {
-    try {
-        const success = await githubService.pullLatest();
-        return { success, error: success ? null : 'Pull failed' };
-    }
-    catch (error) {
-        console.error('GitHub pull error:', error);
-        return { success: false, error: error.message };
     }
 });
 // リポジトリ情報取得
@@ -701,19 +608,9 @@ electron_1.ipcMain.handle('github-get-config', () => {
 // GitHub OAuth認証（設定を内部で取得）
 electron_1.ipcMain.handle('github-oauth-authenticate', async () => {
     try {
-        const oauthConfig = await (0, github_config_1.getGitHubOAuthConfig)();
-        if (!oauthConfig || !(0, github_config_1.validateGitHubConfig)(oauthConfig)) {
-            return {
-                success: false,
-                error: 'GitHub OAuth設定が正しくありません。初期設定が必要です。',
-                setupGuide: (0, github_config_1.showGitHubSetupGuide)(),
-            };
-        }
-        const result = await githubService.authenticateWithOAuth(oauthConfig.clientId, oauthConfig.clientSecret);
-        if (result.success && result.token) {
-            await githubService.authenticate(result.token);
-        }
-        return result;
+        const { clientId } = await (0, exports.getGitHubOAuthConfig)();
+        // Device Flow authentication (Client Secret not required)
+        return await githubService.authenticateWithDeviceFlow(clientId);
     }
     catch (error) {
         console.error('GitHub OAuth authentication error:', error);
@@ -734,18 +631,15 @@ electron_1.ipcMain.handle('github-get-user-repositories', async () => {
 // プログレス付きクローン
 electron_1.ipcMain.handle('github-clone-with-progress', async () => {
     try {
-        const success = await githubService.cloneRepositoryWithProgress((message, percent) => {
-            // レンダラープロセスにプログレス情報を送信
+        const result = await cloneRepoUC.execute((message, percent) => {
             electron_1.BrowserWindow.getAllWindows()[0]?.webContents.send('github-clone-progress', {
                 message,
                 percent,
             });
         });
-        if (success) {
-            // Update content root after successful clone
+        if (result.success)
             await updateContentRoot();
-        }
-        return { success, error: success ? null : 'Clone failed' };
+        return result;
     }
     catch (error) {
         console.error('GitHub clone with progress error:', error);
@@ -755,7 +649,7 @@ electron_1.ipcMain.handle('github-clone-with-progress', async () => {
 // GitHub OAuth設定の保存
 electron_1.ipcMain.handle('github-save-oauth-config', async (_, clientId, clientSecret) => {
     try {
-        await (0, github_config_1.saveGitHubOAuthConfig)(clientId, clientSecret);
+        await (0, exports.saveGitHubOAuthConfig)(clientId, clientSecret);
         return { success: true, error: null };
     }
     catch (error) {
@@ -766,11 +660,11 @@ electron_1.ipcMain.handle('github-save-oauth-config', async (_, clientId, client
 // GitHub設定状態の確認
 electron_1.ipcMain.handle('github-check-config-status', async () => {
     try {
-        const isConfigured = await (0, github_config_1.isGitHubConfigured)();
+        const isConfigured = await (0, exports.isGitHubConfigured)();
         return {
             success: true,
             configured: isConfigured,
-            setupGuide: isConfigured ? null : (0, github_config_1.showGitHubSetupGuide)(),
+            setupGuide: isConfigured ? null : (0, exports.showGitHubSetupGuide)(),
         };
     }
     catch (error) {
@@ -808,14 +702,12 @@ electron_1.ipcMain.handle('github-restore-config', async (_, configData) => {
 // GitHub OAuth設定の取得（クライアントIDのみ、セキュリティのためClientSecretは返さない）
 electron_1.ipcMain.handle('github-get-oauth-config', async () => {
     try {
-        const config = await (0, github_config_1.getGitHubOAuthConfig)();
+        const config = await (0, exports.getGitHubOAuthConfig)();
         if (config) {
             return {
                 success: true,
                 data: {
                     clientId: config.clientId,
-                    // セキュリティのため、Client Secretは返さない
-                    hasClientSecret: Boolean(config.clientSecret && config.clientSecret.length > 0),
                 },
             };
         }
@@ -855,6 +747,16 @@ electron_1.ipcMain.handle('github-get-conflict-content', async (_e, filePath) =>
     try {
         const data = await githubService.getConflictContent(filePath);
         return { success: true, data, error: null };
+    }
+    catch (error) {
+        return { success: false, data: null, error: error.message };
+    }
+});
+// コンフリクトファイルの両バージョン取得
+electron_1.ipcMain.handle('github-get-conflict-versions', async (_e, filePath) => {
+    try {
+        const versions = await githubService.getConflictVersions(filePath);
+        return { success: true, data: versions, error: null };
     }
     catch (error) {
         return { success: false, data: null, error: error.message };
