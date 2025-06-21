@@ -31,8 +31,10 @@ const rest_1 = require("@octokit/rest");
 // Electron import removed (no longer needed)
 const node_fs_1 = __importDefault(require("node:fs"));
 const node_path_1 = __importDefault(require("node:path"));
-// @ts-ignore – isomorphic-git provides its own types but ESLint may not resolve before install
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore – isomorphic-git may not have types until installed
 const git = __importStar(require("isomorphic-git"));
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore – sub-path types resolution handled after install
 const node_1 = __importDefault(require("isomorphic-git/http/node"));
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -135,7 +137,8 @@ class GitHubService {
             if (node_fs_1.default.existsSync(this.dir))
                 node_fs_1.default.rmSync(this.dir, { recursive: true, force: true });
             ensureDir(node_path_1.default.dirname(this.dir));
-            onProgress?.('クローンを開始...', 1);
+            let lastPercent = 0;
+            onProgress?.('クローンを開始...', 0);
             await git.clone({
                 fs: node_fs_1.default,
                 http: node_1.default,
@@ -144,8 +147,11 @@ class GitHubService {
                 singleBranch: true,
                 onAuth: () => ({ username: this.config.token, password: '' }),
                 onProgress: (p) => {
-                    const percent = toPercent(p.loaded, p.total);
-                    onProgress?.('クローン中...', percent);
+                    const current = toPercent(p.loaded, p.total);
+                    if (current > lastPercent) {
+                        lastPercent = current;
+                        onProgress?.('クローン中...', current);
+                    }
                 },
             });
             onProgress?.('クローン完了', 100);
@@ -195,7 +201,7 @@ class GitHubService {
                 author: this.author,
             });
             // stage all changed files
-            const statusMatrix = await git.statusMatrix({ fs: node_fs_1.default, dir: this.dir });
+            const statusMatrix = (await git.statusMatrix({ fs: node_fs_1.default, dir: this.dir }));
             let hasChanges = false;
             for (const row of statusMatrix) {
                 const [filepath, , worktreeStatus, stageStatus] = row;
@@ -207,7 +213,9 @@ class GitHubService {
             // commit if changes exist
             if (hasChanges) {
                 onProgress?.('コミットを作成中...', 40);
-                const finalMsg = message.startsWith('[MorinolabCMS]') ? message : `[MorinolabCMS] ${message}`;
+                const finalMsg = message.startsWith('[MorinolabCMS]')
+                    ? message
+                    : `[MorinolabCMS] ${message}`;
                 await git.commit({ fs: node_fs_1.default, dir: this.dir, message: finalMsg, author: this.author });
             }
             else {
@@ -242,21 +250,18 @@ class GitHubService {
     async getRepositoryStatus() {
         if (!this.config)
             return null;
-        const matrix = await git.statusMatrix({ fs: node_fs_1.default, dir: this.dir });
+        const matrix = (await git.statusMatrix({ fs: node_fs_1.default, dir: this.dir }));
         return {
-            files: matrix.map((row) => {
-                const filepath = row[0];
-                const head = row[1];
-                const workdir = row[2];
-                const stage = row[3];
-                return { path: filepath, status: { head, workdir, stage } };
-            }),
+            files: matrix.map(([filepath, head, workdir, stage]) => ({
+                path: filepath,
+                status: { head, workdir, stage },
+            })),
         };
     }
     async getCommitLog(limit = 20) {
         if (!this.config)
             throw new Error('Repository configuration required');
-        const commits = await git.log({ fs: node_fs_1.default, dir: this.dir, depth: limit });
+        const commits = (await git.log({ fs: node_fs_1.default, dir: this.dir, depth: limit }));
         return commits.map((c) => ({
             hash: c.oid,
             message: c.commit.message,
@@ -268,10 +273,8 @@ class GitHubService {
     async getConflictFiles() {
         if (!this.config)
             return [];
-        const matrix = await git.statusMatrix({ fs: node_fs_1.default, dir: this.dir });
-        return matrix
-            .filter((row) => row[3] === 3)
-            .map((row) => row[0]);
+        const matrix = (await git.statusMatrix({ fs: node_fs_1.default, dir: this.dir }));
+        return matrix.filter((row) => row[3] === 3).map((row) => row[0]);
     }
     async getConflictContent(filePath) {
         if (!this.config)

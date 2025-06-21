@@ -160,7 +160,8 @@ export class GitHubService {
       if (fs.existsSync(this.dir)) fs.rmSync(this.dir, { recursive: true, force: true });
       ensureDir(path.dirname(this.dir));
 
-      onProgress?.('クローンを開始...', 1);
+      let lastPercent = 0;
+      onProgress?.('クローンを開始...', 0);
       await git.clone({
         fs,
         http,
@@ -169,8 +170,11 @@ export class GitHubService {
         singleBranch: true,
         onAuth: () => ({ username: this.config!.token, password: '' }),
         onProgress: (p: { loaded: number; total: number }) => {
-          const percent = toPercent(p.loaded, p.total);
-          onProgress?.('クローン中...', percent);
+          const current = toPercent(p.loaded, p.total);
+          if (current > lastPercent) {
+            lastPercent = current;
+            onProgress?.('クローン中...', current);
+          }
         },
       });
       onProgress?.('クローン完了', 100);
