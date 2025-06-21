@@ -1,7 +1,14 @@
 id,nameJa,nameEn
-1,1.jpg,Faculty
-2,M2,M2
-3,M1,M1
-4,B4,B4
-5,B3,B3
-6,卒業生,Graduated
+1,教授,Professor
+2,准教授,Associate Professor
+3,助教,Assistant Professor
+4,特任教授,Specially Appointed Professor
+5,博士課程,Doctoral Student
+6,修士2年,Master's 2nd Year
+7,修士1年,Master's 1st Year
+8,学部4年,4th Year Undergraduate
+9,学部3年,3rd Year Undergraduate
+10,研究員,Research Fellow
+11,ポスドク,Postdoctoral Researcher
+12,客員研究員,Visiting Researcher
+13,卒業生,Graduated

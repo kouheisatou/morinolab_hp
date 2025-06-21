@@ -1,3 +1,21 @@
 id,nameJa,nameEn,thumbnail,descJa,descEn,tagIds,memberTypeId,gradYear
-1,森野博章,Hiroaki Morino,185ee0c0041474ec0fb514abb8cab24c.jpg,desc,desc,"3,4,12",1,
-2,山田 サンプル太郎,Taro Yamada,1b04b0b724c46fc91c907131ab8f4991.jpg,機械学習を専門とする博士課程,Doctoral student specializing in machine learning,"1,7,9",5,
+1,森野博章,Hiroaki Morino,1.jpg,情報工学の教授。機械学習と深層学習の研究に従事,Professor of Information Engineering. Research on machine learning and deep learning,"1,2,6",1,
+2,山田太郎,Taro Yamada,2.jpg,機械学習を専門とする博士課程学生,Doctoral student specializing in machine learning,"1,2,5",5,2025
+3,田中花子,Hanako Tanaka,3.jpg,自然言語処理の准教授。対話システムの研究,Associate Professor in NLP. Research on dialogue systems,"3,6,22",2,
+4,佐藤次郎,Jiro Sato,4.jpg,コンピュータビジョンを専門とする助教,Assistant Professor specializing in computer vision,"4,6,15",3,
+5,鈴木美咲,Misaki Suzuki,5.jpg,データサイエンスの修士2年生,Master's 2nd year student in data science,"5,1,24",6,2024
+6,高橋健太,Kenta Takahashi,6.jpg,IoTシステムの研究に従事する修士1年生,Master's 1st year student working on IoT systems,"8,16,26",7,2025
+7,渡辺あゆみ,Ayumi Watanabe,7.jpg,サイバーセキュリティの博士課程学生,Doctoral student in cybersecurity,"10,23,25",5,2026
+8,伊藤雅人,Masato Ito,8.jpg,ロボティクスの学部4年生,4th year undergraduate in robotics,"7,6,27",8,2024
+9,中村真理,Mari Nakamura,9.jpg,量子コンピューティングの研究員,Research fellow in quantum computing,"12,27,28",10,
+10,小林達也,Tatsuya Kobayashi,10.jpg,ブロックチェーン技術の専門家,Blockchain technology specialist,"9,18,25",11,
+11,山口聡子,Satoko Yamaguchi,11.jpg,バイオインフォマティクスのポスドク,Postdoc in bioinformatics,"13,5,28",11,
+12,松本大輔,Daisuke Matsumoto,12.jpg,AR/VR技術の学部3年生,3rd year undergraduate in AR/VR technology,"15,4,22",9,2025
+13,岡田智美,Tomomi Okada,13.jpg,エッジコンピューティングの修士1年生,Master's 1st year in edge computing,"16,8,11",7,2025
+14,清水正樹,Masaki Shimizu,14.jpg,5G通信システムの博士課程学生,Doctoral student in 5G communication systems,"17,26,16",5,2025
+15,加藤千春,Chiharu Kato,15.jpg,フィンテックアプリケーションの研究,Research on FinTech applications,"18,9,23",6,2024
+16,石川裕太,Yuta Ishikawa,16.jpg,教育工学の客員研究員,Visiting researcher in educational technology,"21,22,6",12,
+17,西村春香,Haruka Nishimura,17.jpg,ヘルステックソリューションの開発,Development of HealthTech solutions,"19,6,5",7,2025
+18,橋本拓海,Takumi Hashimoto,18.jpg,AgriTechの学部4年生,4th year undergraduate in AgriTech,"20,8,5",8,2024
+19,森田真弓,Mayumi Morita,19.jpg,HCIデザインの修士2年生,Master's 2nd year in HCI design,"22,4,21",6,2024
+20,藤田光一,Koichi Fujita,20.jpg,分散システムアーキテクチャの専門家,Expert in distributed system architecture,"25,26,23",1,
