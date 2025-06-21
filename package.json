@@ -6,10 +6,11 @@
     "lint_all": "npm run lint -w morinolab_hp && npm run lint -w morinolab_cms",
     "generate_contents": "mkdir -p morinolab_hp/public/generated_contents/ && cp -r contents/* morinolab_hp/public/generated_contents/",
     "format_all": "npm run format -w morinolab_hp && npm run format -w morinolab_cms",
-    "build_morinolab_hp": "npm run build -w morinolab_hp",
-    "build_morinolab_cms": "npm run build -w morinolab_cms",
-    "package_cms": "npm run package -w morinolab_cms",
-    "make_cms": "npm run make -w morinolab_cms"
+    "build:morinolab_hp": "npm run build -w morinolab_hp",
+    "build:morinolab_cms": "npm run build -w morinolab_cms",
+    "package:morinolab_cms": "npm run package -w morinolab_cms",
+    "make:morinolab_cms": "npm run make -w morinolab_cms",
+    "test:morinolab_cms": "npm run test -w morinolab_cms"
   },
   "workspaces": [
     "morinolab_hp",

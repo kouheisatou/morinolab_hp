@@ -82,7 +82,7 @@ jobs:
         run: npm ci
 
       - name: Run Jest tests
-        run: npm test --workspaces=false
+        run: npm test
 
   build:
     name: Build CMS Binary
@@ -119,10 +119,10 @@ jobs:
         run: npm run build_morinolab_cms
 
       - name: Package Electron app
-        run: npm run package_cms
+        run: npm run package:morinolab_cms
 
       - name: Make distributable
-        run: npm run make_cms
+        run: npm run make:morinolab_cms
 
       - name: Upload packaged binary as artifact
         uses: actions/upload-artifact@v4
