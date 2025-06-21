@@ -775,9 +775,15 @@ ipcMain.handle('github-oauth-authenticate', async () => {
       };
     }
 
-    const result = await githubService.authenticateWithDeviceFlow(oauthConfig.clientId);
-    if (result.success && result.token) {
-      await githubService.authenticate(result.token);
+    let result;
+    if (oauthConfig.clientSecret && oauthConfig.clientSecret.length > 0) {
+      result = await githubService.authenticateWithOAuthWindow(
+        oauthConfig.clientId,
+        oauthConfig.clientSecret,
+      );
+    } else {
+      // Fallback to Device Flow (no client secret needed)
+      result = await githubService.authenticateWithDeviceFlow(oauthConfig.clientId);
     }
     return result;
   } catch (error) {
