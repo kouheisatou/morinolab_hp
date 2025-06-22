@@ -7,7 +7,10 @@ import { Users, ExternalLink, Mail, User, GraduationCap } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { useScrollAnimation } from '@/hooks/use-scroll-animation';
+import {
+  useFadeInAnimation,
+  useStaggeredFadeIn,
+} from '@/hooks/use-fade-in-animation';
 import { useState, useEffect, useRef } from 'react';
 import {
   loadTeamMembers,
@@ -17,25 +20,27 @@ import {
   getStaticPath,
 } from '@/lib/client-content-loader';
 import Image from 'next/image';
+import { useLocale } from '@/contexts/locale';
+import { getLocalized } from '@/lib/utils';
 
 export function Team() {
   const { elementRef: titleRef, isVisible: titleVisible } =
-    useScrollAnimation<HTMLHeadingElement>({ forceVisible: true });
+    useFadeInAnimation<HTMLHeadingElement>({ forceVisible: true });
   const { elementRef: descRef, isVisible: descVisible } =
-    useScrollAnimation<HTMLParagraphElement>({ forceVisible: true });
+    useFadeInAnimation<HTMLParagraphElement>({ forceVisible: true });
   const { elementRef: professorRef, isVisible: professorVisible } =
-    useScrollAnimation<HTMLDivElement>({ forceVisible: true });
+    useFadeInAnimation<HTMLDivElement>({ forceVisible: true });
   const { elementRef: buttonRef, isVisible: buttonVisible } =
-    useScrollAnimation<HTMLDivElement>();
+    useFadeInAnimation<HTMLDivElement>();
 
   // 固定数のアニメーション用refを事前に作成
   const cardRefs = [
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
   ];
 
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -44,6 +49,8 @@ export function Team() {
   const [students, setStudents] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { locale } = useLocale();
 
   useEffect(() => {
     const fetchTeamData = async () => {
@@ -82,7 +89,7 @@ export function Team() {
   // タグ名を取得するヘルパー関数
   const getTagName = (tagId: string) => {
     const tag = tags.find((t) => t.id === tagId);
-    return tag ? tag.nameJa : `Tag #${tagId}`;
+    return tag ? getLocalized(tag, 'name', locale) : `Tag #${tagId}`;
   };
 
   if (loading) {
@@ -90,7 +97,9 @@ export function Team() {
       <SectionWrapper id='team' className='py-32'>
         <div className='text-center'>
           <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto'></div>
-          <p className='text-white mt-4'>Loading team...</p>
+          <p className='text-white mt-4'>
+            {locale === 'ja' ? 'メンバーを読み込み中...' : 'Loading team...'}
+          </p>
         </div>
       </SectionWrapper>
     );
@@ -117,7 +126,7 @@ export function Team() {
               : 'opacity-0 translate-y-10 scale-95'
           }`}
         >
-          Our Research Team
+          {locale === 'ja' ? '研究チーム' : 'Our Research Team'}
         </h2>
         <p
           ref={descRef}
@@ -127,9 +136,9 @@ export function Team() {
               : 'opacity-0 translate-y-10'
           }`}
         >
-          Meet the brilliant minds driving innovation in quantum computing
-          research. Our diverse team combines expertise from multiple
-          disciplines.
+          {locale === 'ja'
+            ? '量子コンピューティングの革新を推進する優秀なメンバーをご紹介します。多様な分野の専門家が集まっています。'
+            : 'Meet the brilliant minds driving innovation in quantum computing research. Our diverse team combines expertise from multiple disciplines.'}
         </p>
       </div>
 
@@ -137,7 +146,7 @@ export function Team() {
       {professor && (
         <div className='mb-16'>
           <h3 className='text-3xl font-bold text-white text-center mb-8'>
-            Principal Investigator
+            {locale === 'ja' ? '教授' : 'Principal Investigator'}
           </h3>
           <div
             ref={professorRef}
@@ -154,21 +163,23 @@ export function Team() {
                     src={getStaticPath(
                       `/generated_contents/member/${professor.id}.jpg`
                     )}
-                    alt={professor.nameJa}
+                    alt={getLocalized(professor, 'name', locale)}
                     className='object-cover'
                   />
                   <AvatarFallback className='text-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white'>
-                    {professor.nameJa.slice(0, 2)}
+                    {getLocalized(professor, 'name', locale).slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
               </div>
 
               <h3 className='text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
-                {professor.nameJa}
+                {getLocalized(professor, 'name', locale)}
               </h3>
-              {professor.nameEn && (
-                <p className='text-gray-300 mb-4'>{professor.nameEn}</p>
-              )}
+
+              {/* Professor Description */}
+              <p className='text-gray-300 text-sm mb-4 leading-relaxed'>
+                {getLocalized(professor, 'desc', locale)}
+              </p>
 
               {/* Professor Tags */}
               <div className='flex flex-wrap gap-1 justify-center mb-4'>
@@ -196,13 +207,13 @@ export function Team() {
                   size='sm'
                   className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
                 >
-                  View Profile
+                  {locale === 'ja' ? 'プロフィールを見る' : 'View Profile'}
                   <ExternalLink className='w-4 h-4 ml-2' />
                 </Button>
               </Link>
 
               {/* Subtle glow effect on hover */}
-              <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+              <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
             </GlassCard>
           </div>
         </div>
@@ -211,13 +222,17 @@ export function Team() {
       {/* Students Section */}
       <div>
         <h3 className='text-3xl font-bold text-white text-center mb-12'>
-          Research Team
+          {locale === 'ja' ? '研究メンバー' : 'Research Team'}
         </h3>
 
         <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
           {students.length === 0 ? (
             <div className='col-span-full text-center text-gray-400'>
-              <p>No team members found</p>
+              <p>
+                {locale === 'ja'
+                  ? 'メンバーが見つかりません'
+                  : 'No team members found'}
+              </p>
             </div>
           ) : (
             students.map((member, index) => {
@@ -237,40 +252,38 @@ export function Team() {
                   }`}
                   style={{ transitionDelay: `${index * 150}ms` }}
                 >
-                  <GlassCard className='p-6 text-center group hover:scale-105 transition-all duration-300 h-full flex flex-col relative overflow-hidden'>
-                    <div className='mb-4'>
-                      <Avatar className='w-24 h-24 mx-auto border-2 border-white/20 group-hover:border-cyan-400/50 transition-colors duration-300'>
+                  <GlassCard className='p-6 h-full flex flex-col text-center group hover:scale-105 transition-all duration-300 relative overflow-hidden'>
+                    <div className='relative mb-4'>
+                      <Avatar className='w-20 h-20 mx-auto border-2 border-white/20 group-hover:border-cyan-400/50 transition-colors duration-300'>
                         <AvatarImage
                           src={getStaticPath(
                             `/generated_contents/member/${member.id}.jpg`
                           )}
-                          alt={member.nameJa}
+                          alt={getLocalized(member, 'name', locale)}
                           className='object-cover'
                         />
-                        <AvatarFallback className='text-lg bg-gradient-to-br from-purple-500 to-pink-600 text-white'>
-                          {member.nameJa.slice(0, 2)}
+                        <AvatarFallback className='text-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white'>
+                          {getLocalized(member, 'name', locale).slice(0, 2)}
                         </AvatarFallback>
                       </Avatar>
                     </div>
 
                     <h3 className='text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
-                      {member.nameJa}
+                      {getLocalized(member, 'name', locale)}
                     </h3>
-                    {member.nameEn && member.nameEn !== member.nameJa && (
-                      <p className='text-gray-300 text-sm mb-3'>
-                        {member.nameEn}
-                      </p>
-                    )}
 
-                    {/* Member Tags */}
-                    <div className='flex flex-wrap gap-1 justify-center mb-4 flex-grow'>
+                    <p className='text-gray-300 text-sm mb-4 leading-relaxed flex-grow'>
+                      {getLocalized(member, 'desc', locale)}
+                    </p>
+
+                    <div className='flex flex-wrap gap-1 justify-center mb-4'>
                       {member.tagIds
                         .split(',')
                         .slice(0, 2)
-                        .map((tagId, tagIndex) => (
+                        .map((tagId, index) => (
                           <span
-                            key={tagIndex}
-                            className='px-2 py-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 rounded-full text-xs border border-purple-400/30'
+                            key={index}
+                            className='px-2 py-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 rounded-full text-xs border border-cyan-400/30'
                           >
                             {getTagName(tagId.trim())}
                           </span>
@@ -282,23 +295,21 @@ export function Team() {
                       )}
                     </div>
 
-                    {member.memberTypeId === '1' && (
-                      <div className='mt-auto'>
-                        <Link href={`/team/${member.id}`} className='block'>
-                          <Button
-                            variant='outline'
-                            size='sm'
-                            className='w-full border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
-                          >
-                            View Profile
-                            <ExternalLink className='w-4 h-4 ml-2' />
-                          </Button>
-                        </Link>
-                      </div>
-                    )}
+                    <div className='mt-auto'>
+                      <Link href={`/team/${member.id}`}>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
+                        >
+                          {locale === 'ja' ? 'プロフィール' : 'View Profile'}
+                          <ExternalLink className='w-4 h-4 ml-2' />
+                        </Button>
+                      </Link>
+                    </div>
 
                     {/* Subtle glow effect on hover */}
-                    <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                    <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
                   </GlassCard>
                 </div>
               );
@@ -320,7 +331,7 @@ export function Team() {
             size='lg'
             className='bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-semibold'
           >
-            Meet Full Team
+            {locale === 'ja' ? '全メンバーを見る' : 'Meet Full Team'}
           </Button>
         </Link>
       </div>

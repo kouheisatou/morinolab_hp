@@ -1,25 +1,23 @@
 import { Button } from '@/components/ui/button';
-import { Home, ArrowLeft, Sparkles } from 'lucide-react';
-import { useScrollPosition } from '@/hooks/use-scroll-position';
+import { Home, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 interface BackToHomeButtonProps {
   variant?: 'primary' | 'secondary' | 'minimal';
   size?: 'sm' | 'default' | 'lg';
   className?: string;
-  restoreScroll?: boolean;
 }
 
 export function BackToHomeButton({
   variant = 'primary',
   size = 'default',
   className,
-  restoreScroll = true,
 }: BackToHomeButtonProps) {
-  const { navigateWithScroll } = useScrollPosition();
+  const router = useRouter();
 
   const handleClick = () => {
-    navigateWithScroll('/', { restoreScroll });
+    router.push('/');
   };
 
   const variants = {

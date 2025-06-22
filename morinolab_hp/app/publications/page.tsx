@@ -29,6 +29,9 @@ import {
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLocale } from '@/contexts/locale';
+import { getLocalized } from '@/lib/utils';
+import { t } from '@/lib/i18n';
 
 export default function PublicationsPage() {
   const [publications, setPublications] = useState<Publication[]>([]);
@@ -37,6 +40,7 @@ export default function PublicationsPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const { locale } = useLocale();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -122,18 +126,20 @@ export default function PublicationsPage() {
   // メンバー名を取得するヘルパー関数
   const getMemberName = (memberId: string) => {
     const member = teamMembers.find((m) => m.id === memberId);
-    return member ? member.nameJa : `Member #${memberId}`;
+    return member
+      ? getLocalized(member, 'name', locale)
+      : `Member #${memberId}`;
   };
 
   // タグ名を取得するヘルパー関数
   const getTagName = (tagId: string) => {
     const tag = tags.find((t) => t.id === tagId);
-    return tag ? tag.nameJa : `Tag #${tagId}`;
+    return tag ? getLocalized(tag, 'name', locale) : `Tag #${tagId}`;
   };
 
   if (loading) {
     return (
-      <div className='min-h-screen relative overflow-x-hidden bg-black'>
+      <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800'>
         <ParticleBackground />
         <Navbar />
         <SectionWrapper className='py-32'>
@@ -150,142 +156,179 @@ export default function PublicationsPage() {
   const hasAnyFilter = selectedTags.length > 0 || selectedYears.length > 0;
 
   return (
-    <div className='min-h-screen relative overflow-x-hidden bg-black'>
+    <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
       <ParticleBackground />
       <Navbar />
 
-      <SectionWrapper className='py-32'>
-        {/* パンくずリスト */}
-        <div className='mb-8'>
-          <nav className='flex items-center space-x-2 text-sm'>
-            <Link
-              href='/'
-              className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
-            >
-              <Home className='w-4 h-4 mr-1' />
-              Home
-            </Link>
-            <ChevronRight className='w-4 h-4 text-gray-500' />
-            <span className='text-white font-medium'>Publications</span>
-          </nav>
-        </div>
+      <main className='flex-1'>
+        <SectionWrapper className='py-32'>
+          {/* パンくずリスト */}
+          <div className='mb-8'>
+            <nav className='flex items-center space-x-2 text-sm'>
+              <Link
+                href='/'
+                className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
+              >
+                <Home className='w-4 h-4 mr-1' />
+                Home
+              </Link>
+              <ChevronRight className='w-4 h-4 text-gray-500' />
+              <span className='text-white font-medium'>
+                {locale === 'ja' ? '出版物' : 'Publications'}
+              </span>
+            </nav>
+          </div>
 
-        <div className='text-center mb-16'>
-          <h1 className='text-5xl font-bold text-white mb-6'>Publications</h1>
-          <p className='text-xl text-gray-300 max-w-3xl mx-auto'>
-            Our research contributions to the scientific community through
-            peer-reviewed publications in top-tier journals and conferences.
-          </p>
-        </div>
+          <div className='text-center mb-16'>
+            <h1 className='text-5xl font-bold text-white mb-6'>
+              {locale === 'ja' ? '出版物' : 'Publications'}
+            </h1>
+            <p className='text-xl text-gray-300 max-w-3xl mx-auto'>
+              {locale === 'ja'
+                ? 'MorinoLab の研究成果は権威ある学術誌や国際会議で発表されています。'
+                : 'Our research contributions to the scientific community through peer-reviewed publications in top-tier journals and conferences.'}
+            </p>
+          </div>
 
-        {/* フィルターセクション */}
-        <div className='mb-12 space-y-8'>
-          {/* フィルターヘッダー */}
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-2'>
-              <Filter className='w-5 h-5 text-cyan-400' />
-              <h3 className='text-xl font-bold text-white'>
-                Filter Publications
-              </h3>
+          {/* フィルターセクション */}
+          <div className='mb-12 space-y-8'>
+            {/* フィルターヘッダー */}
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center space-x-2'>
+                <Filter className='w-5 h-5 text-cyan-400' />
+                <h3 className='text-xl font-bold text-white'>
+                  {t('filterPublications', locale)}
+                </h3>
+              </div>
+              <div className='h-8 flex items-center'>
+                {hasAnyFilter ? (
+                  <button
+                    onClick={clearAllFilters}
+                    className='flex items-center space-x-1 px-3 py-1 rounded-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 text-red-400 hover:text-red-300 transition-all duration-200 text-sm'
+                  >
+                    <X className='w-3 h-3' />
+                    <span>{t('clearAll', locale)}</span>
+                  </button>
+                ) : (
+                  <div className='w-20'></div>
+                )}
+              </div>
             </div>
-            <div className='h-8 flex items-center'>
-              {hasAnyFilter ? (
-                <button
-                  onClick={clearAllFilters}
-                  className='flex items-center space-x-1 px-3 py-1 rounded-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 text-red-400 hover:text-red-300 transition-all duration-200 text-sm'
-                >
-                  <X className='w-3 h-3' />
-                  <span>Clear All</span>
-                </button>
-              ) : (
-                <div className='w-20'></div>
-              )}
+
+            {/* タグフィルター */}
+            <div>
+              <div className='flex items-center space-x-2 mb-3'>
+                <Tags className='w-4 h-4 text-gray-400' />
+                <h4 className='text-lg font-medium text-white'>
+                  {t('filterByTag', locale)}
+                </h4>
+              </div>
+              <div className='flex flex-wrap gap-2'>
+                {tags.map((tag) => (
+                  <button
+                    key={tag.id}
+                    onClick={() => toggleTag(tag.id)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                      selectedTags.includes(tag.id)
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25 scale-105'
+                        : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-purple-400/30'
+                    }`}
+                  >
+                    {getLocalized(tag, 'name', locale)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 年度フィルター */}
+            <div>
+              <div className='flex items-center space-x-2 mb-3'>
+                <Calendar className='w-4 h-4 text-gray-400' />
+                <h4 className='text-lg font-medium text-white'>
+                  {t('filterByYear', locale)}
+                </h4>
+              </div>
+              <div className='flex flex-wrap gap-2'>
+                {availableYears.map((year) => (
+                  <button
+                    key={year}
+                    onClick={() => toggleYear(year)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                      selectedYears.includes(year)
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/25 scale-105'
+                        : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-green-400/30'
+                    }`}
+                  >
+                    {year}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* タグフィルター */}
-          <div>
-            <div className='flex items-center space-x-2 mb-3'>
-              <Tags className='w-4 h-4 text-gray-400' />
-              <h4 className='text-lg font-medium text-white'>Filter by Tag</h4>
-            </div>
-            <div className='flex flex-wrap gap-2'>
-              {tags.map((tag) => (
-                <button
-                  key={tag.id}
-                  onClick={() => toggleTag(tag.id)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedTags.includes(tag.id)
-                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25 scale-105'
-                      : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-purple-400/30'
-                  }`}
-                >
-                  {tag.nameJa}
-                </button>
-              ))}
-            </div>
-          </div>
+          <div className='space-y-6'>
+            {filteredPublications.map((publication) => (
+              <GlassCard
+                key={publication.id}
+                className='p-8 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'
+              >
+                <div className='flex items-start space-x-6'>
+                  {/* Thumbnail within existing shape */}
+                  <div className='w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 group-hover:scale-110 transition-transform duration-300 bg-gradient-to-r from-blue-500 to-cyan-500'>
+                    <Image
+                      src={getStaticPath(
+                        `/generated_contents/publication/${publication.id}.jpg`
+                      )}
+                      alt={getLocalized(publication, 'title', locale)}
+                      width={64}
+                      height={64}
+                      className='object-cover w-full h-full'
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src =
+                          getStaticPath('/img/noimage_publication.png');
+                      }}
+                    />
+                  </div>
 
-          {/* 年度フィルター */}
-          <div>
-            <div className='flex items-center space-x-2 mb-3'>
-              <Calendar className='w-4 h-4 text-gray-400' />
-              <h4 className='text-lg font-medium text-white'>Filter by Year</h4>
-            </div>
-            <div className='flex flex-wrap gap-2'>
-              {availableYears.map((year) => (
-                <button
-                  key={year}
-                  onClick={() => toggleYear(year)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedYears.includes(year)
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/25 scale-105'
-                      : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-green-400/30'
-                  }`}
-                >
-                  {year}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+                  <div className='flex-grow'>
+                    {/* Title & Tags */}
+                    <div className='flex flex-wrap items-center gap-2 mb-2'>
+                      <h3 className='text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300'>
+                        {getLocalized(publication, 'title', locale)}
+                      </h3>
 
-        <div className='space-y-6'>
-          {filteredPublications.map((publication) => (
-            <GlassCard
-              key={publication.id}
-              className='p-8 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'
-            >
-              <div className='flex items-start space-x-6'>
-                <div className='w-16 h-16 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300'>
-                  <BookOpen className='w-8 h-8 text-white' />
-                </div>
-
-                <div className='flex-grow'>
-                  <div className='flex items-center justify-between mb-3'>
-                    <div className='flex items-center space-x-4'>
-                      <div className='flex items-center space-x-2'>
-                        <Tags className='w-4 h-4 text-gray-400' />
-                        <span className='text-gray-400 text-sm'>
-                          {publication.tagIds
-                            .split(',')
-                            .map((id) => getTagName(id.trim()))
-                            .slice(0, 2)
-                            .join(', ')}
-                          {publication.tagIds.split(',').length > 2 &&
-                            ` +${publication.tagIds.split(',').length - 2}`}
+                      {/* Tags */}
+                      {publication.tagIds
+                        .split(',')
+                        .map((id) => getTagName(id.trim()))
+                        .slice(0, 4)
+                        .map((tagName) => (
+                          <span
+                            key={tagName}
+                            className='text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full'
+                          >
+                            {tagName}
+                          </span>
+                        ))}
+                      {publication.tagIds.split(',').length > 4 && (
+                        <span className='text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full'>
+                          +{publication.tagIds.split(',').length - 4}
                         </span>
-                      </div>
-                      <div className='flex items-center space-x-2'>
-                        <Calendar className='w-4 h-4 text-gray-400' />
-                        <span className='text-gray-400 text-sm'>
-                          {new Date(publication.publishedDate).getFullYear()}
-                        </span>
-                      </div>
+                      )}
                     </div>
-                    <div className='flex items-center space-x-2'>
-                      <Users className='w-4 h-4 text-gray-400' />
-                      <span className='text-gray-400 text-sm'>
+
+                    {/* Publication name */}
+                    <div className='flex items-center space-x-1 text-cyan-400 text-sm font-medium mb-1'>
+                      <BookOpen className='w-4 h-4' />
+                      <span>
+                        {getLocalized(publication, 'publicationName', locale)}
+                      </span>
+                    </div>
+
+                    {/* Authors */}
+                    <div className='flex items-center space-x-1 text-gray-400 text-xs mb-1'>
+                      <Users className='w-4 h-4' />
+                      <span>
                         {publication.authorMemberIds
                           .split(',')
                           .map((id) => getMemberName(id.trim()))
@@ -295,80 +338,54 @@ export default function PublicationsPage() {
                           ` +${publication.authorMemberIds.split(',').length - 2}`}
                       </span>
                     </div>
+
+                    {/* Published date */}
+                    <div className='flex items-center space-x-1 text-gray-400 text-xs mb-1'>
+                      <Calendar className='w-4 h-4' />
+                      <span>{publication.publishedDate}</span>
+                    </div>
+
+                    {/* Spacer before link */}
+                    <div className='mb-4'></div>
+
+                    {/* Link */}
+                    <Link href={`/publications/${publication.id}`}>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
+                      >
+                        {t('viewDetails', locale)}
+                        <ArrowRight className='w-4 h-4 ml-2' />
+                      </Button>
+                    </Link>
                   </div>
-
-                  <h3 className='text-2xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
-                    {publication.titleJa}
-                  </h3>
-
-                  <p className='text-lg text-blue-400 mb-3'>
-                    {publication.titleEn}
-                  </p>
-
-                  <div className='flex items-center space-x-4 mb-4'>
-                    <p className='text-cyan-400 font-medium'>
-                      {publication.publicationNameJa}
-                    </p>
-                    <span className='text-gray-500'>•</span>
-                    <p className='text-gray-300'>
-                      {publication.publicationNameEn}
-                    </p>
-                  </div>
-
-                  <Link href={`/publications/${publication.id}`}>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
-                    >
-                      View Details
-                      <ArrowRight className='w-4 h-4 ml-2' />
-                    </Button>
-                  </Link>
                 </div>
 
-                {/* Thumbnail */}
-                <div className='w-24 h-24 rounded-lg overflow-hidden bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex-shrink-0'>
-                  <Image
-                    src={getStaticPath(
-                      `/generated_contents/publication/${publication.id}.jpg`
-                    )}
-                    alt={publication.titleJa}
-                    width={96}
-                    height={96}
-                    className='object-cover w-full h-full group-hover:scale-110 transition-transform duration-300'
-                    onError={(e) => {
-                      e.currentTarget.src = getStaticPath(
-                        '/img/noimage_publication.png'
-                      );
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Subtle glow effect on hover */}
-              <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-            </GlassCard>
-          ))}
-        </div>
-
-        {filteredPublications.length === 0 && (
-          <div className='text-center py-12'>
-            <p className='text-gray-400 text-lg'>
-              No publications found with the selected filters.
-            </p>
-            {hasAnyFilter && (
-              <Button
-                variant='outline'
-                onClick={clearAllFilters}
-                className='mt-4 border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10'
-              >
-                Clear all filters
-              </Button>
-            )}
+                {/* Subtle glow effect on hover */}
+                <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+              </GlassCard>
+            ))}
           </div>
-        )}
-      </SectionWrapper>
+
+          {filteredPublications.length === 0 && (
+            <div className='text-center py-12'>
+              <p className='text-gray-400 text-lg'>
+                No publications found with the selected filters.
+              </p>
+              {hasAnyFilter && (
+                <Button
+                  variant='outline'
+                  onClick={clearAllFilters}
+                  className='mt-4 border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10'
+                >
+                  Clear all filters
+                </Button>
+              )}
+            </div>
+          )}
+        </SectionWrapper>
+      </main>
 
       <Footer />
     </div>

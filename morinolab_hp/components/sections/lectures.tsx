@@ -11,7 +11,10 @@ import {
   GraduationCap,
   Monitor,
 } from 'lucide-react';
-import { useScrollAnimation } from '@/hooks/use-scroll-animation';
+import {
+  useFadeInAnimation,
+  useStaggeredFadeIn,
+} from '@/hooks/use-fade-in-animation';
 import { useState, useEffect } from 'react';
 import {
   loadLectures,
@@ -20,9 +23,11 @@ import {
 } from '@/lib/client-content-loader';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLocale } from '@/contexts/locale';
+import { getLocalized } from '@/lib/utils';
 
-// 講義タイプに応じたアイコンとカラー
-const getLectureStyle = (type: string) => {
+// 講義タイプに応じたアイコンとカラー (日本語キーでマッピング)
+const getLectureStyle = (typeJa: string) => {
   const styles = {
     必修: { icon: BookOpen, color: 'from-red-500 to-pink-500' },
     選択必修: { icon: GraduationCap, color: 'from-blue-500 to-cyan-500' },
@@ -30,28 +35,29 @@ const getLectureStyle = (type: string) => {
     実習: { icon: Users, color: 'from-green-500 to-teal-500' },
     選択: { icon: Clock, color: 'from-orange-500 to-yellow-500' },
   };
-  return styles[type as keyof typeof styles] || styles['専門講義'];
+  return styles[typeJa as keyof typeof styles] || styles['専門講義'];
 };
 
 export function Lectures() {
   const { elementRef: titleRef, isVisible: titleVisible } =
-    useScrollAnimation<HTMLHeadingElement>({ forceVisible: true });
+    useFadeInAnimation<HTMLHeadingElement>({ forceVisible: true });
   const { elementRef: descRef, isVisible: descVisible } =
-    useScrollAnimation<HTMLParagraphElement>({ forceVisible: true });
+    useFadeInAnimation<HTMLParagraphElement>({ forceVisible: true });
   const { elementRef: buttonRef, isVisible: buttonVisible } =
-    useScrollAnimation<HTMLDivElement>();
+    useFadeInAnimation<HTMLDivElement>();
 
   // 固定数のアニメーション用refを事前に作成（最大4つの講義用）
   const cardRefs = [
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
   ];
 
   const [lectures, setLectures] = useState<Lecture[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { locale } = useLocale();
 
   useEffect(() => {
     const fetchLectures = async () => {
@@ -81,7 +87,9 @@ export function Lectures() {
       <SectionWrapper id='lectures' className='py-32'>
         <div className='text-center'>
           <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto'></div>
-          <p className='text-white mt-4'>Loading lectures...</p>
+          <p className='text-white mt-4'>
+            {locale === 'ja' ? '講義を読み込み中...' : 'Loading lectures...'}
+          </p>
         </div>
       </SectionWrapper>
     );
@@ -108,7 +116,7 @@ export function Lectures() {
               : 'opacity-0 translate-y-10 scale-95'
           }`}
         >
-          Academic Lectures
+          {locale === 'ja' ? '講義' : 'Academic Lectures'}
         </h2>
         <p
           ref={descRef}
@@ -118,19 +126,24 @@ export function Lectures() {
               : 'opacity-0 translate-y-10'
           }`}
         >
-          Comprehensive courses covering fundamental concepts to advanced topics
-          in computer science and emerging technologies.
+          {locale === 'ja'
+            ? 'コンピュータサイエンスと先端技術に関する基礎から応用までを網羅した講義を提供します。'
+            : 'Comprehensive courses covering fundamental concepts to advanced topics in computer science and emerging technologies.'}
         </p>
       </div>
 
       <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
         {lectures.length === 0 ? (
           <div className='col-span-full text-center text-gray-400'>
-            <p>No lectures found</p>
+            <p>
+              {locale === 'ja' ? '講義が見つかりません' : 'No lectures found'}
+            </p>
           </div>
         ) : (
           lectures.map((lecture, index) => {
-            const { icon: Icon, color } = getLectureStyle(lecture.type);
+            const { icon: Icon, color } = getLectureStyle(
+              lecture.typeJa ?? lecture.type ?? ''
+            );
             const { elementRef: cardRef, isVisible: cardVisible } =
               cardRefs[index % cardRefs.length];
 
@@ -152,7 +165,7 @@ export function Lectures() {
                       src={getStaticPath(
                         `/generated_contents/lecture/${lecture.id}.jpg`
                       )}
-                      alt={lecture.nameJa}
+                      alt={getLocalized(lecture, 'name', locale)}
                       width={300}
                       height={160}
                       className='object-cover w-full h-full group-hover:scale-110 transition-transform duration-300'
@@ -169,20 +182,25 @@ export function Lectures() {
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${color} bg-opacity-20 text-white border border-white/20`}
                     >
-                      {lecture.type}
+                      {getLocalized(lecture, 'type', locale)}
                     </span>
                   </div>
 
                   <h3 className='text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
-                    {lecture.nameJa}
+                    {getLocalized(lecture, 'name', locale)}
                   </h3>
 
-                  <p className='text-blue-400 text-sm mb-3 font-medium'>
-                    {lecture.nameEn}
-                  </p>
+                  {/* サブタイトル（別言語） */}
+                  {locale === 'ja' &&
+                    lecture.nameEn &&
+                    lecture.nameEn !== lecture.nameJa && (
+                      <p className='text-blue-400 text-sm mb-3 font-medium'>
+                        {lecture.nameEn}
+                      </p>
+                    )}
 
                   <p className='text-gray-300 text-sm mb-4 flex-grow line-clamp-3'>
-                    {lecture.descJa}
+                    {getLocalized(lecture, 'desc', locale)}
                   </p>
 
                   <Link href={`/lectures/${lecture.id}`} className='mt-auto'>
@@ -191,13 +209,13 @@ export function Lectures() {
                       size='sm'
                       className='w-full border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
                     >
-                      View Details
+                      {locale === 'ja' ? '詳細を見る' : 'View Details'}
                       <ArrowRight className='w-4 h-4 ml-2' />
                     </Button>
                   </Link>
 
                   {/* ホバーエフェクト */}
-                  <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
                 </GlassCard>
               </div>
             );

@@ -3,25 +3,73 @@
 import { Button } from '@/components/ui/button';
 import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
-import { ChevronDown, Atom, Zap, Shield } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useScrollAnimation } from '@/hooks/use-scroll-animation';
+import {
+  useFadeInAnimation,
+  useStaggeredFadeIn,
+} from '@/hooks/use-fade-in-animation';
+import { useLocale } from '@/contexts/locale';
+import { loadThemes, Theme, getImagePath } from '@/lib/client-content-loader';
+import { getLocalized } from '@/lib/utils';
+import Image from 'next/image';
 
 export function Hero() {
   const [scrollY, setScrollY] = useState(0);
-  const { elementRef: titleRef, isVisible: titleVisible } =
-    useScrollAnimation<HTMLHeadingElement>();
-  const { elementRef: descRef, isVisible: descVisible } =
-    useScrollAnimation<HTMLParagraphElement>();
-  const { elementRef: cardsRef, isVisible: cardsVisible } =
-    useScrollAnimation<HTMLDivElement>();
-  const { elementRef: buttonsRef, isVisible: buttonsVisible } =
-    useScrollAnimation<HTMLDivElement>();
+  const [themes, setThemes] = useState<Theme[]>([]);
+  const { locale } = useLocale();
+  const titleAnimation = useFadeInAnimation<HTMLHeadingElement>({
+    delay: 200,
+    duration: 1200,
+    translateY: 40,
+    scale: 0.9,
+  });
+  const descAnimation = useFadeInAnimation<HTMLParagraphElement>({
+    delay: 600,
+    duration: 1000,
+    translateY: 30,
+  });
+  const cardsAnimation = useFadeInAnimation<HTMLDivElement>({
+    delay: 1000,
+    duration: 1000,
+    translateY: 35,
+    scale: 0.95,
+  });
+  const buttonsAnimation = useFadeInAnimation<HTMLDivElement>({
+    delay: 1400,
+    duration: 1000,
+    translateY: 25,
+  });
+
+  const titlePart1 = 'Morino';
+  const titlePart2 = 'Lab';
+
+  const subtitle =
+    locale === 'ja'
+      ? '量子コンピューティングの未来を切り拓く最先端研究'
+      : 'Pioneering the future of quantum computing through innovative research and cutting-edge technology development';
+
+  const exploreText = locale === 'ja' ? '研究内容を見る' : 'Explore Research';
+  const teamText = locale === 'ja' ? 'メンバーを見る' : 'Meet the Team';
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const themesData = await loadThemes();
+        // 最初の3つのテーマを取得
+        setThemes(themesData.slice(0, 3));
+      } catch (error) {
+        console.error('Error loading themes for hero:', error);
+      }
+    };
+
+    fetchThemes();
   }, []);
 
   return (
@@ -35,70 +83,68 @@ export function Hero() {
           }}
         >
           <h1
-            ref={titleRef}
-            className={`text-6xl md:text-8xl font-bold text-white leading-tight transition-all duration-1500 ${
-              titleVisible
-                ? 'opacity-100 translate-y-0 scale-100'
-                : 'opacity-0 translate-y-20 scale-90'
-            }`}
+            ref={titleAnimation.ref}
+            style={titleAnimation.style}
+            className='text-6xl md:text-8xl font-bold text-white leading-tight'
           >
-            Morino
+            {titlePart1}
             <span className='bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent'>
-              Lab
+              {titlePart2}
             </span>
           </h1>
 
           <p
-            ref={descRef}
-            className={`text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed transition-all duration-1500 delay-300 ${
-              descVisible
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-10'
-            }`}
+            ref={descAnimation.ref}
+            style={descAnimation.style}
+            className='text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed'
           >
-            Pioneering the future of quantum computing through innovative
-            research and cutting-edge technology development
+            {subtitle}
           </p>
         </div>
 
         <div
-          ref={cardsRef}
-          className={`flex flex-wrap justify-center gap-4 mt-12 transition-all duration-1500 delay-600 ${
-            cardsVisible
-              ? 'opacity-100 translate-y-0 scale-100'
-              : 'opacity-0 translate-y-16 scale-95'
-          }`}
+          ref={cardsAnimation.ref}
+          style={cardsAnimation.style}
+          className='flex flex-wrap justify-center gap-4 mt-12'
         >
-          <GlassCard className='p-6 flex items-center space-x-3 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
-            <Atom className='w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform duration-300' />
-            <span className='text-white font-medium group-hover:text-cyan-400 transition-colors duration-300'>
-              スマートシティ
-            </span>
-            <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-          </GlassCard>
-          <GlassCard className='p-6 flex items-center space-x-3 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
-            <Zap className='w-8 h-8 text-cyan-400 group-hover:scale-110 transition-transform duration-300' />
-            <span className='text-white font-medium group-hover:text-cyan-400 transition-colors duration-300'>
-              医療AI
-            </span>
-            <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-          </GlassCard>
-          <GlassCard className='p-6 flex items-center space-x-3 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
-            <Shield className='w-8 h-8 text-purple-400 group-hover:scale-110 transition-transform duration-300' />
-            <span className='text-white font-medium group-hover:text-cyan-400 transition-colors duration-300'>
-              自動運転
-            </span>
-            <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-          </GlassCard>
+          {themes.slice(0, 3).map((theme, index) => {
+            const colors = [
+              'bg-gradient-to-r from-blue-500 to-cyan-500',
+              'bg-gradient-to-r from-purple-500 to-pink-500',
+              'bg-gradient-to-r from-green-500 to-teal-500',
+            ];
+
+            return (
+              <GlassCard
+                key={theme.id}
+                className='p-6 flex items-center space-x-3 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'
+              >
+                <div
+                  className={`w-12 h-12 rounded-lg ${colors[index]} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 p-2`}
+                >
+                  <Image
+                    src={getImagePath(
+                      `/generated_contents/theme/${theme.thumbnail}`
+                    )}
+                    alt={getLocalized(theme, 'name', locale)}
+                    width={32}
+                    height={32}
+                    className='w-full h-full object-contain'
+                  />
+                </div>
+                <span className='text-white font-medium group-hover:text-cyan-400 transition-colors duration-300'>
+                  {getLocalized(theme, 'name', locale)}
+                </span>
+                <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+              </GlassCard>
+            );
+          })}
         </div>
 
         <div
-          ref={buttonsRef}
-          className={`flex flex-col sm:flex-row gap-4 justify-center mt-12 transition-all duration-1500 delay-900 ${
-            buttonsVisible
-              ? 'opacity-100 translate-y-0 scale-100'
-              : 'opacity-0 translate-y-12 scale-95'
-          }`}
+          ref={buttonsAnimation.ref}
+          style={buttonsAnimation.style}
+          className='flex flex-col sm:flex-row gap-4 justify-center mt-12'
         >
           <Button
             size='lg'
@@ -109,7 +155,7 @@ export function Hero() {
                 ?.scrollIntoView({ behavior: 'smooth' })
             }
           >
-            Explore Research
+            {exploreText}
           </Button>
           <Button
             size='lg'
@@ -121,7 +167,7 @@ export function Hero() {
                 ?.scrollIntoView({ behavior: 'smooth' })
             }
           >
-            Meet the Team
+            {teamText}
           </Button>
         </div>
 

@@ -3,22 +3,18 @@
 import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
 import { Button } from '@/components/ui/button';
+import { ExternalLink } from 'lucide-react';
+import Image from 'next/image';
 import {
-  Atom,
-  Brain,
-  Shield,
-  ExternalLink,
-  Lightbulb,
-  Cpu,
-  Zap,
-} from 'lucide-react';
-import { useScrollAnimation } from '@/hooks/use-scroll-animation';
+  useFadeInAnimation,
+  useStaggeredFadeIn,
+} from '@/hooks/use-fade-in-animation';
 import { useState, useEffect } from 'react';
-import { loadThemes, Theme } from '@/lib/client-content-loader';
+import { loadThemes, Theme, getImagePath } from '@/lib/client-content-loader';
 import Link from 'next/link';
+import { useLocale } from '@/contexts/locale';
+import { getLocalized } from '@/lib/utils';
 
-// アイコンの配列（順番に使用）
-const iconArray = [Atom, Brain, Shield, Lightbulb, Cpu, Zap];
 const colorArray = [
   'from-blue-500 to-cyan-500',
   'from-purple-500 to-pink-500',
@@ -29,21 +25,28 @@ const colorArray = [
 ];
 
 export function Research() {
-  const { elementRef: titleRef, isVisible: titleVisible } =
-    useScrollAnimation<HTMLHeadingElement>({ forceVisible: true });
-  const { elementRef: descRef, isVisible: descVisible } =
-    useScrollAnimation<HTMLParagraphElement>({ forceVisible: true });
+  const titleAnimation = useFadeInAnimation<HTMLHeadingElement>({
+    delay: 100,
+    duration: 1000,
+    translateY: 30,
+  });
+  const descAnimation = useFadeInAnimation<HTMLParagraphElement>({
+    delay: 300,
+    duration: 1000,
+    translateY: 25,
+  });
 
   // 固定数のアニメーション用refを事前に作成（最大3つのテーマ用）
-  const cardRefs = [
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-  ];
+  const cardAnimations = useStaggeredFadeIn<HTMLDivElement>(3, 500, 200, {
+    duration: 800,
+    translateY: 40,
+    scale: 0.95,
+  });
 
   const [themes, setThemes] = useState<Theme[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { locale } = useLocale();
 
   useEffect(() => {
     const fetchThemes = async () => {
@@ -93,80 +96,82 @@ export function Research() {
     <SectionWrapper id='research' className='py-32'>
       <div className='text-center mb-16'>
         <h2
-          ref={titleRef}
-          className={`text-5xl font-bold text-white mb-6 transition-all duration-1000 ${
-            titleVisible
-              ? 'opacity-100 translate-y-0 scale-100'
-              : 'opacity-0 translate-y-10 scale-95'
-          }`}
+          ref={titleAnimation.ref}
+          style={titleAnimation.style}
+          className='text-5xl font-bold text-white mb-6'
         >
-          Cutting-Edge Research
+          {locale === 'ja' ? '研究テーマ' : 'Cutting-Edge Research'}
         </h2>
         <p
-          ref={descRef}
-          className={`text-xl text-gray-300 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${
-            descVisible
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-0 translate-y-10'
-          }`}
+          ref={descAnimation.ref}
+          style={descAnimation.style}
+          className='text-xl text-gray-300 max-w-3xl mx-auto'
         >
-          Our research spans multiple domains of advanced technology and
-          computational methods, pushing the boundaries of what&apos;s possible
-          in modern innovation.
+          {locale === 'ja'
+            ? '私たちの研究は先端技術と計算手法の多領域にわたり、イノベーションの限界を広げています。'
+            : "Our research spans multiple domains of advanced technology and computational methods, pushing the boundaries of what's possible in modern innovation."}
         </p>
       </div>
 
-      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
+      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-[1fr]'>
         {themes.length === 0 ? (
           <div className='col-span-full text-center text-gray-400'>
             <p>No research themes found</p>
           </div>
         ) : (
           themes.map((theme, index) => {
-            const Icon = iconArray[index % iconArray.length];
             const color = colorArray[index % colorArray.length];
-            const { elementRef: cardRef, isVisible: cardVisible } =
-              cardRefs[index % cardRefs.length];
+            const cardAnimation = cardAnimations[index % cardAnimations.length];
 
-            // keyAchievementsを配列に変換
-            const achievements = theme.keyAchievements
-              ? theme.keyAchievements.split(',').map((item) => item.trim())
-              : [
-                  'Research in progress',
-                  'Innovative approaches',
-                  'Future developments',
-                ];
+            // keyAchievements を言語で抽出
+            const achievementsRaw =
+              locale === 'ja'
+                ? theme.keyAchievementsJa
+                : theme.keyAchievementsEn;
+
+            const achievements = achievementsRaw
+              ? achievementsRaw.split(',').map((item) => item.trim())
+              : locale === 'ja'
+                ? ['研究進行中', '革新的アプローチ', '将来的な展開']
+                : [
+                    'Research in progress',
+                    'Innovative approaches',
+                    'Future developments',
+                  ];
 
             return (
               <div
-                ref={cardRef}
+                ref={cardAnimation.ref}
+                style={cardAnimation.style}
                 key={theme.id}
-                className={`transition-all duration-1000 ${
-                  cardVisible
-                    ? 'opacity-100 translate-y-0 scale-100'
-                    : 'opacity-0 translate-y-20 scale-95'
-                }`}
-                style={{ transitionDelay: `${index * 200}ms` }}
               >
                 <GlassCard className='p-8 h-full flex flex-col relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
                   <div
-                    className={`w-16 h-16 rounded-lg bg-gradient-to-r ${color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                    className={`w-16 h-16 rounded-lg bg-gradient-to-r ${color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 p-2`}
                   >
-                    <Icon className='w-8 h-8 text-white' />
+                    <Image
+                      src={getImagePath(
+                        `/generated_contents/theme/${theme.thumbnail}`
+                      )}
+                      alt={getLocalized(theme, 'name', locale)}
+                      width={48}
+                      height={48}
+                      className='w-full h-full object-contain'
+                    />
                   </div>
 
                   <h3 className='text-2xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
-                    {theme.nameJa}
+                    {getLocalized(theme, 'name', locale)}
                   </h3>
 
-                  <p className='text-lg text-blue-400 mb-4'>{theme.nameEn}</p>
-
-                  <p className='text-gray-300 mb-6 flex-grow'>{theme.descJa}</p>
+                  <p className='text-blue-400 text-sm mb-4'>
+                    {getLocalized(theme, 'desc', locale)}
+                  </p>
 
                   {achievements.length > 0 && (
                     <div className='space-y-3 mb-6'>
                       <h4 className='text-lg font-semibold text-white'>
-                        Key Achievements:
+                        {locale === 'ja' ? '主な成果:' : 'Key Achievements:'}
                       </h4>
                       <ul className='space-y-2'>
                         {achievements.map((achievement, i) => (
@@ -182,18 +187,18 @@ export function Research() {
                     </div>
                   )}
 
-                  <Link href={`/theme/${theme.id}`}>
+                  <Link href={`/theme/${theme.id}`} className='mt-auto'>
                     <Button
                       variant='outline'
                       className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300 w-full'
                     >
-                      Learn More
+                      {locale === 'ja' ? '詳しく見る' : 'Learn More'}
                       <ExternalLink className='w-4 h-4 ml-2' />
                     </Button>
                   </Link>
 
                   {/* Subtle glow effect on hover */}
-                  <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
                 </GlassCard>
               </div>
             );

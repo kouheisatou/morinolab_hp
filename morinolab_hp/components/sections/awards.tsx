@@ -13,40 +13,58 @@ import {
   Medal,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useScrollAnimation } from '@/hooks/use-scroll-animation';
+import {
+  useFadeInAnimation,
+  useStaggeredFadeIn,
+} from '@/hooks/use-fade-in-animation';
 import { useState, useEffect } from 'react';
-import { loadAwards, Award as AwardType } from '@/lib/client-content-loader';
+import {
+  loadAwards,
+  Award as AwardType,
+  loadTeamMembers,
+  TeamMember,
+} from '@/lib/client-content-loader';
+import { useLocale } from '@/contexts/locale';
+import { getLocalized } from '@/lib/utils';
 
 export function Awards() {
-  const { elementRef: titleRef, isVisible: titleVisible } =
-    useScrollAnimation<HTMLHeadingElement>({ forceVisible: true });
-  const { elementRef: descRef, isVisible: descVisible } =
-    useScrollAnimation<HTMLParagraphElement>({ forceVisible: true });
-  const { elementRef: buttonRef, isVisible: buttonVisible } =
-    useScrollAnimation<HTMLDivElement>();
+  const titleAnimation = useFadeInAnimation<HTMLHeadingElement>({
+    delay: 100,
+    duration: 1000,
+  });
+  const descAnimation = useFadeInAnimation<HTMLParagraphElement>({
+    delay: 300,
+    duration: 1000,
+  });
+  const buttonAnimation = useFadeInAnimation<HTMLDivElement>({
+    delay: 800,
+    duration: 800,
+  });
 
   // 固定数のアニメーション用refを事前に作成（最大4件表示）
-  const cardRefs = [
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-    useScrollAnimation<HTMLDivElement>(),
-  ];
+  const cardAnimations = useStaggeredFadeIn<HTMLDivElement>(4, 500, 150);
 
   const [awards, setAwards] = useState<AwardType[]>([]);
+  const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { locale } = useLocale();
 
   useEffect(() => {
     const fetchAwardsData = async () => {
       try {
         console.log('Awards component: Starting to fetch awards data...');
         setLoading(true);
-        const items = await loadAwards();
+        const [items, teamMembers] = await Promise.all([
+          loadAwards(),
+          loadTeamMembers(),
+        ]);
         console.log('Awards component: Received items:', items);
+        console.log('Awards component: Received members:', teamMembers);
         // 最新の4件のみ表示
         const slicedItems = items.slice(0, 4);
         setAwards(slicedItems);
+        setMembers(teamMembers);
       } catch (err) {
         console.error('Awards component: Error loading awards:', err);
         setError('Failed to load awards data');
@@ -69,12 +87,20 @@ export function Awards() {
     return configs[index % configs.length];
   };
 
+  const getAwardMembers = (award: AwardType): TeamMember[] => {
+    if (!award.memberIds || !members.length) return [];
+    const memberIdList = award.memberIds.split(',').map((id) => id.trim());
+    return members.filter((member) => memberIdList.includes(member.id));
+  };
+
   if (loading) {
     return (
       <SectionWrapper id='awards' className='py-32'>
         <div className='text-center'>
           <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto'></div>
-          <p className='text-white mt-4'>Loading awards...</p>
+          <p className='text-white mt-4'>
+            {locale === 'ja' ? '受賞歴を読み込み中...' : 'Loading awards...'}
+          </p>
         </div>
       </SectionWrapper>
     );
@@ -94,93 +120,117 @@ export function Awards() {
     <SectionWrapper id='awards' className='py-32'>
       <div className='text-center mb-16'>
         <h2
-          ref={titleRef}
-          className={`text-5xl font-bold text-white mb-6 transition-all duration-1000 ${
-            titleVisible
-              ? 'opacity-100 translate-y-0 scale-100'
-              : 'opacity-100 translate-y-0 scale-100'
-          }`}
+          ref={titleAnimation.ref}
+          style={titleAnimation.style}
+          className='text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6'
         >
-          Awards & Recognition
+          {locale === 'ja' ? '受賞歴' : 'Awards & Recognition'}
         </h2>
         <p
-          ref={descRef}
-          className={`text-xl text-gray-300 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${
-            descVisible
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-100 translate-y-0'
-          }`}
+          ref={descAnimation.ref}
+          style={descAnimation.style}
+          className='text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto px-4'
         >
-          Celebrating our achievements and recognition from the academic and
-          research community.
+          {locale === 'ja'
+            ? '学術界・研究コミュニティからの受賞と評価をご紹介します。'
+            : 'Celebrating our achievements and recognition from the academic and research community.'}
         </p>
       </div>
 
-      <div className='grid md:grid-cols-2 gap-8'>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 px-4'>
         {awards.length === 0 ? (
-          <div className='col-span-2 text-center text-gray-400'>
-            <p>No awards found</p>
+          <div className='col-span-full text-center text-gray-400'>
+            <p>
+              {locale === 'ja' ? '受賞が見つかりません' : 'No awards found'}
+            </p>
           </div>
         ) : (
           awards.map((award, index) => {
             const { icon: Icon, color } = getIconAndColor(index);
             // 事前に作成したrefを使用
-            const { elementRef: cardRef, isVisible: cardVisible } = cardRefs[
-              index
-            ] || { elementRef: null, isVisible: true };
+            const cardAnimation = cardAnimations[index] || cardAnimations[0];
 
             return (
               <div
-                ref={cardRef}
+                ref={cardAnimation.ref}
+                style={cardAnimation.style}
                 key={award.id}
-                className={`transition-all duration-1000 ${
-                  cardVisible
-                    ? 'opacity-100 translate-y-0 rotate-0'
-                    : 'opacity-30 translate-y-8 rotate-1'
-                }`}
-                style={{ transitionDelay: `${index * 200}ms` }}
               >
-                <GlassCard className='p-8 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
-                  <div className='flex items-start space-x-4'>
+                <GlassCard className='p-4 sm:p-6 lg:p-8 h-full flex flex-col relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
+                  <div className='flex items-start space-x-3 sm:space-x-4 flex-grow'>
                     <div
-                      className={`w-12 h-12 rounded-lg bg-gradient-to-r ${color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
+                      className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-r ${color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
                     >
-                      <Icon className='w-6 h-6 text-white' />
+                      <Icon className='w-5 h-5 sm:w-6 sm:h-6 text-white' />
                     </div>
 
-                    <div className='flex-grow'>
-                      <div className='flex items-center space-x-2 mb-3'>
-                        <Calendar className='w-4 h-4 text-gray-400' />
-                        <span className='text-gray-400 text-sm'>
+                    <div className='flex-grow flex flex-col min-w-0'>
+                      <div className='flex items-center space-x-2 mb-2 sm:mb-3'>
+                        <Calendar className='w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0' />
+                        <span className='text-gray-400 text-xs sm:text-sm'>
                           {award.date}
                         </span>
                       </div>
 
-                      <h3 className='text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors duration-300'>
-                        {award.nameJa}
+                      <h3 className='text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3 leading-tight group-hover:text-cyan-400 transition-colors duration-300'>
+                        {getLocalized(award, 'name', locale)}
                       </h3>
 
-                      {award.nameEn && award.nameEn !== award.nameJa && (
-                        <p className='text-gray-300 mb-4 leading-relaxed'>
-                          {award.nameEn}
-                        </p>
-                      )}
+                      {locale === 'en' &&
+                        award.nameEn &&
+                        award.nameEn !== award.nameJa && (
+                          <p className='text-gray-300 mb-3 sm:mb-4 leading-relaxed text-sm sm:text-base'>
+                            {award.nameEn}
+                          </p>
+                        )}
 
-                      <Link href={`/awards/${award.id}`}>
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
-                        >
-                          Read More
-                          <ExternalLink className='w-4 h-4 ml-2' />
-                        </Button>
-                      </Link>
+                      {/* メンバー情報 */}
+                      {(() => {
+                        const awardMembers = getAwardMembers(award);
+                        if (awardMembers.length > 0) {
+                          return (
+                            <div className='mb-3 sm:mb-4'>
+                              <div className='flex items-center flex-wrap gap-2'>
+                                <span className='text-gray-400 text-xs sm:text-sm flex-shrink-0'>
+                                  {locale === 'ja' ? '受賞者:' : 'Recipients:'}
+                                </span>
+                                {awardMembers.slice(0, 3).map((member) => (
+                                  <span
+                                    key={member.id}
+                                    className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30'
+                                  >
+                                    {getLocalized(member, 'name', locale)}
+                                  </span>
+                                ))}
+                                {awardMembers.length > 3 && (
+                                  <span className='px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs'>
+                                    +{awardMembers.length - 3}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
+
+                      <div className='mt-auto'>
+                        <Link href={`/awards/${award.id}`}>
+                          <Button
+                            variant='outline'
+                            size='sm'
+                            className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300 text-xs sm:text-sm w-full sm:w-auto'
+                          >
+                            {locale === 'ja' ? '続きを読む' : 'Read More'}
+                            <ExternalLink className='w-3 h-3 sm:w-4 sm:h-4 ml-2' />
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
 
                   {/* Subtle glow effect on hover */}
-                  <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
                 </GlassCard>
               </div>
             );
@@ -189,19 +239,16 @@ export function Awards() {
       </div>
 
       <div
-        ref={buttonRef}
-        className={`text-center mt-12 transition-all duration-1000 delay-1000 ${
-          buttonVisible
-            ? 'opacity-100 translate-y-0 scale-100'
-            : 'opacity-100 translate-y-0 scale-100'
-        }`}
+        ref={buttonAnimation.ref}
+        style={buttonAnimation.style}
+        className='text-center mt-8 sm:mt-12 px-4'
       >
         <Link href='/awards'>
           <Button
             size='lg'
-            className='bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-4 text-lg font-semibold'
+            className='bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto'
           >
-            View All Awards
+            {locale === 'ja' ? 'すべての受賞を見る' : 'View All Awards'}
           </Button>
         </Link>
       </div>

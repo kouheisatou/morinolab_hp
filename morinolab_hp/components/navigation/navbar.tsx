@@ -4,24 +4,30 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, Atom } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useScrollPosition } from '@/hooks/use-scroll-position';
-
-const navItems = [
-  { name: 'Home', href: 'home' },
-  { name: 'Research', href: 'research' },
-  { name: 'Team', href: 'team' },
-  { name: 'Lectures', href: 'lectures' },
-  { name: 'News', href: 'news' },
-  { name: 'Publications', href: 'publications' },
-  { name: 'Awards', href: 'awards' },
-  { name: 'Career', href: 'career' },
-  { name: 'Contact', href: 'contact' },
-];
+import { useRouter } from 'next/navigation';
+import { LanguageSwitcher } from '@/components/navigation/language-switcher';
+import { useLocale } from '@/contexts/locale';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { scrollToSection } = useScrollPosition();
+  const router = useRouter();
+  const { locale } = useLocale();
+
+  const navItems = [
+    { name: locale === 'ja' ? 'ホーム' : 'Home', href: 'home' },
+    {
+      name: locale === 'ja' ? '研究内容' : 'Research',
+      href: 'research',
+    },
+    { name: locale === 'ja' ? 'メンバー' : 'Team', href: 'team' },
+    { name: locale === 'ja' ? '講義' : 'Lectures', href: 'lectures' },
+    { name: locale === 'ja' ? 'ニュース' : 'News', href: 'news' },
+    { name: locale === 'ja' ? '出版物' : 'Publications', href: 'publications' },
+    { name: locale === 'ja' ? '受賞' : 'Awards', href: 'awards' },
+    { name: locale === 'ja' ? 'キャリア' : 'Career', href: 'career' },
+    { name: locale === 'ja' ? 'お問い合わせ' : 'Contact', href: 'contact' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +39,7 @@ export function Navbar() {
   }, []);
 
   const handleNavClick = (href: string) => {
-    scrollToSection(href);
+    router.push(`/#${href}`);
     setIsOpen(false);
   };
 
@@ -49,7 +55,7 @@ export function Navbar() {
       <div className='max-w-7xl mx-auto px-4'>
         <div className='flex items-center justify-between h-16'>
           <button
-            onClick={() => scrollToSection('home')}
+            onClick={() => router.push('/#home')}
             className='flex items-center space-x-2 group transition-all duration-200 hover:scale-105'
           >
             <Atom className='w-8 h-8 text-blue-400 group-hover:text-cyan-400 transition-colors duration-200' />
@@ -59,7 +65,7 @@ export function Navbar() {
           </button>
 
           {/* Desktop Navigation */}
-          <div className='hidden md:flex items-center space-x-8'>
+          <div className='hidden lg:flex items-center space-x-8'>
             {navItems.map((item) => (
               <button
                 key={item.name}
@@ -70,10 +76,12 @@ export function Navbar() {
                 <div className='absolute bottom-[-4px] left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-cyan-400 group-hover:w-full transition-all duration-300'></div>
               </button>
             ))}
+            {/* Language toggle */}
+            <LanguageSwitcher />
           </div>
 
           {/* Mobile Menu Button */}
-          <div className='md:hidden'>
+          <div className='lg:hidden'>
             <Button
               variant='ghost'
               size='sm'
@@ -91,7 +99,7 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className='md:hidden bg-black/90 backdrop-blur-md border-t border-white/10 animate-in slide-in-from-top-5 duration-200'>
+          <div className='lg:hidden bg-black/90 backdrop-blur-md border-t border-white/10 animate-in slide-in-from-top-5 duration-200'>
             <div className='py-4 space-y-2'>
               {navItems.map((item) => (
                 <button
@@ -103,6 +111,10 @@ export function Navbar() {
                   <div className='absolute left-4 bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-cyan-400 group-hover:w-8 transition-all duration-300'></div>
                 </button>
               ))}
+              {/* Language toggle for mobile */}
+              <div className='px-4 pt-2'>
+                <LanguageSwitcher />
+              </div>
             </div>
           </div>
         )}

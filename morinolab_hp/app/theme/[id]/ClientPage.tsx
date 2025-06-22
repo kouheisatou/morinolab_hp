@@ -23,6 +23,8 @@ import {
   Brain,
   Shield,
 } from 'lucide-react';
+import { useLocale } from '@/contexts/locale';
+import { getLocalized } from '@/lib/utils';
 
 const iconArray = [Atom, Brain, Shield, Lightbulb, Cpu, Zap];
 const colorArray = [
@@ -41,6 +43,7 @@ interface ClientPageProps {
 export default function ThemeDetailClientPage({ id }: ClientPageProps) {
   const [theme, setTheme] = useState<Theme | null>(null);
   const [loading, setLoading] = useState(true);
+  const { locale } = useLocale();
 
   useEffect(() => {
     if (id) {
@@ -61,15 +64,17 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
 
   if (loading) {
     return (
-      <div className='min-h-screen relative overflow-x-hidden bg-black'>
+      <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
         <ParticleBackground />
         <Navbar />
-        <SectionWrapper className='py-32'>
-          <div className='text-center'>
-            <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-cyan-400 mx-auto'></div>
-            <p className='text-white mt-4'>Loading...</p>
-          </div>
-        </SectionWrapper>
+        <main className='flex-1'>
+          <SectionWrapper className='py-32'>
+            <div className='text-center'>
+              <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-cyan-400 mx-auto'></div>
+              <p className='text-white mt-4'>Loading...</p>
+            </div>
+          </SectionWrapper>
+        </main>
         <Footer />
       </div>
     );
@@ -77,24 +82,26 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
 
   if (!theme) {
     return (
-      <div className='min-h-screen relative overflow-x-hidden bg-black'>
+      <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
         <ParticleBackground />
         <Navbar />
-        <SectionWrapper className='py-32'>
-          <div className='text-center'>
-            <h1 className='text-4xl font-bold text-white mb-4'>
-              Theme Not Found
-            </h1>
-            <p className='text-gray-300 mb-8'>
-              The requested research theme could not be found.
-            </p>
-            <Link href='/'>
-              <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white'>
-                Back to Home
-              </Button>
-            </Link>
-          </div>
-        </SectionWrapper>
+        <main className='flex-1'>
+          <SectionWrapper className='py-32'>
+            <div className='text-center'>
+              <h1 className='text-4xl font-bold text-white mb-4'>
+                Theme Not Found
+              </h1>
+              <p className='text-gray-300 mb-8'>
+                The requested research theme could not be found.
+              </p>
+              <Link href='/'>
+                <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white'>
+                  Back to Home
+                </Button>
+              </Link>
+            </div>
+          </SectionWrapper>
+        </main>
         <Footer />
       </div>
     );
@@ -105,91 +112,82 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
   const color = colorArray[iconIndex];
 
   return (
-    <div className='min-h-screen relative overflow-x-hidden bg-black'>
+    <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
       <ParticleBackground />
       <Navbar />
 
-      <SectionWrapper className='py-32'>
-        <div className='max-w-4xl mx-auto'>
-          <div className='mb-8'>
-            <nav className='flex items-center space-x-2 text-sm mb-6'>
-              <Link
-                href='/'
-                className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
-              >
-                <Home className='w-4 h-4 mr-1' />
-                Home
-              </Link>
-              <ChevronRight className='w-4 h-4 text-gray-500' />
-              <Link
-                href='/#research'
-                className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
-              >
-                Research
-              </Link>
-              <ChevronRight className='w-4 h-4 text-gray-500' />
-              <span className='text-white font-medium'>{theme.nameJa}</span>
-            </nav>
-          </div>
-
-          <article className='bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden'>
-            <div className='relative bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-8 md:p-12'>
-              <div className='flex items-start space-x-6'>
-                <div
-                  className={`w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-r ${color} flex items-center justify-center flex-shrink-0`}
+      <main className='flex-1'>
+        <SectionWrapper className='py-32'>
+          <div className='max-w-4xl mx-auto'>
+            <div className='mb-8'>
+              <nav className='flex items-center space-x-2 text-sm mb-6'>
+                <Link
+                  href='/'
+                  className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
                 >
-                  <Icon className='w-8 h-8 md:w-10 md:h-10 text-white' />
+                  <Home className='w-4 h-4 mr-1' />
+                  Home
+                </Link>
+                <ChevronRight className='w-4 h-4 text-gray-500' />
+                <Link
+                  href='/#research'
+                  className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
+                >
+                  Research
+                </Link>
+                <ChevronRight className='w-4 h-4 text-gray-500' />
+                <span className='text-white font-medium'>
+                  {getLocalized(theme, 'name', locale)}
+                </span>
+              </nav>
+            </div>
+
+            <article className='bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden'>
+              <div className='relative bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-8 md:p-12'>
+                <div className='flex items-start space-x-6'>
+                  <div
+                    className={`w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-r ${color} flex items-center justify-center flex-shrink-0`}
+                  >
+                    <Icon className='w-8 h-8 md:w-10 md:h-10 text-white' />
+                  </div>
+                  <div className='flex-1'>
+                    <h1 className='text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight'>
+                      {getLocalized(theme, 'name', locale)}
+                    </h1>
+                  </div>
                 </div>
-                <div className='flex-1'>
-                  <h1 className='text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight'>
-                    {theme.nameJa}
-                  </h1>
-                  <p className='text-xl md:text-2xl text-gray-300 font-medium italic'>
-                    {theme.nameEn}
+              </div>
+
+              <div className='relative h-64 md:h-80 overflow-hidden'>
+                <Image
+                  src={getStaticPath(
+                    `/generated_contents/theme/${theme.thumbnail}`
+                  )}
+                  alt={getLocalized(theme, 'name', locale)}
+                  fill
+                  className='object-cover'
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.src = getStaticPath('/img/noimage_theme.png');
+                  }}
+                />
+                <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent' />
+              </div>
+
+              <div className='p-8 md:p-12 space-y-12'>
+                <div>
+                  <h2 className='text-2xl font-bold text-white mb-4 border-b border-cyan-400/30 pb-2'>
+                    {locale === 'ja' ? '研究概要' : 'Research Overview'}
+                  </h2>
+                  <p className='text-gray-200 leading-relaxed text-lg'>
+                    {getLocalized(theme, 'desc', locale)}
                   </p>
                 </div>
               </div>
-            </div>
-
-            <div className='relative h-64 md:h-80 overflow-hidden'>
-              <Image
-                src={getStaticPath(
-                  `/generated_contents/theme/${theme.thumbnail}`
-                )}
-                alt={theme.nameJa}
-                fill
-                className='object-cover'
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.src = getStaticPath('/img/noimage_theme.png');
-                }}
-              />
-              <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent' />
-            </div>
-
-            <div className='p-8 md:p-12 space-y-12'>
-              <div className='grid md:grid-cols-2 gap-8'>
-                <div>
-                  <h2 className='text-2xl font-bold text-white mb-4 border-b border-cyan-400/30 pb-2'>
-                    研究概要
-                  </h2>
-                  <p className='text-gray-200 leading-relaxed text-lg'>
-                    {theme.descJa}
-                  </p>
-                </div>
-                <div>
-                  <h2 className='text-2xl font-bold text-white mb-4 border-b border-cyan-400/30 pb-2'>
-                    Research Overview
-                  </h2>
-                  <p className='text-gray-200 leading-relaxed text-lg'>
-                    {theme.descEn}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-      </SectionWrapper>
+            </article>
+          </div>
+        </SectionWrapper>
+      </main>
 
       <Footer />
     </div>

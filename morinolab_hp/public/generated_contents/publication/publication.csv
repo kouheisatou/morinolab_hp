@@ -1,16 +1,16 @@
 id,authorMemberIds,tagIds,titleJa,titleEn,publicationNameJa,publicationNameEn,thumbnail,publishedDate
-1,"1,2","1,2,4",深層学習による画像認識,Image Recognition with Deep Learning,情報処理学会論文誌,IPSJ Journal,1.jpg,2024/01/01 10:49:28
-2,"3,4","3,6,22",対話システムにおける自然言語理解,Natural Language Understanding in Dialogue Systems,言語処理学会論文誌,Journal of Natural Language Processing,2.jpg,2024/01/01 10:49:28
-3,"1,5,7","1,5,10",機械学習によるサイバー攻撃検知,Cyber Attack Detection using Machine Learning,情報セキュリティ論文誌,Journal of Information Security,3.jpg,2024/01/01 10:49:28
-4,"8,9","7,6,27",自律移動ロボットの経路計画アルゴリズム,Path Planning Algorithms for Autonomous Mobile Robots,ロボット学会誌,Journal of Robotics Society,4.jpg,2024/01/01 10:49:28
-5,"10,11","9,18,25",分散型ブロックチェーンのスケーラビリティ,Scalability of Distributed Blockchain Systems,コンピュータシステム論文誌,Journal of Computer Systems,5.jpg,2024/01/01 10:49:28
-6,"2,5","1,2,5",深層強化学習によるゲームAI,Game AI using Deep Reinforcement Learning,人工知能学会論文誌,Journal of Artificial Intelligence,6.jpg,2024/01/01 10:49:28
-7,"14,16","17,26,21",5G通信における教育システム,Educational Systems in 5G Communication,教育工学会論文誌,Journal of Educational Technology,7.jpg,2024/01/01 10:49:28
-8,"12,15","15,4,18",AR技術を用いたフィンテックアプリケーション,FinTech Applications using AR Technology,情報通信学会論文誌,Journal of Information and Communication,8.jpg,2024/01/01 10:49:28
-9,"17,19","19,22,6",ヘルスケアにおけるHCIデザイン,HCI Design in Healthcare,ヒューマンインタフェース学会論文誌,Journal of Human Interface Society,9.jpg,2024/01/01 10:49:28
-10,"18,20","20,8,25",IoTベースの農業監視システム,IoT-based Agricultural Monitoring System,農業情報学会論文誌,Journal of Agricultural Informatics,10.jpg,2024/01/01 10:49:28
-11,"6,13","8,16,11",エッジコンピューティングによるリアルタイム処理,Real-time Processing with Edge Computing,分散システム論文誌,Journal of Distributed Systems,11.jpg,2024/01/01 10:49:28
-12,"4,12","4,15,22",コンピュータビジョンとAR技術の融合,Integration of Computer Vision and AR Technology,画像処理学会論文誌,Journal of Image Processing,12.jpg,2024/01/01 10:49:28
-13,"9,11","12,27,28",量子機械学習による最適化問題,Optimization Problems using Quantum Machine Learning,量子情報学会論文誌,Journal of Quantum Information,13.jpg,2024/01/01 10:49:28
-14,"1,3,20","6,23,25",AIを活用したソフトウェア自動生成,Automatic Software Generation using AI,ソフトウェア工学会論文誌,Journal of Software Engineering,14.jpg,2024/01/01 10:49:28
-15,"7,10","10,9,23",ブロックチェーンセキュリティの新手法,New Methods for Blockchain Security,暗号と情報セキュリティ論文誌,Journal of Cryptography and Information Security,15.jpg,2024/01/01 10:49:28
+1,"1,2","1,2,4",深層学習による画像認識,Image Recognition with Deep Learning,情報処理学会論文誌,IPSJ Journal,1.jpg,2024/01/01
+2,"3,4","3,6,22",対話システムにおける自然言語理解,Natural Language Understanding in Dialogue Systems,言語処理学会論文誌,Journal of Natural Language Processing,2.jpg,2024/01/01
+3,"1,5,7","1,5,10",機械学習によるサイバー攻撃検知,Cyber Attack Detection using Machine Learning,情報セキュリティ論文誌,Journal of Information Security,3.jpg,2024/01/01
+4,"8,9","7,6,27",自律移動ロボットの経路計画アルゴリズム,Path Planning Algorithms for Autonomous Mobile Robots,ロボット学会誌,Journal of Robotics Society,4.jpg,2023/01/01
+5,"10,11","9,18,25",分散型ブロックチェーンのスケーラビリティ,Scalability of Distributed Blockchain Systems,コンピュータシステム論文誌,Journal of Computer Systems,5.jpg,2024/01/01
+6,"2,5","1,2,5",深層強化学習によるゲームAI,Game AI using Deep Reinforcement Learning,人工知能学会論文誌,Journal of Artificial Intelligence,6.jpg,2021/01/01
+7,"14,16","17,26,21",5G通信における教育システム,Educational Systems in 5G Communication,教育工学会論文誌,Journal of Educational Technology,7.jpg,2024/01/01
+8,"12,15","15,4,18",AR技術を用いたフィンテックアプリケーション,FinTech Applications using AR Technology,情報通信学会論文誌,Journal of Information and Communication,8.jpg,2024/01/01
+9,"17,19","19,22,6",ヘルスケアにおけるHCIデザイン,HCI Design in Healthcare,ヒューマンインタフェース学会論文誌,Journal of Human Interface Society,9.jpg,2024/01/01
+10,"18,20","20,8,25",IoTベースの農業監視システム,IoT-based Agricultural Monitoring System,農業情報学会論文誌,Journal of Agricultural Informatics,10.jpg,2024/01/01
+11,"6,13","8,16,11",エッジコンピューティングによるリアルタイム処理,Real-time Processing with Edge Computing,分散システム論文誌,Journal of Distributed Systems,11.jpg,2024/01/01
+12,"4,12","4,15,22",コンピュータビジョンとAR技術の融合,Integration of Computer Vision and AR Technology,画像処理学会論文誌,Journal of Image Processing,12.jpg,2024/01/01
+13,"9,11","12,27,28",量子機械学習による最適化問題,Optimization Problems using Quantum Machine Learning,量子情報学会論文誌,Journal of Quantum Information,13.jpg,2024/01/01
+14,"1,3,20","6,23,25",AIを活用したソフトウェア自動生成,Automatic Software Generation using AI,ソフトウェア工学会論文誌,Journal of Software Engineering,14.jpg,2024/01/01
+15,"7,10","10,9,23",ブロックチェーンセキュリティの新手法,New Methods for Blockchain Security,暗号と情報セキュリティ論文誌,Journal of Cryptography and Information Security,15.jpg,2024/01/01

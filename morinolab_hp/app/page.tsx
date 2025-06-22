@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { ParticleBackground } from '@/components/ui/particle-background';
 import { Navbar } from '@/components/navigation/navbar';
 import { Footer } from '@/components/navigation/footer';
@@ -15,41 +14,12 @@ import { Career } from '@/components/sections/career';
 import { Contact } from '@/components/sections/contact';
 
 export default function Home() {
-  useEffect(() => {
-    // URLのハッシュに基づいてスクロール
-    const handleHashChange = () => {
-      const hash = window.location.hash.substring(1);
-      if (hash) {
-        setTimeout(() => {
-          const element = document.getElementById(hash) as HTMLElement;
-          if (element) {
-            const elementPosition = element.offsetTop - 80; // ナビバーの高さ分を引く
-            window.scrollTo({
-              top: elementPosition,
-              behavior: 'smooth',
-            });
-          }
-        }, 100);
-      }
-    };
-
-    // 初回ロード時
-    handleHashChange();
-
-    // ハッシュ変更時
-    window.addEventListener('hashchange', handleHashChange);
-
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
-  }, []);
-
   return (
-    <div className='min-h-screen relative overflow-x-hidden'>
+    <div className='min-h-screen relative overflow-x-hidden flex flex-col'>
       <ParticleBackground />
       <Navbar />
 
-      <main>
+      <main className='flex-1'>
         <section id='home'>
           <Hero />
         </section>

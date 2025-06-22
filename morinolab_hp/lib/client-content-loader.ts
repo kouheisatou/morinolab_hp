@@ -32,6 +32,11 @@ function getStaticPath(path: string): string {
   return `${basePath}${path}`;
 }
 
+// 画像パス用のエクスポート関数
+export function getImagePath(path: string): string {
+  return getStaticPath(path);
+}
+
 export interface NewsItem {
   id: string;
   nameJa: string;
@@ -84,6 +89,7 @@ export interface Award {
   nameJa: string;
   nameEn: string;
   thumbnail: string;
+  memberIds: string;
   date: string;
   content?: string;
 }
@@ -95,7 +101,8 @@ export interface Theme {
   thumbnail: string;
   descJa: string;
   descEn: string;
-  keyAchievements: string;
+  keyAchievementsJa: string;
+  keyAchievementsEn: string;
   content?: string;
 }
 
@@ -106,7 +113,9 @@ export interface Lecture {
   thumbnail: string;
   descJa: string;
   descEn: string;
-  type: string;
+  typeJa: string;
+  typeEn: string;
+  type?: string;
   content?: string;
 }
 

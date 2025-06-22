@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useParallaxScroll } from '@/hooks/use-scroll-animation';
+import { useParallaxScroll } from '@/hooks/use-fade-in-animation';
 
 interface Particle {
   x: number;
@@ -37,6 +37,8 @@ export function ParticleBackground() {
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      // 背景をクリアして透明にする
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
 
     const createParticles = () => {
@@ -262,7 +264,7 @@ export function ParticleBackground() {
       ref={canvasRef}
       className='fixed inset-0 pointer-events-none z-0'
       style={{
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+        background: 'transparent',
       }}
     />
   );
