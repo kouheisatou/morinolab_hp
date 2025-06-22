@@ -110,6 +110,36 @@ export interface Lecture {
 export async function fetchTextContent(url: string): Promise<string> {
   try {
     console.log(`Fetching: ${url}`);
+
+    // サーバー環境での処理
+    if (typeof window === 'undefined') {
+      const fs = await import('fs');
+      const path = await import('path');
+
+      // URLからファイルパスを構築
+      let filePath = url;
+      if (filePath.startsWith('/morinolab_hp/')) {
+        filePath = filePath.replace('/morinolab_hp/', '');
+      }
+      if (filePath.startsWith('/')) {
+        filePath = filePath.substring(1);
+      }
+
+      const fullPath = path.join(process.cwd(), 'public', filePath);
+
+      try {
+        const content = fs.readFileSync(fullPath, 'utf-8');
+        console.log(
+          `Read from filesystem: ${fullPath}: ${content.length} characters`
+        );
+        return content;
+      } catch (fsError) {
+        console.error(`Error reading file ${fullPath}:`, fsError);
+        return '';
+      }
+    }
+
+    // ブラウザ環境での処理
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -359,3 +389,34 @@ export async function loadLectureDetail(id: string): Promise<Lecture | null> {
 
 // 画像パスにbasePathを付与するヘルパー関数をエクスポート
 export { getStaticPath };
+
+// ID取得用のヘルパー関数（generateStaticParamsで使用）
+export async function getNewsIds(): Promise<string[]> {
+  const news = await loadNews();
+  return news.map((item) => item.id);
+}
+
+export async function getTeamMemberIds(): Promise<string[]> {
+  const members = await loadTeamMembers();
+  return members.map((member) => member.id);
+}
+
+export async function getPublicationIds(): Promise<string[]> {
+  const publications = await loadPublications();
+  return publications.map((pub) => pub.id);
+}
+
+export async function getAwardIds(): Promise<string[]> {
+  const awards = await loadAwards();
+  return awards.map((award) => award.id);
+}
+
+export async function getThemeIds(): Promise<string[]> {
+  const themes = await loadThemes();
+  return themes.map((theme) => theme.id);
+}
+
+export async function getLectureIds(): Promise<string[]> {
+  const lectures = await loadLectures();
+  return lectures.map((lecture) => lecture.id);
+}
