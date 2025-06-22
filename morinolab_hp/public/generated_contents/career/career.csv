@@ -1,4 +1,7 @@
-id,nameJa,nameEn
-1,SBMC,SBMC
-2,日本電信電話株式会社,NTT
-3,博報堂,Hakuhodo DY Holdings Inc.
+id,nameJa,nameEn,thumbnail
+1,SBMC,SBMC,1.jpg
+2,日本電信電話株式会社,NTT,2.jpg
+3,博報堂,Hakuhodo DY Holdings Inc.,3.jpg
+4,博報堂,Hakuhodo DY Holdings Inc.,4.jpg
+5,博報堂,Hakuhodo DY Holdings Inc.,5.jpg
+6,博報堂,Hakuhodo DY Holdings Inc.,6.jpg
