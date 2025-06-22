@@ -14,6 +14,7 @@ interface Particle {
   baseX: number;
   baseY: number;
   parallaxFactor: number;
+  parallaxDirX: number;
 }
 
 export function ParticleBackground() {
@@ -64,6 +65,7 @@ export function ParticleBackground() {
                 ? '#06B6D4'
                 : '#8B5CF6',
           parallaxFactor: Math.random() * 0.8 + 0.2,
+          parallaxDirX: Math.random() < 0.5 ? -1 : 1,
         });
       }
 
@@ -125,16 +127,17 @@ export function ParticleBackground() {
           Math.cos(Date.now() * 0.001 + particle.baseY * 0.01) * 0.5;
 
         // Apply parallax offset
-        const displayX = particle.x - parallaxX;
+        const displayX = particle.x - parallaxX * particle.parallaxDirX;
         const displayY = particle.y - parallaxY;
 
-        // Bounce off edges with more dynamic behavior
+        // Bounce off edges (elastic). Remove damping to avoid particles losing energy and sticking to edges.
         if (particle.x < 0 || particle.x > canvas.width) {
-          particle.vx *= -0.8;
+          particle.vx *= -1;
+          // Ensure inside bounds
           particle.x = Math.max(0, Math.min(canvas.width, particle.x));
         }
         if (particle.y < 0 || particle.y > canvas.height) {
-          particle.vy *= -0.8;
+          particle.vy *= -1;
           particle.y = Math.max(0, Math.min(canvas.height, particle.y));
         }
 
@@ -193,9 +196,9 @@ export function ParticleBackground() {
           const parallaxY2 =
             currentScrollY * otherParticle.parallaxFactor * 0.03; // 0.1 から 0.03 に減少
 
-          const x1 = particle.x - parallaxX1;
+          const x1 = particle.x - parallaxX1 * particle.parallaxDirX;
           const y1 = particle.y - parallaxY1;
-          const x2 = otherParticle.x - parallaxX2;
+          const x2 = otherParticle.x - parallaxX2 * otherParticle.parallaxDirX;
           const y2 = otherParticle.y - parallaxY2;
 
           const dx = x1 - x2;

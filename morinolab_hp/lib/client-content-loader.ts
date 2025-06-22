@@ -1,21 +1,25 @@
+import { marked } from 'marked';
+
+// マークダウンをHTMLに変換する関数
+export async function parseMarkdown(markdown: string): Promise<string> {
+  try {
+    // markedの設定
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+    });
+
+    const result = await marked(markdown);
+    return result;
+  } catch (error) {
+    console.error('Error parsing markdown:', error);
+    return markdown; // エラーの場合は元のテキストを返す
+  }
+}
+
 // basePathを取得する関数
 function getBasePath(): string {
-  // ブラウザ環境でbasePathを検出
-  if (typeof window !== 'undefined') {
-    // URLから現在のbasePathを検出
-    const pathname = window.location.pathname;
-    if (pathname.startsWith('/morinolab_hp/') || pathname === '/morinolab_hp') {
-      return '/morinolab_hp';
-    }
-    // dev:basepathコマンドで起動した場合のクエリパラメータからも検出
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('basepath') === 'true') {
-      return '/morinolab_hp';
-    }
-  }
-
-  // サーバー環境では環境変数を使用
-  return process.env.BASEPATH_ENABLED === 'true' ? '/morinolab_hp' : '';
+  return '/morinolab_hp';
 }
 
 // 静的ファイルのパスにbasePathを付与する関数
@@ -103,6 +107,14 @@ export interface Lecture {
   descJa: string;
   descEn: string;
   type: string;
+  content?: string;
+}
+
+export interface CareerItem {
+  id: string;
+  nameJa: string;
+  nameEn: string;
+  thumbnail: string;
   content?: string;
 }
 
@@ -232,9 +244,10 @@ export async function loadNewsDetail(id: string): Promise<NewsItem | null> {
     const item = items.find((item) => item.id === id);
     if (!item) return null;
 
-    const content = await fetchTextContent(
+    const markdownContent = await fetchTextContent(
       getStaticPath(`/generated_contents/news/${id}/article.md`)
     );
+    const content = await parseMarkdown(markdownContent);
     return { ...item, content };
   } catch (error) {
     console.error(`Error loading news detail ${id}:`, error);
@@ -259,9 +272,10 @@ export async function loadTeamMemberDetail(
     const member = members.find((member) => member.id === id);
     if (!member) return null;
 
-    const content = await fetchTextContent(
+    const markdownContent = await fetchTextContent(
       getStaticPath(`/generated_contents/member/${id}/article.md`)
     );
+    const content = await parseMarkdown(markdownContent);
     return { ...member, content };
   } catch (error) {
     console.error(`Error loading team member detail ${id}:`, error);
@@ -286,9 +300,10 @@ export async function loadPublicationDetail(
     const publication = publications.find((pub) => pub.id === id);
     if (!publication) return null;
 
-    const content = await fetchTextContent(
+    const markdownContent = await fetchTextContent(
       getStaticPath(`/generated_contents/publication/${id}/article.md`)
     );
+    const content = await parseMarkdown(markdownContent);
     return { ...publication, content };
   } catch (error) {
     console.error(`Error loading publication detail ${id}:`, error);
@@ -311,9 +326,10 @@ export async function loadAwardDetail(id: string): Promise<Award | null> {
     const award = awards.find((award) => award.id === id);
     if (!award) return null;
 
-    const content = await fetchTextContent(
+    const markdownContent = await fetchTextContent(
       getStaticPath(`/generated_contents/award/${id}/article.md`)
     );
+    const content = await parseMarkdown(markdownContent);
     return { ...award, content };
   } catch (error) {
     console.error(`Error loading award detail ${id}:`, error);
@@ -336,9 +352,10 @@ export async function loadThemeDetail(id: string): Promise<Theme | null> {
     const theme = themes.find((theme) => theme.id === id);
     if (!theme) return null;
 
-    const content = await fetchTextContent(
+    const markdownContent = await fetchTextContent(
       getStaticPath(`/generated_contents/theme/${id}/article.md`)
     );
+    const content = await parseMarkdown(markdownContent);
     return { ...theme, content };
   } catch (error) {
     console.error(`Error loading theme detail ${id}:`, error);
@@ -377,12 +394,40 @@ export async function loadLectureDetail(id: string): Promise<Lecture | null> {
     const lecture = lectures.find((lecture) => lecture.id === id);
     if (!lecture) return null;
 
-    const content = await fetchTextContent(
+    const markdownContent = await fetchTextContent(
       getStaticPath(`/generated_contents/lecture/${id}/article.md`)
     );
+    const content = await parseMarkdown(markdownContent);
     return { ...lecture, content };
   } catch (error) {
     console.error(`Error loading lecture detail ${id}:`, error);
+    return null;
+  }
+}
+
+// キャリア一覧を取得
+export async function loadCareers(): Promise<CareerItem[]> {
+  const content = await fetchTextContent(
+    getStaticPath('/generated_contents/career/career.csv')
+  );
+  return parseCSVContent(content) as CareerItem[];
+}
+
+// キャリア詳細（将来的な拡張用）
+export async function loadCareerDetail(id: string): Promise<CareerItem | null> {
+  try {
+    const items = await loadCareers();
+    const item = items.find((item) => item.id === id);
+    if (!item) return null;
+
+    // 詳細 Markdown があれば読み込む（存在しなければそのまま）
+    const markdownContent = await fetchTextContent(
+      getStaticPath(`/generated_contents/career/${id}/article.md`)
+    );
+    const content = markdownContent ? await parseMarkdown(markdownContent) : '';
+    return { ...item, content };
+  } catch (error) {
+    console.error(`Error loading career detail ${id}:`, error);
     return null;
   }
 }

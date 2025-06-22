@@ -166,11 +166,6 @@ export function Lectures() {
 
                   {/* 講義タイプバッジ */}
                   <div className='flex items-center space-x-2 mb-3'>
-                    <div
-                      className={`w-8 h-8 rounded-lg bg-gradient-to-r ${color} flex items-center justify-center`}
-                    >
-                      <Icon className='w-4 h-4 text-white' />
-                    </div>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${color} bg-opacity-20 text-white border border-white/20`}
                     >

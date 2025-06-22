@@ -120,14 +120,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Generate .env.local
-        run: |
-          cat <<'EOF' > morinolab_hp/.env
-          NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD=0.4
-          NEXT_PUBLIC_NAV_BREAKPOINT=1100
-          NEXT_PUBLIC_BASE_PREFIX="/morinolab_hp"
-          EOF
-
       - name: Build Next.js static site
         run: npm run build:morinolab_hp
 

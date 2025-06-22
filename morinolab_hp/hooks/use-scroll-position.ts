@@ -44,25 +44,34 @@ export function useScrollPosition() {
   const scrollToSection = (sectionId: string) => {
     if (typeof window !== 'undefined') {
       // 現在のページがホームページでない場合、ホームページに移動してからスクロール
-      if (window.location.pathname !== '/') {
+      if (
+        window.location.pathname !== '/' &&
+        window.location.pathname !== '/morinolab_hp' &&
+        window.location.pathname !== '/morinolab_hp/'
+      ) {
         // 現在の位置を保存
         saveScrollPosition(window.location.pathname);
 
-        // ホームページに移動
-        router.push('/');
+        // ホームページに移動してセクションIDをハッシュとして追加
+        router.push(`/#${sectionId}`);
 
         // ページロード後にスクロール
         setTimeout(() => {
           const element = document.querySelector(`#${sectionId}`);
           if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
-        }, 500);
+        }, 300);
       } else {
         // 既にホームページにいる場合は直接スクロール
-        const element = document.querySelector(`#${sectionId}`);
+        const element = document.querySelector(`#${sectionId}`) as HTMLElement;
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          // スクロールオフセットを考慮（ナビバーの高さ分）
+          const elementPosition = element.offsetTop - 80; // ナビバーの高さ分を引く
+          window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth',
+          });
         }
       }
     }

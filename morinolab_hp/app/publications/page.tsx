@@ -34,7 +34,6 @@ export default function PublicationsPage() {
   const [publications, setPublications] = useState<Publication[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,20 +70,6 @@ export default function PublicationsPage() {
 
   // フィルタリングされたPublications
   const filteredPublications = publications.filter((publication) => {
-    // メンバーフィルター
-    if (selectedMembers.length > 0) {
-      const authorMemberIds = publication.authorMemberIds
-        .split(',')
-        .map((id) => id.trim());
-      if (
-        !selectedMembers.some((selectedMember) =>
-          authorMemberIds.includes(selectedMember)
-        )
-      ) {
-        return false;
-      }
-    }
-
     // タグフィルター
     if (selectedTags.length > 0) {
       const publicationTagIds = publication.tagIds
@@ -112,15 +97,6 @@ export default function PublicationsPage() {
     return true;
   });
 
-  // メンバーの切り替え
-  const toggleMember = (memberId: string) => {
-    setSelectedMembers((prev) =>
-      prev.includes(memberId)
-        ? prev.filter((id) => id !== memberId)
-        : [...prev, memberId]
-    );
-  };
-
   // タグの切り替え
   const toggleTag = (tagId: string) => {
     setSelectedTags((prev) =>
@@ -139,7 +115,6 @@ export default function PublicationsPage() {
 
   // 全フィルターをクリア
   const clearAllFilters = () => {
-    setSelectedMembers([]);
     setSelectedTags([]);
     setSelectedYears([]);
   };
@@ -172,10 +147,7 @@ export default function PublicationsPage() {
     );
   }
 
-  const hasAnyFilter =
-    selectedMembers.length > 0 ||
-    selectedTags.length > 0 ||
-    selectedYears.length > 0;
+  const hasAnyFilter = selectedTags.length > 0 || selectedYears.length > 0;
 
   return (
     <div className='min-h-screen relative overflow-x-hidden bg-black'>
@@ -228,31 +200,6 @@ export default function PublicationsPage() {
               ) : (
                 <div className='w-20'></div>
               )}
-            </div>
-          </div>
-
-          {/* メンバーフィルター */}
-          <div>
-            <div className='flex items-center space-x-2 mb-3'>
-              <Users className='w-4 h-4 text-gray-400' />
-              <h4 className='text-lg font-medium text-white'>
-                Filter by Author
-              </h4>
-            </div>
-            <div className='flex flex-wrap gap-2'>
-              {teamMembers.map((member) => (
-                <button
-                  key={member.id}
-                  onClick={() => toggleMember(member.id)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedMembers.includes(member.id)
-                      ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/25 scale-105'
-                      : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-cyan-400/30'
-                  }`}
-                >
-                  {member.nameJa}
-                </button>
-              ))}
             </div>
           </div>
 

@@ -9,11 +9,12 @@ import { useScrollPosition } from '@/hooks/use-scroll-position';
 const navItems = [
   { name: 'Home', href: 'home' },
   { name: 'Research', href: 'research' },
-  { name: 'Lectures', href: 'lectures' },
   { name: 'Team', href: 'team' },
+  { name: 'Lectures', href: 'lectures' },
   { name: 'News', href: 'news' },
   { name: 'Publications', href: 'publications' },
   { name: 'Awards', href: 'awards' },
+  { name: 'Career', href: 'career' },
   { name: 'Contact', href: 'contact' },
 ];
 

@@ -202,14 +202,12 @@ export default function LectureDetailClientPage({ id }: ClientPageProps) {
                 <h2 className='text-2xl font-bold text-white mb-6 border-b border-cyan-400/30 pb-2'>
                   詳細情報
                 </h2>
-                <div className='prose prose-lg prose-invert max-w-none'>
-                  <div
-                    className='text-gray-200 leading-relaxed text-lg'
-                    dangerouslySetInnerHTML={{
-                      __html: lecture.content.replace(/\n/g, '<br>'),
-                    }}
-                  />
-                </div>
+                <div
+                  className='prose prose-lg prose-invert max-w-none prose-headings:text-white prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-6 prose-h2:text-2xl prose-h2:font-semibold prose-h2:mb-4 prose-h3:text-xl prose-h3:font-medium prose-h3:mb-3 prose-p:text-gray-200 prose-p:leading-relaxed prose-p:mb-4 prose-ul:text-gray-200 prose-li:text-gray-200 prose-li:mb-2 prose-strong:text-white prose-em:text-gray-300'
+                  dangerouslySetInnerHTML={{
+                    __html: lecture.content,
+                  }}
+                />
               </div>
             )}
           </div>

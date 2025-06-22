@@ -10,7 +10,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, Calendar, Tags, Home, ChevronRight } from 'lucide-react';
 import {
   TeamMember,
+  MemberType,
   loadTeamMemberDetail,
+  loadMemberTypes,
   getStaticPath,
 } from '@/lib/client-content-loader';
 import { useEffect, useState } from 'react';
@@ -22,14 +24,19 @@ interface ClientPageProps {
 
 export default function TeamMemberDetailClientPage({ id }: ClientPageProps) {
   const [member, setMember] = useState<TeamMember | null>(null);
+  const [memberTypes, setMemberTypes] = useState<MemberType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (id) {
       const fetchTeamMemberDetail = async () => {
         try {
-          const memberDetail = await loadTeamMemberDetail(id);
+          const [memberDetail, memberTypesData] = await Promise.all([
+            loadTeamMemberDetail(id),
+            loadMemberTypes(),
+          ]);
           setMember(memberDetail);
+          setMemberTypes(memberTypesData);
         } catch (error) {
           console.error('Error loading team member detail:', error);
         } finally {
@@ -142,7 +149,11 @@ export default function TeamMemberDetailClientPage({ id }: ClientPageProps) {
                   <div className='flex flex-col sm:flex-row justify-center md:justify-start gap-4 text-gray-300'>
                     <div className='flex items-center justify-center md:justify-start space-x-2'>
                       <User className='w-4 h-4 text-cyan-400' />
-                      <span>Member Type: {member.memberTypeId}</span>
+                      <span>
+                        {memberTypes.find(
+                          (type) => type.id === member.memberTypeId
+                        )?.nameJa || member.memberTypeId}
+                      </span>
                     </div>
                     {member.gradYear && (
                       <div className='flex items-center justify-center md:justify-start space-x-2'>
@@ -206,14 +217,12 @@ export default function TeamMemberDetailClientPage({ id }: ClientPageProps) {
                   <h2 className='text-2xl font-bold text-white mb-6 border-b border-cyan-400/30 pb-2'>
                     詳細情報
                   </h2>
-                  <div className='prose prose-lg prose-invert max-w-none'>
-                    <div
-                      className='text-gray-200 leading-relaxed text-lg'
-                      dangerouslySetInnerHTML={{
-                        __html: member.content.replace(/\n/g, '<br>'),
-                      }}
-                    />
-                  </div>
+                  <div
+                    className='prose prose-lg prose-invert max-w-none prose-headings:text-white prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-6 prose-h2:text-2xl prose-h2:font-semibold prose-h2:mb-4 prose-h3:text-xl prose-h3:font-medium prose-h3:mb-3 prose-p:text-gray-200 prose-p:leading-relaxed prose-p:mb-4 prose-ul:text-gray-200 prose-li:text-gray-200 prose-li:mb-2 prose-strong:text-white prose-em:text-gray-300'
+                    dangerouslySetInnerHTML={{
+                      __html: member.content,
+                    }}
+                  />
                 </div>
               )}
             </div>

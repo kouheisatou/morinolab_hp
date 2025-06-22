@@ -136,7 +136,7 @@ export default function LecturesPage() {
                 className='p-6 h-full flex flex-col relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'
               >
                 {/* サムネイル */}
-                <div className='w-full h-48 overflow-hidden mb-4 bg-gradient-to-br from-gray-800 to-gray-900 -mx-6 -mt-6 mb-2 rounded-t-lg'>
+                <div className='w-full h-48 rounded-lg overflow-hidden mb-4 bg-gradient-to-br from-gray-800 to-gray-900'>
                   <Image
                     src={getStaticPath(
                       `/generated_contents/lecture/${lecture.id}.jpg`
@@ -154,7 +154,7 @@ export default function LecturesPage() {
                 </div>
 
                 {/* 講義タイプバッジ */}
-                <div className='flex items-center space-x-2 mb-4 px-6'>
+                <div className='flex items-center space-x-2 mb-4'>
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r ${color} bg-opacity-20 text-white border border-white/20`}
                   >
@@ -162,32 +162,26 @@ export default function LecturesPage() {
                   </span>
                 </div>
 
-                <div className='px-6'>
-                  <h3 className='text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
-                    {lecture.nameJa}
-                  </h3>
+                <h3 className='text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
+                  {lecture.nameJa}
+                </h3>
 
-                  <p className='text-blue-400 text-sm mb-4 font-medium'>
-                    {lecture.nameEn}
-                  </p>
+                <p className='text-blue-400 text-sm mb-4 font-medium'>
+                  {lecture.nameEn}
+                </p>
 
-                  <p className='text-gray-300 mb-6 flex-grow'>
-                    {lecture.descJa}
-                  </p>
-                </div>
+                <p className='text-gray-300 mb-6 flex-grow'>{lecture.descJa}</p>
 
-                <div className='px-6'>
-                  <Link href={`/lectures/${lecture.id}`} className='mt-auto'>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      className='w-full border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
-                    >
-                      View Details
-                      <ArrowRight className='w-4 h-4 ml-2' />
-                    </Button>
-                  </Link>
-                </div>
+                <Link href={`/lectures/${lecture.id}`} className='mt-auto'>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='w-full border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
+                  >
+                    View Details
+                    <ArrowRight className='w-4 h-4 ml-2' />
+                  </Button>
+                </Link>
 
                 {/* ホバーエフェクト */}
                 <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
