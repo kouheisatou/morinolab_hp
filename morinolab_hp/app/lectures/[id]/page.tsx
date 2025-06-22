@@ -46,7 +46,7 @@ export default function LectureDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchLecture() {
+    const fetchLecture = async () => {
       try {
         const lectureData = await loadLectureDetail(id);
         setLecture(lectureData);
@@ -55,7 +55,7 @@ export default function LectureDetailPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     if (id) {
       fetchLecture();

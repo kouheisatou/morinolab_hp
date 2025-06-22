@@ -30,7 +30,7 @@ export function Publications() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchPublicationsData() {
+    const fetchPublicationsData = async () => {
       try {
         console.log(
           'Publications component: Starting to fetch publications data...'
@@ -51,7 +51,7 @@ export function Publications() {
         console.log('Publications component: Finished loading');
         setLoading(false);
       }
-    }
+    };
 
     fetchPublicationsData();
   }, []);

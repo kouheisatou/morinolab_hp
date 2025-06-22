@@ -44,7 +44,7 @@ export function News() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchNewsData() {
+    const fetchNewsData = async () => {
       try {
         console.log('News component: Starting to fetch news data...');
         setLoading(true);
@@ -62,7 +62,7 @@ export function News() {
         console.log('News component: Finished loading');
         setLoading(false);
       }
-    }
+    };
 
     fetchNewsData();
   }, []);

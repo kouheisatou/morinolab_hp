@@ -32,7 +32,7 @@ export default function AwardDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchAward() {
+    const fetchAward = async () => {
       try {
         const awardData = await loadAwardDetail(id);
         setAward(awardData);
@@ -41,7 +41,7 @@ export default function AwardDetailPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     if (id) {
       fetchAward();

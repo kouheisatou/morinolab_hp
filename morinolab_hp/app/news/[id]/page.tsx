@@ -26,7 +26,7 @@ export default function NewsDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchNewsDetail() {
+    const fetchNewsDetail = async () => {
       if (!id) return;
 
       try {
@@ -39,7 +39,7 @@ export default function NewsDetailPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchNewsDetail();
   }, [id]);

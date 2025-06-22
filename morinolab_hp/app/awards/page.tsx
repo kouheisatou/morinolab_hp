@@ -25,7 +25,7 @@ export default function AwardsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchAwards() {
+    const fetchAwards = async () => {
       try {
         const awardData = await loadAwards();
         // 日付でソート（新しい順）
@@ -38,7 +38,7 @@ export default function AwardsPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchAwards();
   }, []);

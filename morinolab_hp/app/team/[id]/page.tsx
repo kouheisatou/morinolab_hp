@@ -24,7 +24,7 @@ export default function TeamMemberDetailPage() {
 
   useEffect(() => {
     if (params.id) {
-      async function fetchTeamMemberDetail() {
+      const fetchTeamMemberDetail = async () => {
         try {
           const memberDetail = await loadTeamMemberDetail(params.id as string);
           setMember(memberDetail);
@@ -33,7 +33,7 @@ export default function TeamMemberDetailPage() {
         } finally {
           setLoading(false);
         }
-      }
+      };
 
       fetchTeamMemberDetail();
     }

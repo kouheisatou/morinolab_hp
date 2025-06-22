@@ -46,7 +46,7 @@ export function Team() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchTeamData() {
+    const fetchTeamData = async () => {
       try {
         console.log('Team component: Starting to fetch team data...');
         setLoading(true);
@@ -74,7 +74,7 @@ export function Team() {
         console.log('Team component: Finished loading');
         setLoading(false);
       }
-    }
+    };
 
     fetchTeamData();
   }, []);

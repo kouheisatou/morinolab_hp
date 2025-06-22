@@ -38,7 +38,7 @@ export function Awards() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchAwardsData() {
+    const fetchAwardsData = async () => {
       try {
         console.log('Awards component: Starting to fetch awards data...');
         setLoading(true);
@@ -54,7 +54,7 @@ export function Awards() {
         console.log('Awards component: Finished loading');
         setLoading(false);
       }
-    }
+    };
 
     fetchAwardsData();
   }, []);

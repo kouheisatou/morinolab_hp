@@ -44,7 +44,7 @@ export default function ThemeDetailPage() {
 
   useEffect(() => {
     if (params?.id) {
-      async function fetchThemeDetail() {
+      const fetchThemeDetail = async () => {
         try {
           const themeData = await loadThemeDetail(params.id as string);
           setTheme(themeData);
@@ -53,7 +53,7 @@ export default function ThemeDetailPage() {
         } finally {
           setLoading(false);
         }
-      }
+      };
 
       fetchThemeDetail();
     }

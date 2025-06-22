@@ -54,7 +54,7 @@ export function Lectures() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchLectures() {
+    const fetchLectures = async () => {
       try {
         console.log('Lectures component: Starting to fetch lectures...');
         setLoading(true);
@@ -71,7 +71,7 @@ export function Lectures() {
         console.log('Lectures component: Finished loading');
         setLoading(false);
       }
-    }
+    };
 
     fetchLectures();
   }, []);

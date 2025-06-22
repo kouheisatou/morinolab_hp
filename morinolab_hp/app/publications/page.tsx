@@ -40,7 +40,7 @@ export default function PublicationsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       try {
         const [pubsData, membersData, tagsData] = await Promise.all([
           loadPublications(),
@@ -55,7 +55,7 @@ export default function PublicationsPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchData();
   }, []);

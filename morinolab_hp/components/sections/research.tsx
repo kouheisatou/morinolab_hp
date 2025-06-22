@@ -46,7 +46,7 @@ export function Research() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchThemes() {
+    const fetchThemes = async () => {
       try {
         console.log('Research component: Starting to fetch themes...');
         setLoading(true);
@@ -63,7 +63,7 @@ export function Research() {
         console.log('Research component: Finished loading');
         setLoading(false);
       }
-    }
+    };
 
     fetchThemes();
   }, []);

@@ -23,7 +23,7 @@ export default function NewsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchNews() {
+    const fetchNews = async () => {
       try {
         const items = await loadNews();
         setNewsItems(items);
@@ -32,7 +32,7 @@ export default function NewsPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchNews();
   }, []);

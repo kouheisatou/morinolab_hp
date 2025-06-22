@@ -17,7 +17,7 @@ export default function TestDataPage() {
   const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    async function testAllData() {
+    const testAllData = async () => {
       setLoading(true);
       const newErrors: string[] = [];
 
@@ -67,7 +67,7 @@ export default function TestDataPage() {
 
       setErrors(newErrors);
       setLoading(false);
-    }
+    };
 
     testAllData();
   }, []);

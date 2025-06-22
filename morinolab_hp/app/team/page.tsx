@@ -38,7 +38,7 @@ export default function TeamPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       try {
         const [membersData, memberTypesData, tagsData] = await Promise.all([
           loadTeamMembers(),
@@ -54,7 +54,7 @@ export default function TeamPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchData();
   }, []);
