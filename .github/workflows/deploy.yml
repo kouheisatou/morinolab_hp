@@ -35,7 +35,7 @@ jobs:
             morinolab_cms/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run ESLint for all projects
         run: npm run lint_all
@@ -59,7 +59,7 @@ jobs:
             morinolab_cms/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run format check for all projects
         run: npm run format_all
@@ -85,7 +85,7 @@ jobs:
             morinolab_cms/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run generate_contents script
         run: npm run generate_contents
@@ -118,7 +118,7 @@ jobs:
             morinolab_cms/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Generate .env.local
         run: |
