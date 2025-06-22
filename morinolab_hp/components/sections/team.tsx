@@ -1,0 +1,329 @@
+'use client';
+
+import { GlassCard } from '@/components/ui/glass-card';
+import { SectionWrapper } from '@/components/ui/section-wrapper';
+import { Button } from '@/components/ui/button';
+import { Users, ExternalLink, Mail, User, GraduationCap } from 'lucide-react';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
+import { useScrollAnimation } from '@/hooks/use-scroll-animation';
+import { useState, useEffect, useRef } from 'react';
+import {
+  loadTeamMembers,
+  loadTags,
+  TeamMember,
+  Tag,
+  getStaticPath,
+} from '@/lib/client-content-loader';
+import Image from 'next/image';
+
+export function Team() {
+  const { elementRef: titleRef, isVisible: titleVisible } =
+    useScrollAnimation<HTMLHeadingElement>({ forceVisible: true });
+  const { elementRef: descRef, isVisible: descVisible } =
+    useScrollAnimation<HTMLParagraphElement>({ forceVisible: true });
+  const { elementRef: professorRef, isVisible: professorVisible } =
+    useScrollAnimation<HTMLDivElement>({ forceVisible: true });
+  const { elementRef: buttonRef, isVisible: buttonVisible } =
+    useScrollAnimation<HTMLDivElement>();
+
+  // 固定数のアニメーション用refを事前に作成
+  const cardRefs = [
+    useScrollAnimation<HTMLDivElement>(),
+    useScrollAnimation<HTMLDivElement>(),
+    useScrollAnimation<HTMLDivElement>(),
+    useScrollAnimation<HTMLDivElement>(),
+    useScrollAnimation<HTMLDivElement>(),
+    useScrollAnimation<HTMLDivElement>(),
+  ];
+
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [professor, setProfessor] = useState<TeamMember | null>(null);
+  const [students, setStudents] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchTeamData() {
+      try {
+        console.log('Team component: Starting to fetch team data...');
+        setLoading(true);
+        const [members, tagsData] = await Promise.all([
+          loadTeamMembers(),
+          loadTags(),
+        ]);
+        console.log('Team component: Received members:', members);
+        console.log('Team component: Received tags:', tagsData);
+
+        // 先生は別途表示し、学生を6名まで表示
+        const professor = members.find((member) => member.memberTypeId === '1');
+        const students = members
+          .filter((member) => member.memberTypeId !== '1')
+          .slice(0, 6);
+
+        setTeamMembers(members);
+        setTags(tagsData);
+        setProfessor(professor || null);
+        setStudents(students);
+      } catch (err) {
+        console.error('Team component: Error loading team:', err);
+        setError('Failed to load team data');
+      } finally {
+        console.log('Team component: Finished loading');
+        setLoading(false);
+      }
+    }
+
+    fetchTeamData();
+  }, []);
+
+  // タグ名を取得するヘルパー関数
+  const getTagName = (tagId: string) => {
+    const tag = tags.find((t) => t.id === tagId);
+    return tag ? tag.nameJa : `Tag #${tagId}`;
+  };
+
+  if (loading) {
+    return (
+      <SectionWrapper id='team' className='py-32'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto'></div>
+          <p className='text-white mt-4'>Loading team...</p>
+        </div>
+      </SectionWrapper>
+    );
+  }
+
+  if (error) {
+    return (
+      <SectionWrapper id='team' className='py-32'>
+        <div className='text-center'>
+          <p className='text-red-400'>{error}</p>
+        </div>
+      </SectionWrapper>
+    );
+  }
+
+  return (
+    <SectionWrapper id='team' className='py-32'>
+      <div className='text-center mb-16'>
+        <h2
+          ref={titleRef}
+          className={`text-5xl font-bold text-white mb-6 transition-all duration-1000 ${
+            titleVisible
+              ? 'opacity-100 translate-y-0 scale-100'
+              : 'opacity-0 translate-y-10 scale-95'
+          }`}
+        >
+          Our Research Team
+        </h2>
+        <p
+          ref={descRef}
+          className={`text-xl text-gray-300 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${
+            descVisible
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-10'
+          }`}
+        >
+          Meet the brilliant minds driving innovation in quantum computing
+          research. Our diverse team combines expertise from multiple
+          disciplines.
+        </p>
+      </div>
+
+      {/* Professor Section */}
+      {professor && (
+        <div className='mb-16'>
+          <h3 className='text-3xl font-bold text-white text-center mb-8'>
+            Principal Investigator
+          </h3>
+          <div
+            ref={professorRef}
+            className={`max-w-md mx-auto transition-all duration-1000 delay-400 ${
+              professorVisible
+                ? 'opacity-100 translate-y-0 scale-100'
+                : 'opacity-0 translate-y-10 scale-95'
+            }`}
+          >
+            <GlassCard className='p-8 text-center group hover:scale-105 transition-all duration-300 relative overflow-hidden'>
+              <div className='relative mb-6'>
+                <Avatar className='w-32 h-32 mx-auto border-4 border-white/20 group-hover:border-cyan-400/50 transition-colors duration-300'>
+                  <AvatarImage
+                    src={getStaticPath(
+                      `/generated_contents/member/${professor.id}.jpg`
+                    )}
+                    alt={professor.nameJa}
+                    className='object-cover'
+                  />
+                  <AvatarFallback className='text-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white'>
+                    {professor.nameJa.slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+
+              <h3 className='text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
+                {professor.nameJa}
+              </h3>
+              {professor.nameEn && (
+                <p className='text-gray-300 mb-4'>{professor.nameEn}</p>
+              )}
+
+              {/* Professor Tags */}
+              <div className='flex flex-wrap gap-1 justify-center mb-4'>
+                {professor.tagIds
+                  .split(',')
+                  .slice(0, 3)
+                  .map((tagId, index) => (
+                    <span
+                      key={index}
+                      className='px-2 py-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 rounded-full text-xs border border-cyan-400/30'
+                    >
+                      {getTagName(tagId.trim())}
+                    </span>
+                  ))}
+                {professor.tagIds.split(',').length > 3 && (
+                  <span className='px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs'>
+                    +{professor.tagIds.split(',').length - 3}
+                  </span>
+                )}
+              </div>
+
+              <Link href={`/team/${professor.id}`}>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
+                >
+                  View Profile
+                  <ExternalLink className='w-4 h-4 ml-2' />
+                </Button>
+              </Link>
+
+              {/* Subtle glow effect on hover */}
+              <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+            </GlassCard>
+          </div>
+        </div>
+      )}
+
+      {/* Students Section */}
+      <div>
+        <h3 className='text-3xl font-bold text-white text-center mb-12'>
+          Research Team
+        </h3>
+
+        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
+          {students.length === 0 ? (
+            <div className='col-span-full text-center text-gray-400'>
+              <p>No team members found</p>
+            </div>
+          ) : (
+            students.map((member, index) => {
+              // 事前に作成したrefを使用
+              const { elementRef: cardRef, isVisible: cardVisible } = cardRefs[
+                index
+              ] || { elementRef: null, isVisible: true };
+
+              return (
+                <div
+                  ref={cardRef}
+                  key={member.id}
+                  className={`transition-all duration-1000 ${
+                    cardVisible
+                      ? 'opacity-100 translate-y-0 rotate-0'
+                      : 'opacity-0 translate-y-16 scale-95'
+                  }`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                >
+                  <GlassCard className='p-6 text-center group hover:scale-105 transition-all duration-300 h-full flex flex-col relative overflow-hidden'>
+                    <div className='mb-4'>
+                      <Avatar className='w-24 h-24 mx-auto border-2 border-white/20 group-hover:border-cyan-400/50 transition-colors duration-300'>
+                        <AvatarImage
+                          src={getStaticPath(
+                            `/generated_contents/member/${member.id}.jpg`
+                          )}
+                          alt={member.nameJa}
+                          className='object-cover'
+                        />
+                        <AvatarFallback className='text-lg bg-gradient-to-br from-purple-500 to-pink-600 text-white'>
+                          {member.nameJa.slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+
+                    <h3 className='text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
+                      {member.nameJa}
+                    </h3>
+                    {member.nameEn && member.nameEn !== member.nameJa && (
+                      <p className='text-gray-300 text-sm mb-3'>
+                        {member.nameEn}
+                      </p>
+                    )}
+
+                    {/* Member Tags */}
+                    <div className='flex flex-wrap gap-1 justify-center mb-4 flex-grow'>
+                      {member.tagIds
+                        .split(',')
+                        .slice(0, 2)
+                        .map((tagId, tagIndex) => (
+                          <span
+                            key={tagIndex}
+                            className='px-2 py-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 rounded-full text-xs border border-purple-400/30'
+                          >
+                            {getTagName(tagId.trim())}
+                          </span>
+                        ))}
+                      {member.tagIds.split(',').length > 2 && (
+                        <span className='px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs'>
+                          +{member.tagIds.split(',').length - 2}
+                        </span>
+                      )}
+                    </div>
+
+                    {member.memberTypeId === '1' && (
+                      <div className='mt-auto'>
+                        <Link href={`/team/${member.id}`} className='block'>
+                          <Button
+                            variant='outline'
+                            size='sm'
+                            className='w-full border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
+                          >
+                            View Profile
+                            <ExternalLink className='w-4 h-4 ml-2' />
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Subtle glow effect on hover */}
+                    <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                  </GlassCard>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      <div
+        ref={buttonRef}
+        className={`text-center mt-12 transition-all duration-1000 delay-1000 ${
+          buttonVisible
+            ? 'opacity-100 translate-y-0 scale-100'
+            : 'opacity-0 translate-y-8 scale-95'
+        }`}
+      >
+        <Link href='/team'>
+          <Button
+            size='lg'
+            className='bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-semibold'
+          >
+            Meet Full Team
+          </Button>
+        </Link>
+      </div>
+    </SectionWrapper>
+  );
+}

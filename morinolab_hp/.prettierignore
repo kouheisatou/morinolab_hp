@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+
+# Generated files
+public/generated_contents/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Next.js
+.next/
+out/
+
+# Vercel
+.vercel/
+
+# Static files
+public/img/
+
+# Config files
+next.config.js
+next.config.production.js
+tailwind.config.ts
+postcss.config.js
+
+# Generated components
+components.json 
