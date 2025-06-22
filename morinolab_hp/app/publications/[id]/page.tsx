@@ -31,17 +31,14 @@ export default function PublicationDetailPage() {
 
   useEffect(() => {
     if (params.id) {
-      async function fetchPublicationDetail() {
+      const fetchPublicationDetail = async () => {
         try {
           const pubDetail = await loadPublicationDetail(params.id as string);
           setPublication(pubDetail);
         } catch (error) {
-          console.error('Error loading publication detail:', error);
-        } finally {
-          setLoading(false);
+          console.error(error);
         }
-      }
-
+      };
       fetchPublicationDetail();
     }
   }, [params.id]);
