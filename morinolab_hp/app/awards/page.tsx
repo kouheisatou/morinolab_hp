@@ -262,7 +262,7 @@ export default function AwardsPage() {
                                           .map((member) => (
                                             <span
                                               key={member.id}
-                                              className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30'
+                                              className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
                                             >
                                               {getLocalized(
                                                 member,
@@ -387,7 +387,7 @@ export default function AwardsPage() {
                                         .map((member) => (
                                           <span
                                             key={member.id}
-                                            className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30'
+                                            className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
                                           >
                                             {getLocalized(
                                               member,

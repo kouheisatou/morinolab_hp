@@ -192,7 +192,7 @@ export function Publications() {
 
                     {/* Authors */}
                     {publication.authorMemberIds && (
-                      <div className='mt-2 flex flex-wrap gap-2 flex-grow'>
+                      <div className='mt-2 flex flex-wrap gap-2 min-h-[1.75rem]'>
                         {publication.authorMemberIds
                           .split(',')
                           .map((id) => id.trim())
@@ -202,7 +202,7 @@ export function Publications() {
                             return member ? (
                               <span
                                 key={member.id}
-                                className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30'
+                                className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
                               >
                                 {getLocalized(member, 'name', locale)}
                               </span>
