@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, ElementType } from 'react';
 import { useFadeInAnimation } from '@/hooks/use-fade-in-animation';
 
 interface AnimatedSectionProps {
@@ -10,7 +10,7 @@ interface AnimatedSectionProps {
   translateY?: number;
   scale?: number;
   className?: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType<any>;
 }
 
 export function AnimatedSection({
