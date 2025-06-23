@@ -121,17 +121,8 @@ export function Publications() {
           style={titleAnimation.style}
           className='text-5xl font-bold text-white mb-6'
         >
-          {locale === 'ja' ? '研究出版物' : 'Research Publications'}
+          {locale === 'ja' ? '論文' : 'Publications'}
         </h2>
-        <p
-          ref={descAnimation.ref}
-          style={descAnimation.style}
-          className='text-xl text-gray-300 max-w-3xl mx-auto'
-        >
-          {locale === 'ja'
-            ? '量子コンピューティング、機械学習、暗号技術分野での最新の研究成果をご覧ください。'
-            : 'Explore our latest research contributions to the field of quantum computing, machine learning, and cryptography through peer-reviewed publications.'}
-        </p>
       </div>
 
       <div className='grid md:grid-cols-2 xl:grid-cols-3 gap-8 auto-rows-[1fr]'>

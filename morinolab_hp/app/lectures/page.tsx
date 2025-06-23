@@ -128,8 +128,8 @@ export default function LecturesPage() {
             </h1>
             <p className='text-xl text-gray-300 max-w-3xl mx-auto'>
               {locale === 'ja'
-                ? 'コンピュータサイエンスや先端技術の基礎から応用までをカバーする講義です。'
-                : 'Comprehensive courses covering fundamental concepts to advanced topics in computer science and emerging technologies.'}
+                ? 'コンピュータサイエンスと情報通信技術に関する基礎から応用までを網羅した講義を提供します。'
+                : 'Comprehensive courses covering fundamental concepts to advanced topics in computer science and information communication technologies.'}
             </p>
           </div>
 

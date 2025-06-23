@@ -120,8 +120,8 @@ export function Lectures() {
           }`}
         >
           {locale === 'ja'
-            ? 'コンピュータサイエンスと先端技術に関する基礎から応用までを網羅した講義を提供します。'
-            : 'Comprehensive courses covering fundamental concepts to advanced topics in computer science and emerging technologies.'}
+            ? 'コンピュータサイエンスと情報通信技術に関する基礎から応用までを網羅した講義を提供します。'
+            : 'Comprehensive courses covering fundamental concepts to advanced topics in computer science and information communication technologies.'}
         </p>
       </div>
 
@@ -225,7 +225,7 @@ export function Lectures() {
             size='lg'
             className='bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 text-lg font-semibold'
           >
-            View All Lectures
+            {locale === 'ja' ? 'すべての講義を見る' : 'View All Lectures'}
           </Button>
         </Link>
       </div>

@@ -173,20 +173,15 @@ export default function PublicationsPage() {
               </Link>
               <ChevronRight className='w-4 h-4 text-gray-500' />
               <span className='text-white font-medium'>
-                {locale === 'ja' ? '出版物' : 'Publications'}
+                {locale === 'ja' ? '論文' : 'Publications'}
               </span>
             </nav>
           </div>
 
-          <div className='text-center mb-16'>
+          <div className='mb-16'>
             <h1 className='text-5xl font-bold text-white mb-6'>
-              {locale === 'ja' ? '出版物' : 'Publications'}
+              {locale === 'ja' ? '論文' : 'Publications'}
             </h1>
-            <p className='text-xl text-gray-300 max-w-3xl mx-auto'>
-              {locale === 'ja'
-                ? 'MorinoLab の研究成果は権威ある学術誌や国際会議で発表されています。'
-                : 'Our research contributions to the scientific community through peer-reviewed publications in top-tier journals and conferences.'}
-            </p>
           </div>
 
           {/* フィルターセクション */}

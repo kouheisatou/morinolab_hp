@@ -43,7 +43,17 @@ export function Research() {
     scale: 0.95,
   });
 
+  // 「すべての研究テーマを見る」ボタン用アニメーション
+  const buttonAnimation = useFadeInAnimation<HTMLDivElement>({
+    delay: 500,
+    duration: 800,
+    translateY: 30,
+  });
+
+  // 表示用の上位3テーマ
   const [themes, setThemes] = useState<Theme[]>([]);
+  // 全テーマ数を保持
+  const [totalThemeCount, setTotalThemeCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { locale } = useLocale();
@@ -56,7 +66,9 @@ export function Research() {
         const themesData = await loadThemes();
         console.log('Research component: Received themes:', themesData);
 
-        // 上位3つのテーマを取得
+        // 取得したテーマ数を保存
+        setTotalThemeCount(themesData.length);
+        // 上位3つのテーマを表示用に抽出
         const topThemes = themesData.slice(0, 3);
         setThemes(topThemes);
       } catch (err) {
@@ -108,8 +120,8 @@ export function Research() {
           className='text-xl text-gray-300 max-w-3xl mx-auto'
         >
           {locale === 'ja'
-            ? '私たちの研究は先端技術と計算手法の多領域にわたり、イノベーションの限界を広げています。'
-            : "Our research spans multiple domains of advanced technology and computational methods, pushing the boundaries of what's possible in modern innovation."}
+            ? '多様な情報通信分野にわたり、先端技術の応用と社会課題の解決に挑戦しています。'
+            : 'Our research spans diverse areas of information and communication technology, striving to apply advanced technologies to solve real-world problems.'}
         </p>
       </div>
 
@@ -205,6 +217,23 @@ export function Research() {
           })
         )}
       </div>
+
+      {/* すべてのテーマを見るボタン */}
+      {totalThemeCount > 3 && (
+        <div
+          ref={buttonAnimation.ref}
+          style={buttonAnimation.style}
+          className='mt-12 text-center'
+        >
+          <Link href='/theme'>
+            <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'>
+              {locale === 'ja'
+                ? 'すべての研究テーマを見る'
+                : 'View All Research Themes'}
+            </Button>
+          </Link>
+        </div>
+      )}
     </SectionWrapper>
   );
 }

@@ -128,18 +128,6 @@ export function Team() {
         >
           {locale === 'ja' ? '研究チーム' : 'Our Research Team'}
         </h2>
-        <p
-          ref={descRef}
-          className={`text-xl text-gray-300 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${
-            descVisible
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-0 translate-y-10'
-          }`}
-        >
-          {locale === 'ja'
-            ? '量子コンピューティングの革新を推進する優秀なメンバーをご紹介します。多様な分野の専門家が集まっています。'
-            : 'Meet the brilliant minds driving innovation in quantum computing research. Our diverse team combines expertise from multiple disciplines.'}
-        </p>
       </div>
 
       {/* Professor Section */}

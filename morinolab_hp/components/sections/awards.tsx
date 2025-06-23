@@ -118,15 +118,6 @@ export function Awards() {
         >
           {locale === 'ja' ? '受賞歴' : 'Awards & Recognition'}
         </h2>
-        <p
-          ref={descAnimation.ref}
-          style={descAnimation.style}
-          className='text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto px-4'
-        >
-          {locale === 'ja'
-            ? '学術界・研究コミュニティからの受賞と評価をご紹介します。'
-            : 'Celebrating our achievements and recognition from the academic and research community.'}
-        </p>
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 px-4 auto-rows-[1fr]'>

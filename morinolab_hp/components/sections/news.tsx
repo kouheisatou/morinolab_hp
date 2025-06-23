@@ -112,18 +112,6 @@ export function News() {
         >
           {locale === 'ja' ? '最新ニュース' : 'Latest News & Updates'}
         </h2>
-        <p
-          ref={descRef}
-          className={`text-xl text-gray-300 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${
-            descVisible
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-0 translate-y-10'
-          }`}
-        >
-          {locale === 'ja'
-            ? '量子コンピューティング分野での最新の研究成果や出版物、受賞情報をご覧ください。'
-            : 'Stay updated with our latest research breakthroughs, publications, and achievements in the field of quantum computing.'}
-        </p>
       </div>
 
       <div className='grid md:grid-cols-2 gap-8 auto-rows-[1fr]'>
@@ -202,7 +190,7 @@ export function News() {
             size='lg'
             className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'
           >
-            View All News
+            {locale === 'ja' ? 'すべてのニュースを見る' : 'View All News'}
           </Button>
         </Link>
       </div>

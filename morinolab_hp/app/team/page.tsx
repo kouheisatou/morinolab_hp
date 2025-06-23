@@ -148,15 +148,10 @@ export default function TeamPage() {
             </nav>
           </div>
 
-          <div className='text-center mb-16'>
+          <div className='mb-16'>
             <h1 className='text-5xl font-bold text-white mb-6'>
               {locale === 'ja' ? 'チーム紹介' : 'Meet Our Team'}
             </h1>
-            <p className='text-xl text-gray-300 max-w-3xl mx-auto'>
-              {locale === 'ja'
-                ? '量子コンピューティングの最前線を切り拓く多彩な研究者・学生をご紹介します。'
-                : 'Our diverse team of researchers, faculty, and students are united by their passion for advancing the frontiers of quantum computing and related technologies.'}
-            </p>
           </div>
 
           {/* タグフィルター */}

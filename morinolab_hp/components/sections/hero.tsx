@@ -41,13 +41,13 @@ export function Hero() {
     translateY: 25,
   });
 
-  const titlePart1 = 'Morino';
-  const titlePart2 = 'Lab';
+  const titlePart1 = locale === 'ja' ? '森野' : 'Morino';
+  const titlePart2 = locale === 'ja' ? '研究室' : 'Lab';
 
   const subtitle =
     locale === 'ja'
-      ? '量子コンピューティングの未来を切り拓く最先端研究'
-      : 'Pioneering the future of quantum computing through innovative research and cutting-edge technology development';
+      ? '移動通信ネットワーク研究室'
+      : 'Mobile Information Networking Laboratory';
 
   const exploreText = locale === 'ja' ? '研究内容を見る' : 'Explore Research';
   const teamText = locale === 'ja' ? 'メンバーを見る' : 'Meet the Team';

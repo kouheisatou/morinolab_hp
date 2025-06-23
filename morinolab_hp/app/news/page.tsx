@@ -78,11 +78,6 @@ export default function NewsPage() {
             <h1 className='text-5xl font-bold text-white mb-6'>
               {locale === 'ja' ? '最新ニュース' : 'Latest News'}
             </h1>
-            <p className='text-xl text-gray-300 max-w-3xl mx-auto'>
-              {locale === 'ja'
-                ? '量子コンピューティング分野での最新の研究成果や活動をお知らせします。'
-                : 'Stay updated with our latest research breakthroughs, publications, and achievements in the field of quantum computing.'}
-            </p>
           </div>
 
           <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>

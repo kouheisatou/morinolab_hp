@@ -135,15 +135,10 @@ export default function AwardsPage() {
           </div>
 
           {/* Overview */}
-          <div className='text-center mb-24'>
+          <div className='mb-24'>
             <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6'>
               {locale === 'ja' ? '受賞歴' : 'Awards & Recognition'}
             </h1>
-            <p className='text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto px-4'>
-              {locale === 'ja'
-                ? 'MorinoLab の研究成果は国内外で高く評価され、多数の賞を受賞しています。'
-                : 'Our research excellence has been recognized by prestigious organizations and institutions worldwide, highlighting our contributions to quantum computing.'}
-            </p>
           </div>
 
           {/* Timeline - Desktop & Mobile Views */}

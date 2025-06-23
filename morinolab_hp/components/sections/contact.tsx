@@ -67,31 +67,39 @@ export function Contact() {
 
                   <div className='space-y-6 flex-grow'>
                     <div className='flex items-start space-x-4'>
+                      <Mail className='w-6 h-6 text-cyan-400 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300' />
+                      <div>
+                        <h4 className='text-white font-semibold mb-1'>
+                          {locale === 'ja' ? '名称' : 'Name'}
+                        </h4>
+                        <p className='text-gray-300'>
+                          {locale === 'ja'
+                            ? '芝浦工業大学工学部情報通信工学課程'
+                            : 'Department of Information and Communication Engineering, Shibaura Institute of Technology'}
+                          <br />
+                          {locale === 'ja'
+                            ? '森野博章研究室'
+                            : 'Morino Laboratory'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className='flex items-start space-x-4'>
                       <MapPin className='w-6 h-6 text-blue-400 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300' />
                       <div>
                         <h4 className='text-white font-semibold mb-1'>
                           {locale === 'ja' ? '住所' : 'Address'}
                         </h4>
                         <p className='text-gray-300'>
-                          Department of Computer Science
+                          {locale === 'ja' ? '135-8548' : '135-8548'}
                           <br />
-                          University of Technology
+                          {locale === 'ja'
+                            ? '東京都江東区豊洲3-7-5'
+                            : '3-7-5 Toyosu, Koto-ku, Tokyo'}
                           <br />
-                          123 Research Blvd
-                          <br />
-                          Tech City, TC 12345
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className='flex items-start space-x-4'>
-                      <Mail className='w-6 h-6 text-cyan-400 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300' />
-                      <div>
-                        <h4 className='text-white font-semibold mb-1'>
-                          {locale === 'ja' ? 'メール' : 'Email'}
-                        </h4>
-                        <p className='text-gray-300'>
-                          morino.lab@university.edu
+                          {locale === 'ja'
+                            ? '研究棟12階 12-I-32号室'
+                            : '12-I-32, 12th Floor, Research Building'}
                         </p>
                       </div>
                     </div>
@@ -102,7 +110,9 @@ export function Contact() {
                         <h4 className='text-white font-semibold mb-1'>
                           {locale === 'ja' ? '電話' : 'Phone'}
                         </h4>
-                        <p className='text-gray-300'>+1 (555) 123-4567</p>
+                        <p className='text-gray-300'>
+                          (TEL) 03-5859-8254 (FAX) 03-5859-8254
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -113,36 +123,34 @@ export function Contact() {
               ) : (
                 <GlassCard className='p-8 h-full flex flex-col relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
                   <h3 className='text-2xl font-bold text-white mb-6 group-hover:text-cyan-400 transition-colors duration-300'>
-                    {locale === 'ja'
-                      ? '研究参加希望'
-                      : 'Research Opportunities'}
+                    {locale === 'ja' ? 'アクセス' : 'Access'}
                   </h3>
 
                   <div className='space-y-4 mb-6 flex-grow'>
                     <p className='text-gray-300'>
                       {locale === 'ja'
-                        ? '才能ある学生や研究者を募集しています。量子コンピューティングへの情熱をお持ちで最先端研究に参加したい方は、ぜひご相談ください。'
-                        : "We are always looking for talented students and researchers to join our team. If you're passionate about quantum computing and want to contribute to cutting-edge research, we'd love to discuss opportunities."}
+                        ? '豊洲キャンパスへのアクセスは以下をご参照ください。最寄り駅から徒歩圏内でお越しいただけます。'
+                        : 'Please refer to the information below for directions to the Toyosu Campus. The laboratory is within walking distance from the nearest stations.'}
                     </p>
 
                     <ul className='space-y-2 text-gray-300'>
                       <li className='flex items-start'>
                         <span className='w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0' />
                         {locale === 'ja'
-                          ? '博士課程・修士課程の募集'
-                          : "PhD and Master's positions available"}
+                          ? '東京メトロ有楽町線「豊洲駅」1c出口 徒歩8分'
+                          : '8-minute walk from Toyosu Station (Tokyo Metro Yurakucho Line, Exit 1c)'}
                       </li>
                       <li className='flex items-start'>
                         <span className='w-2 h-2 bg-cyan-400 rounded-full mt-2 mr-3 flex-shrink-0' />
                         {locale === 'ja'
-                          ? 'ポスドク研究員の募集'
-                          : 'Postdoctoral research opportunities'}
+                          ? 'ゆりかもめ「豊洲駅」 徒歩10分'
+                          : '10-minute walk from Toyosu Station (Yurikamome Line)'}
                       </li>
                       <li className='flex items-start'>
                         <span className='w-2 h-2 bg-purple-400 rounded-full mt-2 mr-3 flex-shrink-0' />
                         {locale === 'ja'
-                          ? '産学連携プロジェクト'
-                          : 'Industry collaboration projects'}
+                          ? '都営バス「豊洲駅前」 徒歩8分'
+                          : '8-minute walk from Toyosu-ekimae Bus Stop (Toei Bus)'}
                       </li>
                     </ul>
                   </div>
@@ -150,10 +158,19 @@ export function Contact() {
                   <div className='mt-auto'>
                     <Button
                       size='lg'
+                      asChild
                       className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white w-full transition-all duration-300'
                     >
-                      {locale === 'ja' ? '応募する' : 'Apply Now'}
-                      <ExternalLink className='w-4 h-4 ml-2' />
+                      <a
+                        href='https://maps.app.goo.gl/KnDBYQ3JDZ9r1TKZ6'
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
+                        {locale === 'ja'
+                          ? 'Google マップで見る'
+                          : 'View on Google Maps'}
+                        <ExternalLink className='w-4 h-4 ml-2 inline' />
+                      </a>
                     </Button>
                   </div>
 

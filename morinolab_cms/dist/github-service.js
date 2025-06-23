@@ -250,7 +250,7 @@ class GitHubService {
             let hasChanges = false;
             for (const row of statusMatrix) {
                 // row structure: [filepath, HEAD, workdir, stage]
-                const [filepath, /* headStatus */ , workdirStatus, stageStatus] = row;
+                const [filepath /* headStatus */, , workdirStatus, stageStatus] = row;
                 // If workdir differs from stage, we need to update the index
                 if (workdirStatus !== stageStatus) {
                     if (workdirStatus === 0) {

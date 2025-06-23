@@ -13,28 +13,9 @@ import {
 } from '@/lib/client-content-loader';
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  Home,
-  ChevronRight,
-  Lightbulb,
-  Cpu,
-  Zap,
-  Atom,
-  Brain,
-  Shield,
-} from 'lucide-react';
+import { Home, ChevronRight } from 'lucide-react';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
-
-const iconArray = [Atom, Brain, Shield, Lightbulb, Cpu, Zap];
-const colorArray = [
-  'from-blue-500 to-cyan-500',
-  'from-purple-500 to-pink-500',
-  'from-green-500 to-teal-500',
-  'from-orange-500 to-red-500',
-  'from-indigo-500 to-purple-500',
-  'from-yellow-500 to-orange-500',
-];
 
 interface ClientPageProps {
   id: string;
@@ -107,9 +88,10 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
     );
   }
 
-  const iconIndex = parseInt(theme.id) % iconArray.length;
-  const Icon = iconArray[iconIndex];
-  const color = colorArray[iconIndex];
+  // サムネイル画像パス
+  const thumbnailSrc = getStaticPath(
+    `/generated_contents/theme/${theme.thumbnail}`
+  );
 
   return (
     <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
@@ -145,10 +127,19 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
             <article className='bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden'>
               <div className='relative bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-8 md:p-12'>
                 <div className='flex items-start space-x-6'>
-                  <div
-                    className={`w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-r ${color} flex items-center justify-center flex-shrink-0`}
-                  >
-                    <Icon className='w-8 h-8 md:w-10 md:h-10 text-white' />
+                  {/* サムネイル画像をアイコンエリアに表示 */}
+                  <div className='w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden flex-shrink-0'>
+                    <Image
+                      src={thumbnailSrc}
+                      alt={getLocalized(theme, 'name', locale)}
+                      width={80}
+                      height={80}
+                      className='object-cover w-full h-full'
+                      onError={(e) => {
+                        const img = e.currentTarget as HTMLImageElement;
+                        img.src = getStaticPath('/img/noimage_theme.png');
+                      }}
+                    />
                   </div>
                   <div className='flex-1'>
                     <h1 className='text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight'>
@@ -156,22 +147,6 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
                     </h1>
                   </div>
                 </div>
-              </div>
-
-              <div className='relative h-64 md:h-80 overflow-hidden'>
-                <Image
-                  src={getStaticPath(
-                    `/generated_contents/theme/${theme.thumbnail}`
-                  )}
-                  alt={getLocalized(theme, 'name', locale)}
-                  fill
-                  className='object-cover'
-                  onError={(e) => {
-                    const img = e.target as HTMLImageElement;
-                    img.src = getStaticPath('/img/noimage_theme.png');
-                  }}
-                />
-                <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent' />
               </div>
 
               <div className='p-8 md:p-12 space-y-12'>
@@ -183,6 +158,16 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
                     {getLocalized(theme, 'desc', locale)}
                   </p>
                 </div>
+
+                {/* 詳細記事 */}
+                {theme.content && (
+                  <div
+                    className='prose prose-sm sm:prose-base lg:prose-lg prose-invert max-w-none prose-headings:text-white prose-p:text-gray-200'
+                    dangerouslySetInnerHTML={{
+                      __html: theme.content,
+                    }}
+                  />
+                )}
               </div>
             </article>
           </div>
