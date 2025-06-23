@@ -245,13 +245,22 @@ class GitHubService {
                 onAuth: () => ({ username: this.config.token, password: '' }),
                 author: this.author,
             });
-            // stage all changed files
+            // stage all changed files (add modified/new, remove deleted)
             const statusMatrix = (await git.statusMatrix({ fs: node_fs_1.default, dir: this.dir }));
             let hasChanges = false;
             for (const row of statusMatrix) {
-                const [filepath, , worktreeStatus, stageStatus] = row;
-                if (worktreeStatus !== stageStatus) {
-                    await git.add({ fs: node_fs_1.default, dir: this.dir, filepath });
+                // row structure: [filepath, HEAD, workdir, stage]
+                const [filepath, /* headStatus */ , workdirStatus, stageStatus] = row;
+                // If workdir differs from stage, we need to update the index
+                if (workdirStatus !== stageStatus) {
+                    if (workdirStatus === 0) {
+                        // File no longer exists in workdir → stage deletion
+                        await git.remove({ fs: node_fs_1.default, dir: this.dir, filepath });
+                    }
+                    else {
+                        // File exists/modified → stage addition or modification
+                        await git.add({ fs: node_fs_1.default, dir: this.dir, filepath });
+                    }
                     hasChanges = true;
                 }
             }

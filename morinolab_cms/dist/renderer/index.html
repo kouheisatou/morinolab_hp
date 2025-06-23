@@ -2,8 +2,8 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="build-timestamp" content="1750613540650" />
-    <!-- Build timestamp: 2025-06-22T17:32:20.650Z -->
+    <meta name="build-timestamp" content="1750672310800" />
+    <!-- Build timestamp: 2025-06-23T09:51:50.800Z -->
     <title>Morinolab CMS</title>
     <style>
       body {
@@ -667,6 +667,13 @@
               label: r.nameJa || r.nameEn || r.name || r.id,
             }));
           }
+        } else if (currentType === 'award') {
+          // For award content, we need member list for memberIds selection
+          const memberData = await window.api.getTableData('member');
+          memberChoices = memberData.rows.map((r) => ({
+            id: r.id,
+            label: r.nameJa || r.nameEn || r.name || r.id,
+          }));
         }
         const tableData = await window.api.getTableData(currentType);
         const headers = tableData.header;
@@ -784,6 +791,36 @@
                       'authorMemberIds',
                       vals.join(','),
                     );
+                    const namesAfter = memberChoices
+                      .filter((c) => vals.includes(c.id))
+                      .map((c) => c.label)
+                      .join(',');
+                    btn.textContent = namesAfter || '選択 ▾';
+                  },
+                });
+              };
+              td.innerHTML = '';
+              td.appendChild(btn);
+            } else if (currentType === 'award' && col === 'memberIds') {
+              const currentVals = (row[col] || '')
+                .split(',')
+                .map((v) => v.trim())
+                .filter(Boolean);
+              const names = memberChoices
+                .filter((c) => currentVals.includes(c.id))
+                .map((c) => c.label)
+                .join(',');
+              const btn = document.createElement('button');
+              btn.className = 'dropdownBtn';
+              btn.textContent = names || '選択 ▾';
+              btn.onclick = (e) => {
+                e.stopPropagation();
+                openSelectionPopup({
+                  multiple: true,
+                  choices: memberChoices,
+                  selected: currentVals,
+                  onConfirm: (vals) => {
+                    window.api.updateCell(currentType, row['id'], 'memberIds', vals.join(','));
                     const namesAfter = memberChoices
                       .filter((c) => vals.includes(c.id))
                       .map((c) => c.label)
