@@ -201,6 +201,9 @@ export function Team() {
                 )}
               </div>
 
+              {/* Subtle glow effect on hover */}
+              <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+
               <Link href={`/team/${professor.id}`}>
                 <Button
                   variant='outline'
@@ -211,9 +214,6 @@ export function Team() {
                   <ExternalLink className='w-4 h-4 ml-2' />
                 </Button>
               </Link>
-
-              {/* Subtle glow effect on hover */}
-              <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
             </GlassCard>
           </div>
         </div>
@@ -225,7 +225,7 @@ export function Team() {
           {locale === 'ja' ? '研究メンバー' : 'Research Team'}
         </h3>
 
-        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
+        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-[1fr]'>
           {students.length === 0 ? (
             <div className='col-span-full text-center text-gray-400'>
               <p>
@@ -293,19 +293,6 @@ export function Team() {
                           +{member.tagIds.split(',').length - 2}
                         </span>
                       )}
-                    </div>
-
-                    <div className='mt-auto'>
-                      <Link href={`/team/${member.id}`}>
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
-                        >
-                          {locale === 'ja' ? 'プロフィール' : 'View Profile'}
-                          <ExternalLink className='w-4 h-4 ml-2' />
-                        </Button>
-                      </Link>
                     </div>
 
                     {/* Subtle glow effect on hover */}

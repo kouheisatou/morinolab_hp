@@ -2,13 +2,11 @@
 
 import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
-import { Button } from '@/components/ui/button';
 import { ParticleBackground } from '@/components/ui/particle-background';
 import { Navbar } from '@/components/navigation/navbar';
 import { Footer } from '@/components/navigation/footer';
 import {
   Calendar,
-  ArrowRight,
   Award,
   Trophy,
   Star,
@@ -203,102 +201,91 @@ export default function AwardsPage() {
                       className={`flex ${isEven ? 'justify-start' : 'justify-end'}`}
                     >
                       <div className={`w-5/12 ${isEven ? 'pr-8' : 'pl-8'}`}>
-                        <GlassCard className='p-6 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
-                          {/* 吹き出しの三角形 */}
-                          <div
-                            className={`absolute top-8 ${isEven ? 'right-0 translate-x-full' : 'left-0 -translate-x-full'} w-0 h-0 border-t-8 border-b-8 border-transparent ${isEven ? 'border-l-8 border-l-white/10' : 'border-r-8 border-r-white/10'}`}
-                          ></div>
+                        <Link
+                          href={`/awards/${award.id}`}
+                          className='block group'
+                        >
+                          <GlassCard className='p-6 relative overflow-hidden group-hover:scale-[1.02] transition-all duration-300'>
+                            {/* 吹き出しの三角形 */}
+                            <div
+                              className={`absolute top-8 ${isEven ? 'right-0 translate-x-full' : 'left-0 -translate-x-full'} w-0 h-0 border-t-8 border-b-8 border-transparent ${isEven ? 'border-l-8 border-l-white/10' : 'border-r-8 border-r-white/10'}`}
+                            ></div>
 
-                          <div className='flex items-start space-x-4'>
-                            <div className='w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 group-hover:scale-110 transition-transform duration-300'>
-                              <Image
-                                src={getStaticPath(
-                                  `/generated_contents/award/${award.thumbnail || `${award.id}.jpg`}`
-                                )}
-                                alt={getLocalized(award, 'name', locale)}
-                                width={48}
-                                height={48}
-                                className='object-cover w-full h-full'
-                                onError={(e) => {
-                                  const img =
-                                    e.currentTarget as HTMLImageElement;
-                                  img.src = getStaticPath(
-                                    '/img/noimage_news.png'
-                                  );
-                                }}
-                              />
-                            </div>
-
-                            <div className='flex-grow'>
-                              {/* 日付詳細 */}
-                              <div className='flex items-center space-x-2 mb-3'>
-                                <Calendar className='w-4 h-4 text-gray-400' />
-                                <span className='text-gray-400 text-sm'>
-                                  {formattedDate.month}{' '}
-                                  {formattedDate.day &&
-                                    formattedDate.day + ', '}
-                                  {formattedDate.year}
-                                </span>
+                            <div className='flex items-start space-x-4'>
+                              <div className='w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 group-hover:scale-110 transition-transform duration-300'>
+                                <Image
+                                  src={getStaticPath(
+                                    `/generated_contents/award/${award.thumbnail || `${award.id}.jpg`}`
+                                  )}
+                                  alt={getLocalized(award, 'name', locale)}
+                                  width={48}
+                                  height={48}
+                                  className='object-cover w-full h-full'
+                                  onError={(e) => {
+                                    const img =
+                                      e.currentTarget as HTMLImageElement;
+                                    img.src = getStaticPath(
+                                      '/img/noimage_news.png'
+                                    );
+                                  }}
+                                />
                               </div>
 
-                              <h3 className='text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
-                                {getLocalized(award, 'name', locale)}
-                              </h3>
+                              <div className='flex-grow'>
+                                {/* 日付詳細 */}
+                                <div className='flex items-center space-x-2 mb-3'>
+                                  <Calendar className='w-4 h-4 text-gray-400' />
+                                  <span className='text-gray-400 text-sm'>
+                                    {formattedDate.month}{' '}
+                                    {formattedDate.day &&
+                                      formattedDate.day + ', '}
+                                    {formattedDate.year}
+                                  </span>
+                                </div>
 
-                              {/* メンバー情報 */}
-                              {(() => {
-                                const awardMembers = getAwardMembers(award);
-                                if (awardMembers.length > 0) {
-                                  return (
-                                    <div className='mb-4'>
-                                      <div className='flex items-center flex-wrap gap-2'>
-                                        <span className='text-gray-400 text-sm flex-shrink-0'>
-                                          {locale === 'ja'
-                                            ? '受賞者:'
-                                            : 'Recipients:'}
-                                        </span>
-                                        {awardMembers
-                                          .slice(0, 2)
-                                          .map((member) => (
-                                            <span
-                                              key={member.id}
-                                              className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
-                                            >
-                                              {getLocalized(
-                                                member,
-                                                'name',
-                                                locale
-                                              )}
+                                <h3 className='text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
+                                  {getLocalized(award, 'name', locale)}
+                                </h3>
+
+                                {/* メンバー情報 */}
+                                {(() => {
+                                  const awardMembers = getAwardMembers(award);
+                                  if (awardMembers.length > 0) {
+                                    return (
+                                      <div className='mb-0'>
+                                        <div className='flex items-center flex-wrap gap-2'>
+                                          {awardMembers
+                                            .slice(0, 2)
+                                            .map((member) => (
+                                              <span
+                                                key={member.id}
+                                                className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
+                                              >
+                                                {getLocalized(
+                                                  member,
+                                                  'name',
+                                                  locale
+                                                )}
+                                              </span>
+                                            ))}
+                                          {awardMembers.length > 2 && (
+                                            <span className='px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs'>
+                                              +{awardMembers.length - 2}
                                             </span>
-                                          ))}
-                                        {awardMembers.length > 2 && (
-                                          <span className='px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs'>
-                                            +{awardMembers.length - 2}
-                                          </span>
-                                        )}
+                                          )}
+                                        </div>
                                       </div>
-                                    </div>
-                                  );
-                                }
-                                return null;
-                              })()}
-
-                              <Link href={`/awards/${award.id}`}>
-                                <Button
-                                  variant='outline'
-                                  size='sm'
-                                  className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
-                                >
-                                  {t('viewDetails', locale)}
-                                  <ArrowRight className='w-4 h-4 ml-2' />
-                                </Button>
-                              </Link>
+                                    );
+                                  }
+                                  return null;
+                                })()}
+                              </div>
                             </div>
-                          </div>
 
-                          {/* ホバーエフェクト */}
-                          <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-                        </GlassCard>
+                            {/* ホバーエフェクト */}
+                            <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                          </GlassCard>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -330,103 +317,90 @@ export default function AwardsPage() {
                         </div>
                       )}
 
-                      <GlassCard className='p-4 sm:p-6 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
-                        <div className='flex items-start space-x-3 sm:space-x-4'>
-                          {/* アワードアイコン/画像 */}
-                          <div className='flex-shrink-0'>
-                            <div className='w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden group-hover:scale-110 transition-transform duration-300'>
-                              <Image
-                                src={getStaticPath(
-                                  `/generated_contents/award/${award.thumbnail || `${award.id}.jpg`}`
-                                )}
-                                alt={getLocalized(award, 'name', locale)}
-                                width={48}
-                                height={48}
-                                className='object-cover w-full h-full'
-                                onError={(e) => {
-                                  const img =
-                                    e.currentTarget as HTMLImageElement;
-                                  img.src = getStaticPath(
-                                    '/img/noimage_news.png'
-                                  );
-                                }}
-                              />
-                            </div>
-                          </div>
-
-                          <div className='flex-grow min-w-0'>
-                            {/* 日付 */}
-                            <div className='flex items-center space-x-2 mb-2'>
-                              <Calendar className='w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0' />
-                              <span className='text-gray-400 text-xs sm:text-sm'>
-                                {formattedDate.month}{' '}
-                                {formattedDate.day && formattedDate.day + ', '}
-                                {formattedDate.year}
-                              </span>
+                      <Link
+                        href={`/awards/${award.id}`}
+                        className='block group'
+                      >
+                        <GlassCard className='p-4 sm:p-6 relative overflow-hidden group-hover:scale-[1.02] transition-all duration-300'>
+                          <div className='flex items-start space-x-3 sm:space-x-4'>
+                            {/* アワードアイコン/画像 */}
+                            <div className='flex-shrink-0'>
+                              <div className='w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden group-hover:scale-110 transition-transform duration-300'>
+                                <Image
+                                  src={getStaticPath(
+                                    `/generated_contents/award/${award.thumbnail || `${award.id}.jpg`}`
+                                  )}
+                                  alt={getLocalized(award, 'name', locale)}
+                                  width={48}
+                                  height={48}
+                                  className='object-cover w-full h-full'
+                                  onError={(e) => {
+                                    const img =
+                                      e.currentTarget as HTMLImageElement;
+                                    img.src = getStaticPath(
+                                      '/img/noimage_news.png'
+                                    );
+                                  }}
+                                />
+                              </div>
                             </div>
 
-                            {/* タイトル */}
-                            <h3 className='text-lg sm:text-xl font-bold text-white mb-3 leading-tight group-hover:text-cyan-400 transition-colors duration-300'>
-                              {getLocalized(award, 'name', locale)}
-                            </h3>
+                            <div className='flex-grow min-w-0'>
+                              {/* 日付 */}
+                              <div className='flex items-center space-x-2 mb-2'>
+                                <Calendar className='w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0' />
+                                <span className='text-gray-400 text-xs sm:text-sm'>
+                                  {formattedDate.month}{' '}
+                                  {formattedDate.day &&
+                                    formattedDate.day + ', '}
+                                  {formattedDate.year}
+                                </span>
+                              </div>
 
-                            {/* メンバー情報 */}
-                            {(() => {
-                              const awardMembers = getAwardMembers(award);
-                              if (awardMembers.length > 0) {
-                                return (
-                                  <div className='mb-4'>
-                                    <div className='flex items-center flex-wrap gap-2'>
-                                      <span className='text-gray-400 text-xs sm:text-sm flex-shrink-0'>
-                                        {locale === 'ja'
-                                          ? '受賞者:'
-                                          : 'Recipients:'}
-                                      </span>
-                                      {awardMembers
-                                        .slice(0, 2)
-                                        .map((member) => (
-                                          <span
-                                            key={member.id}
-                                            className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
-                                          >
-                                            {getLocalized(
-                                              member,
-                                              'name',
-                                              locale
-                                            )}
+                              {/* タイトル */}
+                              <h3 className='text-lg sm:text-xl font-bold text-white mb-3 leading-tight group-hover:text-cyan-400 transition-colors duration-300'>
+                                {getLocalized(award, 'name', locale)}
+                              </h3>
+
+                              {/* メンバー情報 */}
+                              {(() => {
+                                const awardMembers = getAwardMembers(award);
+                                if (awardMembers.length > 0) {
+                                  return (
+                                    <div className='mb-0'>
+                                      <div className='flex items-center flex-wrap gap-2'>
+                                        {awardMembers
+                                          .slice(0, 2)
+                                          .map((member) => (
+                                            <span
+                                              key={member.id}
+                                              className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
+                                            >
+                                              {getLocalized(
+                                                member,
+                                                'name',
+                                                locale
+                                              )}
+                                            </span>
+                                          ))}
+                                        {awardMembers.length > 2 && (
+                                          <span className='px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs'>
+                                            +{awardMembers.length - 2}
                                           </span>
-                                        ))}
-                                      {awardMembers.length > 2 && (
-                                        <span className='px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs'>
-                                          +{awardMembers.length - 2}
-                                        </span>
-                                      )}
+                                        )}
+                                      </div>
                                     </div>
-                                  </div>
-                                );
-                              }
-                              return null;
-                            })()}
-
-                            {/* ボタン */}
-                            <div className='flex justify-start'>
-                              <Link href={`/awards/${award.id}`}>
-                                <Button
-                                  variant='outline'
-                                  size='sm'
-                                  className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300 text-xs sm:text-sm'
-                                >
-                                  {t('viewDetails', locale)}
-                                  <ArrowRight className='w-3 h-3 sm:w-4 sm:h-4 ml-2' />
-                                </Button>
-                              </Link>
+                                  );
+                                }
+                                return null;
+                              })()}
                             </div>
                           </div>
-                        </div>
 
-                        {/* ホバーエフェクト */}
-                        <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-                      </GlassCard>
+                          {/* ホバーエフェクト */}
+                          <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                        </GlassCard>
+                      </Link>
                     </div>
                   );
                 })}

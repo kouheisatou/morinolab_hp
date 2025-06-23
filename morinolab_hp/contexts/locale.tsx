@@ -26,12 +26,25 @@ const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<'ja' | 'en'>('ja');
 
-  // 初期化時に localStorage からロケールを読み込む（CSRのみ実行）
+  // 初期化時に localStorage → ブラウザ言語 の順でロケールを決定
   useEffect(() => {
     try {
+      // 1) localStorage に保存された値があれば最優先
       const stored = window.localStorage.getItem('locale');
       if (stored === 'ja' || stored === 'en') {
         setLocaleState(stored);
+        return;
+      }
+
+      // 2) ブラウザの優先言語設定を確認
+      const navLang =
+        navigator.language || (navigator.languages && navigator.languages[0]);
+      if (navLang) {
+        const primary = navLang.toLowerCase().slice(0, 2);
+        const detected = primary === 'ja' ? 'ja' : 'en';
+        setLocaleState(detected as 'ja' | 'en');
+        // persist for future visits
+        window.localStorage.setItem('locale', detected);
       }
     } catch (e) {
       // localStorage が使えない環境では何もしない

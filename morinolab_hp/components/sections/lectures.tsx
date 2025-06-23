@@ -3,14 +3,7 @@
 import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
 import { Button } from '@/components/ui/button';
-import {
-  BookOpen,
-  ArrowRight,
-  Users,
-  Clock,
-  GraduationCap,
-  Monitor,
-} from 'lucide-react';
+import { BookOpen, Users, Clock, GraduationCap, Monitor } from 'lucide-react';
 import {
   useFadeInAnimation,
   useStaggeredFadeIn,
@@ -132,7 +125,7 @@ export function Lectures() {
         </p>
       </div>
 
-      <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
+      <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-[1fr]'>
         {lectures.length === 0 ? (
           <div className='col-span-full text-center text-gray-400'>
             <p>
@@ -151,72 +144,68 @@ export function Lectures() {
               <div
                 ref={cardRef}
                 key={lecture.id}
-                className={`transition-all duration-1000 ${
+                className={`h-full transition-all duration-1000 ${
                   cardVisible
                     ? 'opacity-100 translate-y-0 scale-100'
                     : 'opacity-0 translate-y-20 scale-95'
                 }`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
-                <GlassCard className='p-6 h-full flex flex-col relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
-                  {/* サムネイル */}
-                  <div className='w-full h-40 rounded-lg overflow-hidden mb-4 bg-gradient-to-br from-gray-800 to-gray-900'>
-                    <Image
-                      src={getStaticPath(
-                        `/generated_contents/lecture/${lecture.id}.jpg`
+                <Link
+                  href={`/lectures/${lecture.id}`}
+                  className='block h-full group'
+                >
+                  <GlassCard className='p-6 h-full flex flex-col relative overflow-hidden group-hover:scale-[1.02] transition-all duration-300'>
+                    {/* サムネイル */}
+                    <div className='w-full h-40 rounded-lg overflow-hidden mb-4 bg-gradient-to-br from-gray-800 to-gray-900'>
+                      <Image
+                        src={getStaticPath(
+                          `/generated_contents/lecture/${lecture.id}.jpg`
+                        )}
+                        alt={getLocalized(lecture, 'name', locale)}
+                        width={300}
+                        height={160}
+                        className='object-cover w-full h-full group-hover:scale-110 transition-transform duration-300'
+                        onError={(e) => {
+                          e.currentTarget.src = getStaticPath(
+                            '/img/noimage_lectures.png'
+                          );
+                        }}
+                      />
+                    </div>
+
+                    {/* 講義タイプバッジ */}
+                    <div className='flex items-center space-x-2 mb-3'>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${color} bg-opacity-20 text-white border border-white/20`}
+                      >
+                        {getLocalized(lecture, 'type', locale)}
+                      </span>
+                    </div>
+
+                    <h3 className='text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
+                      {getLocalized(lecture, 'name', locale)}
+                    </h3>
+
+                    {/* サブタイトル（別言語） */}
+                    {locale === 'ja' &&
+                      lecture.nameEn &&
+                      lecture.nameEn !== lecture.nameJa && (
+                        <p className='text-blue-400 text-sm mb-3 font-medium'>
+                          {lecture.nameEn}
+                        </p>
                       )}
-                      alt={getLocalized(lecture, 'name', locale)}
-                      width={300}
-                      height={160}
-                      className='object-cover w-full h-full group-hover:scale-110 transition-transform duration-300'
-                      onError={(e) => {
-                        e.currentTarget.src = getStaticPath(
-                          '/img/noimage_lectures.png'
-                        );
-                      }}
-                    />
-                  </div>
 
-                  {/* 講義タイプバッジ */}
-                  <div className='flex items-center space-x-2 mb-3'>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${color} bg-opacity-20 text-white border border-white/20`}
-                    >
-                      {getLocalized(lecture, 'type', locale)}
-                    </span>
-                  </div>
+                    <p className='text-gray-300 text-sm mb-4 flex-grow line-clamp-3'>
+                      {getLocalized(lecture, 'desc', locale)}
+                    </p>
 
-                  <h3 className='text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300'>
-                    {getLocalized(lecture, 'name', locale)}
-                  </h3>
+                    {/* action button removed; entire card is clickable */}
 
-                  {/* サブタイトル（別言語） */}
-                  {locale === 'ja' &&
-                    lecture.nameEn &&
-                    lecture.nameEn !== lecture.nameJa && (
-                      <p className='text-blue-400 text-sm mb-3 font-medium'>
-                        {lecture.nameEn}
-                      </p>
-                    )}
-
-                  <p className='text-gray-300 text-sm mb-4 flex-grow line-clamp-3'>
-                    {getLocalized(lecture, 'desc', locale)}
-                  </p>
-
-                  <Link href={`/lectures/${lecture.id}`} className='mt-auto'>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      className='w-full border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
-                    >
-                      {locale === 'ja' ? '詳細を見る' : 'View Details'}
-                      <ArrowRight className='w-4 h-4 ml-2' />
-                    </Button>
-                  </Link>
-
-                  {/* ホバーエフェクト */}
-                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-                </GlassCard>
+                    {/* ホバーエフェクト */}
+                    <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                  </GlassCard>
+                </Link>
               </div>
             );
           })

@@ -3,14 +3,7 @@
 import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
 import { Button } from '@/components/ui/button';
-import {
-  Calendar,
-  ExternalLink,
-  Award,
-  Users,
-  BookOpen,
-  TrendingUp,
-} from 'lucide-react';
+import { Calendar, Award, Users, BookOpen, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import {
   useFadeInAnimation,
@@ -38,10 +31,10 @@ export function News() {
 
   // 固定数のアニメーション用refを事前に作成（最大4件表示）
   const cardRefs = [
-    useFadeInAnimation<HTMLDivElement>({ forceVisible: true }),
-    useFadeInAnimation<HTMLDivElement>({ forceVisible: true }),
-    useFadeInAnimation<HTMLDivElement>({ forceVisible: true }),
-    useFadeInAnimation<HTMLDivElement>({ forceVisible: true }),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
+    useFadeInAnimation<HTMLDivElement>(),
   ];
 
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
@@ -133,7 +126,7 @@ export function News() {
         </p>
       </div>
 
-      <div className='grid md:grid-cols-2 gap-8'>
+      <div className='grid md:grid-cols-2 gap-8 auto-rows-[1fr]'>
         {newsItems.length === 0 ? (
           <div className='col-span-2 text-center text-gray-400'>
             <p>
@@ -154,51 +147,42 @@ export function News() {
               <div
                 ref={cardRef}
                 key={item.id}
-                className={`transition-all duration-1000 ${
+                className={`h-full transition-all duration-1000 ${
                   cardVisible
                     ? 'opacity-100 translate-y-0 rotate-0'
                     : 'opacity-0 translate-y-16 scale-95'
                 }`}
                 style={{ transitionDelay: `${index * 200}ms` }}
               >
-                <GlassCard className='p-8 h-full flex flex-col relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
-                  <div className='flex items-start space-x-4 flex-grow'>
-                    <div
-                      className={`w-12 h-12 rounded-lg bg-gradient-to-r ${color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
-                    >
-                      <Icon className='w-6 h-6 text-white' />
-                    </div>
-
-                    <div className='flex-grow flex flex-col'>
-                      <div className='flex items-center space-x-2 mb-3'>
-                        <Calendar className='w-4 h-4 text-gray-400' />
-                        <span className='text-gray-400 text-sm'>
-                          {item.date}
-                        </span>
+                <Link href={`/news/${item.id}`} className='block h-full group'>
+                  <GlassCard className='p-8 h-full flex flex-col relative overflow-hidden group-hover:scale-[1.02] transition-all duration-300'>
+                    <div className='flex items-start space-x-4'>
+                      <div
+                        className={`w-12 h-12 rounded-lg bg-gradient-to-r ${color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        <Icon className='w-6 h-6 text-white' />
                       </div>
 
-                      <h3 className='text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors duration-300'>
-                        {getLocalized(item, 'name', locale)}
-                      </h3>
+                      <div className='flex flex-col'>
+                        <div className='flex items-center space-x-2 mb-3'>
+                          <Calendar className='w-4 h-4 text-gray-400' />
+                          <span className='text-gray-400 text-sm'>
+                            {item.date}
+                          </span>
+                        </div>
 
-                      <div className='mt-auto'>
-                        <Link href={`/news/${item.id}`}>
-                          <Button
-                            variant='outline'
-                            size='sm'
-                            className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
-                          >
-                            {locale === 'ja' ? '続きを読む' : 'Read More'}
-                            <ExternalLink className='w-4 h-4 ml-2' />
-                          </Button>
-                        </Link>
+                        <h3 className='text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors duration-300'>
+                          {getLocalized(item, 'name', locale)}
+                        </h3>
+
+                        {/* action button removed; card clickable */}
                       </div>
                     </div>
-                  </div>
 
-                  {/* Subtle glow effect on hover */}
-                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-                </GlassCard>
+                    {/* Subtle glow effect on hover */}
+                    <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                  </GlassCard>
+                </Link>
               </div>
             );
           })

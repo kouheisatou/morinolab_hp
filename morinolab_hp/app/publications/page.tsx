@@ -8,7 +8,6 @@ import { Navbar } from '@/components/navigation/navbar';
 import { Footer } from '@/components/navigation/footer';
 import {
   BookOpen,
-  ArrowRight,
   Users,
   Tags,
   Filter,
@@ -268,103 +267,91 @@ export default function PublicationsPage() {
 
           <div className='space-y-6'>
             {filteredPublications.map((publication) => (
-              <GlassCard
+              <Link
                 key={publication.id}
-                className='p-8 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'
+                href={`/publications/${publication.id}`}
+                className='block group'
               >
-                <div className='flex items-start space-x-6'>
-                  {/* Thumbnail within existing shape */}
-                  <div className='w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 group-hover:scale-110 transition-transform duration-300 bg-gradient-to-r from-blue-500 to-cyan-500'>
-                    <Image
-                      src={getStaticPath(
-                        `/generated_contents/publication/${publication.id}.jpg`
-                      )}
-                      alt={getLocalized(publication, 'title', locale)}
-                      width={64}
-                      height={64}
-                      className='object-cover w-full h-full'
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src =
-                          getStaticPath('/img/noimage_publication.png');
-                      }}
-                    />
-                  </div>
-
-                  <div className='flex-grow'>
-                    {/* Title & Tags */}
-                    <div className='flex flex-wrap items-center gap-2 mb-2'>
-                      <h3 className='text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300'>
-                        {getLocalized(publication, 'title', locale)}
-                      </h3>
-
-                      {/* Tags */}
-                      {publication.tagIds
-                        .split(',')
-                        .map((id) => getTagName(id.trim()))
-                        .slice(0, 4)
-                        .map((tagName) => (
-                          <span
-                            key={tagName}
-                            className='text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full'
-                          >
-                            {tagName}
-                          </span>
-                        ))}
-                      {publication.tagIds.split(',').length > 4 && (
-                        <span className='text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full'>
-                          +{publication.tagIds.split(',').length - 4}
-                        </span>
-                      )}
+                <GlassCard className='p-8 relative overflow-hidden group-hover:scale-[1.02] transition-all duration-300'>
+                  <div className='flex items-start space-x-6'>
+                    {/* Thumbnail within existing shape */}
+                    <div className='w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 group-hover:scale-110 transition-transform duration-300 bg-gradient-to-r from-blue-500 to-cyan-500'>
+                      <Image
+                        src={getStaticPath(
+                          `/generated_contents/publication/${publication.id}.jpg`
+                        )}
+                        alt={getLocalized(publication, 'title', locale)}
+                        width={64}
+                        height={64}
+                        className='object-cover w-full h-full'
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src =
+                            getStaticPath('/img/noimage_publication.png');
+                        }}
+                      />
                     </div>
 
-                    {/* Publication name */}
-                    <div className='flex items-center space-x-1 text-cyan-400 text-sm font-medium mb-1'>
-                      <BookOpen className='w-4 h-4' />
-                      <span>
-                        {getLocalized(publication, 'publicationName', locale)}
-                      </span>
-                    </div>
+                    <div className='flex-grow'>
+                      {/* Title & Tags */}
+                      <div className='flex flex-wrap items-center gap-2 mb-2'>
+                        <h3 className='text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300'>
+                          {getLocalized(publication, 'title', locale)}
+                        </h3>
 
-                    {/* Authors */}
-                    <div className='flex items-center space-x-1 text-gray-400 text-xs mb-1'>
-                      <Users className='w-4 h-4' />
-                      <span>
-                        {publication.authorMemberIds
+                        {/* Tags */}
+                        {publication.tagIds
                           .split(',')
-                          .map((id) => getMemberName(id.trim()))
-                          .slice(0, 2)
-                          .join(', ')}
-                        {publication.authorMemberIds.split(',').length > 2 &&
-                          ` +${publication.authorMemberIds.split(',').length - 2}`}
-                      </span>
+                          .map((id) => getTagName(id.trim()))
+                          .slice(0, 4)
+                          .map((tagName) => (
+                            <span
+                              key={tagName}
+                              className='text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full'
+                            >
+                              {tagName}
+                            </span>
+                          ))}
+                        {publication.tagIds.split(',').length > 4 && (
+                          <span className='text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full'>
+                            +{publication.tagIds.split(',').length - 4}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Publication name */}
+                      <div className='flex items-center space-x-1 text-cyan-400 text-sm font-medium mb-1'>
+                        <BookOpen className='w-4 h-4' />
+                        <span>
+                          {getLocalized(publication, 'publicationName', locale)}
+                        </span>
+                      </div>
+
+                      {/* Authors */}
+                      <div className='flex items-center space-x-1 text-gray-400 text-xs mb-1'>
+                        <Users className='w-4 h-4' />
+                        <span>
+                          {publication.authorMemberIds
+                            .split(',')
+                            .map((id) => getMemberName(id.trim()))
+                            .slice(0, 2)
+                            .join(', ')}
+                          {publication.authorMemberIds.split(',').length > 2 &&
+                            ` +${publication.authorMemberIds.split(',').length - 2}`}
+                        </span>
+                      </div>
+
+                      {/* Published date */}
+                      <div className='flex items-center space-x-1 text-gray-400 text-xs mb-1'>
+                        <Calendar className='w-4 h-4' />
+                        <span>{publication.publishedDate}</span>
+                      </div>
                     </div>
-
-                    {/* Published date */}
-                    <div className='flex items-center space-x-1 text-gray-400 text-xs mb-1'>
-                      <Calendar className='w-4 h-4' />
-                      <span>{publication.publishedDate}</span>
-                    </div>
-
-                    {/* Spacer before link */}
-                    <div className='mb-4'></div>
-
-                    {/* Link */}
-                    <Link href={`/publications/${publication.id}`}>
-                      <Button
-                        variant='outline'
-                        size='sm'
-                        className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
-                      >
-                        {t('viewDetails', locale)}
-                        <ArrowRight className='w-4 h-4 ml-2' />
-                      </Button>
-                    </Link>
                   </div>
-                </div>
 
-                {/* Subtle glow effect on hover */}
-                <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-              </GlassCard>
+                  {/* Subtle glow effect on hover */}
+                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                </GlassCard>
+              </Link>
             ))}
           </div>
 

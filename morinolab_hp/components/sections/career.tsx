@@ -29,9 +29,8 @@ function CareerListItem({
   index: number;
 }) {
   const { locale } = useLocale();
-  const { elementRef: itemRef, isVisible } = useFadeInAnimation<HTMLLIElement>({
-    forceVisible: true,
-  });
+  const { elementRef: itemRef, isVisible } =
+    useFadeInAnimation<HTMLLIElement>();
 
   const color = colorArray[index % colorArray.length];
 

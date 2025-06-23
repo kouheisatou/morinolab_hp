@@ -3,15 +3,7 @@
 import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
 import { Button } from '@/components/ui/button';
-import {
-  Award,
-  Calendar,
-  ExternalLink,
-  Trophy,
-  Star,
-  Target,
-  Medal,
-} from 'lucide-react';
+import { Award, Calendar, Trophy, Star, Medal } from 'lucide-react';
 import Link from 'next/link';
 import {
   useFadeInAnimation,
@@ -137,7 +129,7 @@ export function Awards() {
         </p>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 px-4'>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 px-4 auto-rows-[1fr]'>
         {awards.length === 0 ? (
           <div className='col-span-full text-center text-gray-400'>
             <p>
@@ -156,82 +148,68 @@ export function Awards() {
                 style={cardAnimation.style}
                 key={award.id}
               >
-                <GlassCard className='p-4 sm:p-6 lg:p-8 h-full flex flex-col relative overflow-hidden group hover:scale-[1.02] transition-all duration-300'>
-                  <div className='flex items-start space-x-3 sm:space-x-4 flex-grow'>
-                    <div
-                      className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-r ${color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
-                    >
-                      <Icon className='w-5 h-5 sm:w-6 sm:h-6 text-white' />
-                    </div>
-
-                    <div className='flex-grow flex flex-col min-w-0'>
-                      <div className='flex items-center space-x-2 mb-2 sm:mb-3'>
-                        <Calendar className='w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0' />
-                        <span className='text-gray-400 text-xs sm:text-sm'>
-                          {award.date}
-                        </span>
+                <Link href={`/awards/${award.id}`} className='block group'>
+                  <GlassCard className='p-4 sm:p-6 lg:p-8 h-full flex flex-col relative overflow-hidden group-hover:scale-[1.02] transition-all duration-300'>
+                    <div className='flex items-start space-x-3 sm:space-x-4'>
+                      <div
+                        className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-r ${color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        <Icon className='w-5 h-5 sm:w-6 sm:h-6 text-white' />
                       </div>
 
-                      <h3 className='text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3 leading-tight group-hover:text-cyan-400 transition-colors duration-300'>
-                        {getLocalized(award, 'name', locale)}
-                      </h3>
+                      <div className='flex flex-col min-w-0'>
+                        <div className='flex items-center space-x-2 mb-2 sm:mb-3'>
+                          <Calendar className='w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0' />
+                          <span className='text-gray-400 text-xs sm:text-sm'>
+                            {award.date}
+                          </span>
+                        </div>
 
-                      {locale === 'en' &&
-                        award.nameEn &&
-                        award.nameEn !== award.nameJa && (
-                          <p className='text-gray-300 mb-3 sm:mb-4 leading-relaxed text-sm sm:text-base'>
-                            {award.nameEn}
-                          </p>
-                        )}
+                        <h3 className='text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3 leading-tight group-hover:text-cyan-400 transition-colors duration-300'>
+                          {getLocalized(award, 'name', locale)}
+                        </h3>
 
-                      {/* メンバー情報 */}
-                      {(() => {
-                        const awardMembers = getAwardMembers(award);
-                        if (awardMembers.length > 0) {
-                          return (
-                            <div className='mb-3 sm:mb-4'>
-                              <div className='flex items-center flex-wrap gap-2'>
-                                <span className='text-gray-400 text-xs sm:text-sm flex-shrink-0'>
-                                  {locale === 'ja' ? '受賞者:' : 'Recipients:'}
-                                </span>
-                                {awardMembers.slice(0, 3).map((member) => (
-                                  <span
-                                    key={member.id}
-                                    className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
-                                  >
-                                    {getLocalized(member, 'name', locale)}
-                                  </span>
-                                ))}
-                                {awardMembers.length > 3 && (
-                                  <span className='px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs'>
-                                    +{awardMembers.length - 3}
-                                  </span>
-                                )}
+                        {locale === 'en' &&
+                          award.nameEn &&
+                          award.nameEn !== award.nameJa && (
+                            <p className='text-gray-300 mb-3 sm:mb-4 leading-relaxed text-sm sm:text-base'>
+                              {award.nameEn}
+                            </p>
+                          )}
+
+                        {/* メンバー情報 */}
+                        {(() => {
+                          const awardMembers = getAwardMembers(award);
+                          if (awardMembers.length > 0) {
+                            return (
+                              <div className='mb-0'>
+                                <div className='flex items-center flex-wrap gap-2'>
+                                  {awardMembers.slice(0, 3).map((member) => (
+                                    <span
+                                      key={member.id}
+                                      className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
+                                    >
+                                      {getLocalized(member, 'name', locale)}
+                                    </span>
+                                  ))}
+                                  {awardMembers.length > 3 && (
+                                    <span className='px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs'>
+                                      +{awardMembers.length - 3}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })()}
-
-                      <div className='mt-auto'>
-                        <Link href={`/awards/${award.id}`}>
-                          <Button
-                            variant='outline'
-                            size='sm'
-                            className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300 text-xs sm:text-sm w-full sm:w-auto'
-                          >
-                            {locale === 'ja' ? '続きを読む' : 'Read More'}
-                            <ExternalLink className='w-3 h-3 sm:w-4 sm:h-4 ml-2' />
-                          </Button>
-                        </Link>
+                            );
+                          }
+                          return null;
+                        })()}
                       </div>
                     </div>
-                  </div>
 
-                  {/* Subtle glow effect on hover */}
-                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-                </GlassCard>
+                    {/* Subtle glow effect on hover */}
+                    <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+                  </GlassCard>
+                </Link>
               </div>
             );
           })
