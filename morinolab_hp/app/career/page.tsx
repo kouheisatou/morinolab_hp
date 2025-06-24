@@ -43,12 +43,12 @@ export default function CareerListPage() {
     <PageContainer>
       <SectionWrapper className='py-32'>
         <div className='mb-8 px-4'>
-          <SimpleBreadcrumb labelJa='キャリアパス' labelEn='Career Paths' />
+          <SimpleBreadcrumb labelJa='卒業生の進路' labelEn='Graduate Path' />
         </div>
 
         <div className='mb-16'>
           <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6'>
-            {locale === 'ja' ? 'キャリアパス一覧' : 'All Career Paths'}
+            {locale === 'ja' ? '卒業生の進路' : 'Graduate Path'}
           </h1>
         </div>
 

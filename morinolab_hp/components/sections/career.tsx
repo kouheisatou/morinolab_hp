@@ -140,7 +140,7 @@ export function Career() {
               : 'opacity-0 translate-y-10 scale-95'
           }`}
         >
-          {locale === 'ja' ? 'キャリアパス' : 'Career Paths'}
+          {locale === 'ja' ? '卒業生の進路' : 'Graduate Path'}
         </h2>
         <p
           ref={descRef}
@@ -164,8 +164,8 @@ export function Career() {
         <Link href='/career'>
           <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'>
             {locale === 'ja'
-              ? 'すべてのキャリアパスを見る'
-              : 'View All Career Paths'}
+              ? 'すべての卒業生の進路を見る'
+              : 'View All Graduate Paths'}
           </Button>
         </Link>
       </div>
