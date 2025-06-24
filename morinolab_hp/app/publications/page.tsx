@@ -196,13 +196,15 @@ export default function PublicationsPage() {
               </div>
               <div className='h-8 flex items-center'>
                 {hasAnyFilter ? (
-                  <button
+                  <Button
+                    variant='destructive'
+                    size='sm'
                     onClick={clearAllFilters}
-                    className='flex items-center space-x-1 px-3 py-1 rounded-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 text-red-400 hover:text-red-300 transition-all duration-200 text-sm'
+                    className='px-3 py-1'
                   >
-                    <X className='w-3 h-3' />
-                    <span>{t('clearAll', locale)}</span>
-                  </button>
+                    <X className='w-3 h-3 mr-1' />
+                    {t('clearAll', locale)}
+                  </Button>
                 ) : (
                   <div className='w-20'></div>
                 )}
@@ -219,17 +221,17 @@ export default function PublicationsPage() {
               </div>
               <div className='flex flex-wrap gap-2'>
                 {tags.map((tag) => (
-                  <button
+                  <Button
                     key={tag.id}
                     onClick={() => toggleTag(tag.id)}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                      selectedTags.includes(tag.id)
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25 scale-105'
-                        : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-purple-400/30'
-                    }`}
+                    variant={
+                      selectedTags.includes(tag.id) ? 'tagActive' : 'tag'
+                    }
+                    size='sm'
+                    className='px-3 py-1.5'
                   >
                     {getLocalized(tag, 'name', locale)}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -244,17 +246,15 @@ export default function PublicationsPage() {
               </div>
               <div className='flex flex-wrap gap-2'>
                 {availableYears.map((year) => (
-                  <button
+                  <Button
                     key={year}
                     onClick={() => toggleYear(year)}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                      selectedYears.includes(year)
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/25 scale-105'
-                        : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-green-400/30'
-                    }`}
+                    variant={selectedYears.includes(year) ? 'tagActive' : 'tag'}
+                    size='sm'
+                    className='px-3 py-1.5'
                   >
                     {year}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

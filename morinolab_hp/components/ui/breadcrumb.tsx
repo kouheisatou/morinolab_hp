@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { ChevronRight, MoreHorizontal } from 'lucide-react';
+import { ChevronRight, MoreHorizontal, Home } from 'lucide-react';
+import Link from 'next/link';
+import { useLocale } from '@/contexts/locale';
 
 import { cn } from '@/lib/utils';
 
@@ -104,12 +106,53 @@ const BreadcrumbEllipsis = ({
 );
 BreadcrumbEllipsis.displayName = 'BreadcrumbElipssis';
 
+interface SimpleBreadcrumbProps {
+  /** Japanese label for the current page */
+  labelJa: string;
+  /** English label for the current page */
+  labelEn: string;
+  /** Optional extra class for the wrapper */
+  className?: string;
+}
+
+/**
+ * Simple breadcrumb: Home › Current page.
+ * 他にも階層が必要になったら `items` 配列を取るよう拡張すれば良い。
+ */
+export const SimpleBreadcrumb: React.FC<SimpleBreadcrumbProps> = ({
+  labelJa,
+  labelEn,
+  className = '',
+}) => {
+  const { locale } = useLocale();
+
+  const currentLabel = locale === 'ja' ? labelJa : labelEn;
+
+  return (
+    <nav
+      className={`flex items-center space-x-2 text-xs sm:text-sm ${className}`}
+      aria-label='Breadcrumb'
+    >
+      <Link
+        href='/'
+        className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
+      >
+        <Home className='w-3 h-3 sm:w-4 sm:h-4 mr-1' />
+        <span className='hidden sm:inline'>Home</span>
+        <span className='sm:hidden'>ホーム</span>
+      </Link>
+      <ChevronRight className='w-3 h-3 sm:w-4 sm:h-4 text-gray-500' />
+      <span className='text-white font-medium'>{currentLabel}</span>
+    </nav>
+  );
+};
+
 export {
-  Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
   BreadcrumbEllipsis,
+  Breadcrumb,
 };
