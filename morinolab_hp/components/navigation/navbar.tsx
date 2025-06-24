@@ -121,13 +121,25 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className='lg:hidden bg-black/90 backdrop-blur-md border-t border-white/10 animate-in slide-in-from-top-5 duration-200'>
+          <div
+            className={cn(
+              'lg:hidden backdrop-blur-md animate-in slide-in-from-top-5 duration-200',
+              scrolled
+                ? 'bg-black/90 border-t border-white/10'
+                : 'bg-white/90 border-t border-gray-200'
+            )}
+          >
             <div className='py-4 space-y-2'>
               {navItems.map((item) => (
                 <button
                   key={item.name}
                   onClick={() => handleNavClick(item.href)}
-                  className='block w-full text-left px-4 py-3 text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 relative group'
+                  className={cn(
+                    'block w-full text-left px-4 py-3 transition-all duration-200 relative group',
+                    scrolled
+                      ? 'text-gray-300 hover:text-white hover:bg-white/10'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  )}
                 >
                   {item.name}
                   <div className='absolute left-4 bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-cyan-400 group-hover:w-8 transition-all duration-300'></div>

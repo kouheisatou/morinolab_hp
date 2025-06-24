@@ -19,31 +19,31 @@ export function Hero() {
   const [themes, setThemes] = useState<Theme[]>([]);
   const { locale } = useLocale();
   const titleAnimation = useFadeInAnimation<HTMLHeadingElement>({
-    delay: 200,
-    duration: 1200,
-    translateY: 40,
-    scale: 0.9,
-  });
-  const descAnimation = useFadeInAnimation<HTMLParagraphElement>({
-    delay: 600,
-    duration: 1000,
-    translateY: 30,
-  });
-  const cardsAnimation = useFadeInAnimation<HTMLDivElement>({
-    delay: 1000,
-    duration: 1000,
-    translateY: 35,
+    delay: 0,
+    duration: 600,
+    translateY: 25,
     scale: 0.95,
   });
-  const buttonsAnimation = useFadeInAnimation<HTMLDivElement>({
-    delay: 1400,
-    duration: 1000,
+  const descAnimation = useFadeInAnimation<HTMLParagraphElement>({
+    delay: 150,
+    duration: 600,
+    translateY: 20,
+  });
+  const cardsAnimation = useFadeInAnimation<HTMLDivElement>({
+    delay: 300,
+    duration: 600,
     translateY: 25,
+    scale: 0.97,
+  });
+  const buttonsAnimation = useFadeInAnimation<HTMLDivElement>({
+    delay: 450,
+    duration: 600,
+    translateY: 20,
   });
   const photoAnimation = useFadeInAnimation<HTMLDivElement>({
-    delay: 800,
-    duration: 1000,
-    translateY: 30,
+    delay: 200,
+    duration: 600,
+    translateY: 20,
   });
 
   const titlePart1 = locale === 'ja' ? '森野' : 'Morino';
@@ -77,7 +77,7 @@ export function Hero() {
   }, []);
 
   return (
-    <SectionWrapper className='min-h-screen flex items-center justify-center pt-0'>
+    <SectionWrapper className='min-h-screen flex items-center justify-center pt-24 md:pt-0'>
       <div className='text-center space-y-8 max-w-4xl'>
         <div
           className='space-y-6'
