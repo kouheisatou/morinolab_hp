@@ -12,6 +12,8 @@ import {
 } from '@/lib/client-content-loader';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 // 背景カラーのマッピング（交互に変えるだけ）
 const colorArray = [
@@ -66,9 +68,19 @@ function CareerListItem({
 
 export function Career() {
   const { elementRef: titleRef, isVisible: titleVisible } =
-    useFadeInAnimation<HTMLHeadingElement>({ forceVisible: true });
+    useFadeInAnimation<HTMLHeadingElement>({ delay: 100, duration: 1000 });
   const { elementRef: descRef, isVisible: descVisible } =
-    useFadeInAnimation<HTMLParagraphElement>({ forceVisible: true });
+    useFadeInAnimation<HTMLParagraphElement>({
+      delay: 300,
+      duration: 1000,
+      translateY: 25,
+    });
+
+  const buttonAnimation = useFadeInAnimation<HTMLDivElement>({
+    delay: 600,
+    duration: 800,
+    translateY: 30,
+  });
 
   const [careers, setCareers] = useState<CareerItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -118,7 +130,7 @@ export function Career() {
   }
 
   return (
-    <SectionWrapper id='career' className='py-32'>
+    <SectionWrapper id='career' className='py-16'>
       <div className='text-center mb-16'>
         <h2
           ref={titleRef}
@@ -132,7 +144,7 @@ export function Career() {
         </h2>
         <p
           ref={descRef}
-          className={`text-xl text-gray-300 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${
+          className={`text-xl text-gray-300 max-w-3xl mx-auto min-h-[96px] transition-all duration-1000 delay-200 ${
             descVisible
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-10'
@@ -144,11 +156,19 @@ export function Career() {
         </p>
       </div>
 
-      <ul className='grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6'>
-        {careers.map((career, index) => (
-          <CareerListItem key={career.id} career={career} index={index} />
-        ))}
-      </ul>
+      <div
+        ref={buttonAnimation.ref}
+        style={buttonAnimation.style}
+        className='text-center mt-12'
+      >
+        <Link href='/career'>
+          <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'>
+            {locale === 'ja'
+              ? 'すべてのキャリアパスを見る'
+              : 'View All Career Paths'}
+          </Button>
+        </Link>
+      </div>
     </SectionWrapper>
   );
 }

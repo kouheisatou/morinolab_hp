@@ -166,30 +166,10 @@ export default function AwardsPage() {
                       <div className='w-4 h-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full border-4 border-black shadow-lg shadow-cyan-500/50'></div>
                     </div>
 
-                    {/* 年表示（年が変わる時のみ） */}
-                    {isYearChange && (
-                      <div className='absolute left-1/2 transform -translate-x-1/2 -translate-y-full -top-2'>
-                        <div className='bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-full text-lg font-bold shadow-lg border-2 border-white/20'>
-                          {formattedDate.year}
-                        </div>
-                      </div>
-                    )}
-
                     {/* タイムラインからカードへの横線 */}
                     <div
                       className={`absolute top-1/2 -translate-y-1/2 ${isEven ? 'right-1/2 translate-x-2' : 'left-1/2 -translate-x-2'} w-32 h-0.5 bg-gradient-to-r ${isEven ? 'from-transparent to-cyan-500' : 'from-cyan-500 to-transparent'}`}
                     ></div>
-
-                    {/* 月表示（横線の上） */}
-                    <div
-                      className={`absolute top-1/2 -translate-y-1/2 ${isEven ? 'right-1/2 translate-x-6' : 'left-1/2 -translate-x-6'}`}
-                    >
-                      <div className='bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-md text-xs font-medium shadow-md'>
-                        {locale === 'ja'
-                          ? `${formattedDate.month.replace('月', '')}月`
-                          : formattedDate.month}
-                      </div>
-                    </div>
 
                     {/* コンテンツ */}
                     <div
@@ -303,15 +283,6 @@ export default function AwardsPage() {
 
                   return (
                     <div key={award.id} className='relative'>
-                      {/* 年表示（年が変わる時のみ） */}
-                      {isYearChange && (
-                        <div className='mb-6 text-center'>
-                          <div className='inline-block bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-full text-lg font-bold shadow-lg border-2 border-white/20'>
-                            {formattedDate.year}
-                          </div>
-                        </div>
-                      )}
-
                       <Link
                         href={`/awards/${award.id}`}
                         className='block group'

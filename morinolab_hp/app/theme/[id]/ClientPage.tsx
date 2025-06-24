@@ -162,7 +162,7 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
                 {/* 詳細記事 */}
                 {theme.content && (
                   <div
-                    className='prose prose-sm sm:prose-base lg:prose-lg prose-invert max-w-none prose-headings:text-white prose-p:text-gray-200'
+                    className='prose prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:text-foreground prose-p:text-gray-700'
                     dangerouslySetInnerHTML={{
                       __html: theme.content,
                     }}

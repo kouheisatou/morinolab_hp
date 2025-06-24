@@ -185,10 +185,10 @@ export default function TeamMemberDetailClientPage({ id }: ClientPageProps) {
               {/* Content Section */}
               <div className='p-8 md:p-12 space-y-12'>
                 <div>
-                  <h2 className='text-2xl font-bold text-white mb-4 border-b border-cyan-400/30 pb-2'>
+                  <h2 className='text-2xl font-bold text-foreground mb-4 border-b border-cyan-400/30 pb-2'>
                     {locale === 'ja' ? 'プロフィール' : 'Profile'}
                   </h2>
-                  <p className='text-gray-200 leading-relaxed text-lg'>
+                  <p className='text-gray-700 leading-relaxed text-lg'>
                     {getLocalized(member, 'desc', locale)}
                   </p>
                 </div>
@@ -198,7 +198,7 @@ export default function TeamMemberDetailClientPage({ id }: ClientPageProps) {
                   <div>
                     <div className='flex items-center space-x-2 mb-6'>
                       <Tags className='w-6 h-6 text-cyan-400' />
-                      <h2 className='text-2xl font-bold text-white'>
+                      <h2 className='text-2xl font-bold text-foreground'>
                         {locale === 'ja' ? '研究分野' : 'Research Areas'}
                       </h2>
                     </div>
@@ -225,11 +225,11 @@ export default function TeamMemberDetailClientPage({ id }: ClientPageProps) {
                 {/* Additional Content */}
                 {member.content && (
                   <div>
-                    <h2 className='text-2xl font-bold text-white mb-6 border-b border-cyan-400/30 pb-2'>
+                    <h2 className='text-2xl font-bold text-foreground mb-6 border-b border-cyan-400/30 pb-2'>
                       詳細情報
                     </h2>
                     <div
-                      className='prose prose-lg prose-invert max-w-none prose-headings:text-white prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-6 prose-h2:text-2xl prose-h2:font-semibold prose-h2:mb-4 prose-h3:text-xl prose-h3:font-medium prose-h3:mb-3 prose-p:text-gray-200 prose-p:leading-relaxed prose-p:mb-4 prose-ul:text-gray-200 prose-li:text-gray-200 prose-li:mb-2 prose-strong:text-white prose-em:text-gray-300'
+                      className='prose prose-lg max-w-none prose-headings:text-foreground prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-6 prose-h2:text-2xl prose-h2:font-semibold prose-h2:mb-4 prose-h3:text-xl prose-h3:font-medium'
                       dangerouslySetInnerHTML={{
                         __html: member.content,
                       }}

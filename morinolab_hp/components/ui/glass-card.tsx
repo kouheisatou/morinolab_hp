@@ -15,9 +15,9 @@ export function GlassCard({
   return (
     <div
       className={cn(
-        'backdrop-blur-sm bg-transparent border border-white/20 rounded-xl shadow-xl',
+        'backdrop-blur-sm bg-transparent rounded-xl shadow-xl',
         hover &&
-          'hover:bg-transparent hover:border-white/30 transition-all duration-300 hover:shadow-2xl hover:scale-105',
+          'hover:bg-gray-100/20 transition-all duration-300 hover:shadow-2xl hover:scale-105',
         className
       )}
     >

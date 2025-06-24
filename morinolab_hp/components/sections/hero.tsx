@@ -40,6 +40,11 @@ export function Hero() {
     duration: 1000,
     translateY: 25,
   });
+  const photoAnimation = useFadeInAnimation<HTMLDivElement>({
+    delay: 800,
+    duration: 1000,
+    translateY: 30,
+  });
 
   const titlePart1 = locale === 'ja' ? '森野' : 'Morino';
   const titlePart2 = locale === 'ja' ? '研究室' : 'Lab';
@@ -48,7 +53,6 @@ export function Hero() {
     locale === 'ja'
       ? '移動通信ネットワーク研究室'
       : 'Mobile Information Networking Laboratory';
-
   const exploreText = locale === 'ja' ? '研究内容を見る' : 'Explore Research';
   const teamText = locale === 'ja' ? 'メンバーを見る' : 'Meet the Team';
 
@@ -85,7 +89,7 @@ export function Hero() {
           <h1
             ref={titleAnimation.ref}
             style={titleAnimation.style}
-            className='text-6xl md:text-8xl font-bold text-white leading-tight'
+            className='text-6xl md:text-8xl font-bold text-foreground leading-tight'
           >
             {titlePart1}
             <span className='bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent'>
@@ -96,10 +100,25 @@ export function Hero() {
           <p
             ref={descAnimation.ref}
             style={descAnimation.style}
-            className='text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed'
+            className='text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed'
           >
             {subtitle}
           </p>
+        </div>
+
+        {/* Group Photo */}
+        <div
+          ref={photoAnimation.ref}
+          style={photoAnimation.style}
+          className='flex justify-center'
+        >
+          <Image
+            src={getImagePath('/img/group_photo_2024.jpeg')}
+            alt='Morino Lab Group 2024'
+            width={1200}
+            height={650}
+            className='w-full max-w-3xl h-auto rounded-lg shadow-lg'
+          />
         </div>
 
         <div
@@ -132,7 +151,7 @@ export function Hero() {
                     className='w-full h-full object-contain'
                   />
                 </div>
-                <span className='text-white font-medium group-hover:text-cyan-400 transition-colors duration-300'>
+                <span className='text-foreground font-medium group-hover:text-cyan-600 transition-colors duration-300'>
                   {getLocalized(theme, 'name', locale)}
                 </span>
                 <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
@@ -160,7 +179,7 @@ export function Hero() {
           <Button
             size='lg'
             variant='outline'
-            className='border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold'
+            className='relative overflow-hidden px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 hover:text-white hover:border-transparent hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500'
             onClick={() =>
               document
                 .getElementById('team')

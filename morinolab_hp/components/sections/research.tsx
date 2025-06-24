@@ -202,7 +202,7 @@ export function Research() {
                   <Link href={`/theme/${theme.id}`} className='mt-auto'>
                     <Button
                       variant='outline'
-                      className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300 w-full'
+                      className='transition-all duration-300 w-full'
                     >
                       {locale === 'ja' ? '詳しく見る' : 'Learn More'}
                       <ExternalLink className='w-4 h-4 ml-2' />

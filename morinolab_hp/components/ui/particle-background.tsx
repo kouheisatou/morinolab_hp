@@ -92,7 +92,7 @@ export function ParticleBackground() {
       );
       gradient1.addColorStop(
         0,
-        `rgba(59, 130, 246, ${0.02 + scrollOffset * 0.0005})` // 0.001 から 0.0005 に減少
+        `rgba(59, 130, 246, ${Math.max(0, 0.1 - scrollOffset * 0.0005)})` // アルファ値をスクロールで減少させて青→白へ
       );
       gradient1.addColorStop(1, 'rgba(59, 130, 246, 0)');
 
@@ -106,7 +106,7 @@ export function ParticleBackground() {
       );
       gradient2.addColorStop(
         0,
-        `rgba(139, 92, 246, ${0.02 + scrollOffset * 0.0005})` // 0.001 から 0.0005 に減少
+        `rgba(139, 92, 246, ${Math.max(0, 0.1 - scrollOffset * 0.0005)})` // アルファ値をスクロールで減少させて青→白へ
       );
       gradient2.addColorStop(1, 'rgba(139, 92, 246, 0)');
 

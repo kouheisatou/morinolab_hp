@@ -229,7 +229,7 @@ export default function AwardDetailClientPage({ id }: ClientPageProps) {
             {/* Content Section */}
             <div className='p-4 sm:p-6 md:p-8 lg:p-12'>
               <div
-                className='prose prose-sm sm:prose-base lg:prose-lg prose-invert max-w-none prose-headings:text-white prose-h1:text-xl prose-h1:sm:text-2xl prose-h1:lg:text-3xl prose-h1:font-bold prose-h1:mb-4 prose-h1:sm:mb-6 prose-h2:text-lg prose-h2:sm:text-xl prose-h2:lg:text-2xl prose-h2:font-semibold prose-h2:mb-3 prose-h2:sm:mb-4 prose-h3:text-base prose-h3:sm:text-lg prose-h3:lg:text-xl prose-h3:font-medium prose-h3:mb-2 prose-h3:sm:mb-3 prose-p:text-gray-200 prose-p:leading-relaxed prose-p:mb-3 prose-p:sm:mb-4 prose-ul:text-gray-200 prose-li:text-gray-200 prose-li:mb-1 prose-li:sm:mb-2 prose-strong:text-white prose-em:text-gray-300 prose-img:rounded-lg prose-img:shadow-lg'
+                className='prose prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:text-foreground prose-p:text-gray-700'
                 dangerouslySetInnerHTML={{
                   __html:
                     award.content ||

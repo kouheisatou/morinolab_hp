@@ -226,7 +226,7 @@ export default function PublicationDetailClientPage({ id }: ClientPageProps) {
                   {locale === 'ja' ? '概要' : 'Abstract'}
                 </h2>
                 <div
-                  className='prose prose-lg prose-invert max-w-none prose-headings:text-white prose-p:text-gray-200'
+                  className='prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-gray-700'
                   dangerouslySetInnerHTML={{
                     __html:
                       publication.content ||

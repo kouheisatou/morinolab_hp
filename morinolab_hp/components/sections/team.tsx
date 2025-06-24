@@ -177,7 +177,7 @@ export function Team() {
                   .map((tagId, index) => (
                     <span
                       key={index}
-                      className='px-2 py-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 rounded-full text-xs border border-cyan-400/30'
+                      className='px-2 py-1 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-700 rounded-full text-xs border border-cyan-400/30'
                     >
                       {getTagName(tagId.trim())}
                     </span>
@@ -196,7 +196,7 @@ export function Team() {
                 <Button
                   variant='outline'
                   size='sm'
-                  className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
+                  className='transition-all duration-300'
                 >
                   {locale === 'ja' ? 'プロフィールを見る' : 'View Profile'}
                   <ExternalLink className='w-4 h-4 ml-2' />
@@ -271,7 +271,7 @@ export function Team() {
                         .map((tagId, index) => (
                           <span
                             key={index}
-                            className='px-2 py-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 rounded-full text-xs border border-cyan-400/30'
+                            className='px-2 py-1 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-700 rounded-full text-xs border border-cyan-400/30'
                           >
                             {getTagName(tagId.trim())}
                           </span>

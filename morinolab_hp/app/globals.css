@@ -32,9 +32,10 @@ body {
 }
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 15, 23, 42;
-  --background-end-rgb: 30, 41, 59;
+  /* Dark-text on white background */
+  --foreground-rgb: 30, 41, 59; /* slate-800 */
+  --background-start-rgb: 255, 255, 255; /* white */
+  --background-end-rgb: 255, 255, 255; /* white */
 }
 
 html {
@@ -53,25 +54,25 @@ body {
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --background: 0 0% 100%; /* white */
+    --foreground: 222.2 20% 20%; /* near-black slate */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 20% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 20% 20%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -163,5 +164,47 @@ body {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Utility overrides (minimal): force old dark gradient classes white */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  /* Any component that still has bg-gradient-to-* from-slate-900 to-slate-800 */
+  .from-slate-900,
+  .from-slate-800 {
+    --tw-gradient-from: #ffffff var(--tw-gradient-from-position);
+    --tw-gradient-stops:
+      var(--tw-gradient-from), var(--tw-gradient-to, rgba(255, 255, 255, 0));
+  }
+  .to-slate-800,
+  .to-slate-900 {
+    --tw-gradient-to: #ffffff var(--tw-gradient-to-position);
+  }
+
+  /* Dark-theme text helpers: ensure readability on white */
+  /* Default: convert white text to dark gray to remain visible on white bg */
+  .text-white {
+    color: rgb(30 41 59) !important;
+  }
+  /* BUT keep white inside interactive colored buttons or gradient areas */
+  button.text-white,
+  .bg-gradient-to-r.text-white {
+    color: #ffffff !important;
+  }
+
+  .text-gray-300 {
+    color: rgb(71 85 105) !important;
+  }
+  .text-gray-400 {
+    color: rgb(100 116 139) !important;
+  }
+  .text-blue-300 {
+    color: rgb(29 78 216) !important;
+  }
+
+  .navbar-dark .text-white {
+    color: #ffffff !important;
   }
 }

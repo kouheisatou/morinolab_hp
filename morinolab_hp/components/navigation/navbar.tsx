@@ -21,7 +21,6 @@ export function Navbar() {
       href: 'research',
     },
     { name: locale === 'ja' ? 'メンバー' : 'Team', href: 'team' },
-    { name: locale === 'ja' ? '講義' : 'Lectures', href: 'lectures' },
     { name: locale === 'ja' ? 'ニュース' : 'News', href: 'news' },
     { name: locale === 'ja' ? '出版物' : 'Publications', href: 'publications' },
     { name: locale === 'ja' ? '受賞' : 'Awards', href: 'awards' },
@@ -43,25 +42,45 @@ export function Navbar() {
     setIsOpen(false);
   };
 
+  const navRootClasses = cn(
+    'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+    scrolled
+      ? 'bg-black/80 backdrop-blur-md border-b border-white/10 navbar-dark'
+      : 'bg-transparent'
+  );
+
+  const brandIconClasses = cn(
+    'w-8 h-8 transition-colors duration-200',
+    scrolled
+      ? 'text-white group-hover:text-cyan-400'
+      : 'text-blue-400 group-hover:text-cyan-400'
+  );
+
+  const brandTextClasses = cn(
+    'text-xl font-bold transition-colors duration-200',
+    scrolled
+      ? 'text-white group-hover:text-cyan-400'
+      : 'text-foreground group-hover:text-cyan-400'
+  );
+
+  const navButtonClasses = (active?: boolean) =>
+    cn(
+      'font-medium relative group transition-colors duration-200',
+      scrolled
+        ? 'text-white hover:text-cyan-100'
+        : 'text-gray-700 hover:text-blue-700'
+    );
+
   return (
-    <nav
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        scrolled
-          ? 'bg-black/80 backdrop-blur-md border-b border-white/10'
-          : 'bg-transparent'
-      )}
-    >
+    <nav className={navRootClasses}>
       <div className='max-w-7xl mx-auto px-4'>
         <div className='flex items-center justify-between h-16'>
           <button
             onClick={() => router.push('/#home')}
             className='flex items-center space-x-2 group transition-all duration-200 hover:scale-105'
           >
-            <Atom className='w-8 h-8 text-blue-400 group-hover:text-cyan-400 transition-colors duration-200' />
-            <span className='text-xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-200'>
-              MorinoLab
-            </span>
+            <Atom className={brandIconClasses} />
+            <span className={brandTextClasses}>MorinoLab</span>
           </button>
 
           {/* Desktop Navigation */}
@@ -70,14 +89,14 @@ export function Navbar() {
               <button
                 key={item.name}
                 onClick={() => handleNavClick(item.href)}
-                className='text-gray-300 hover:text-white transition-colors duration-200 font-medium relative group'
+                className={navButtonClasses()}
               >
                 {item.name}
                 <div className='absolute bottom-[-4px] left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-cyan-400 group-hover:w-full transition-all duration-300'></div>
               </button>
             ))}
             {/* Language toggle */}
-            <LanguageSwitcher />
+            <LanguageSwitcher dark={scrolled} />
           </div>
 
           {/* Mobile Menu Button */}
@@ -86,7 +105,10 @@ export function Navbar() {
               variant='ghost'
               size='sm'
               onClick={() => setIsOpen(!isOpen)}
-              className='text-white hover:bg-white/10 transition-all duration-200'
+              className={cn(
+                'hover:bg-white/10 transition-all duration-200',
+                scrolled ? 'text-white' : 'text-gray-700'
+              )}
             >
               {isOpen ? (
                 <X className='w-6 h-6' />
@@ -113,7 +135,7 @@ export function Navbar() {
               ))}
               {/* Language toggle for mobile */}
               <div className='px-4 pt-2'>
-                <LanguageSwitcher />
+                <LanguageSwitcher dark={scrolled} />
               </div>
             </div>
           </div>

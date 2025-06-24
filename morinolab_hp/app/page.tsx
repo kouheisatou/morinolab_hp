@@ -5,7 +5,6 @@ import { Navbar } from '@/components/navigation/navbar';
 import { Footer } from '@/components/navigation/footer';
 import { Hero } from '@/components/sections/hero';
 import { Research } from '@/components/sections/research';
-import { Lectures } from '@/components/sections/lectures';
 import { Team } from '@/components/sections/team';
 import { News } from '@/components/sections/news';
 import { Publications } from '@/components/sections/publications';
@@ -24,12 +23,15 @@ export default function Home() {
           <Hero />
         </section>
         <Research />
-        <Team />
-        <Lectures />
         <News />
+        <Team />
         <Publications />
-        <Awards />
-        <Career />
+        <section className='max-w-7xl mx-auto px-4 py-20'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-12'>
+            <Awards />
+            <Career />
+          </div>
+        </section>
         <Contact />
       </main>
 

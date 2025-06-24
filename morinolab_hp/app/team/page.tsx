@@ -271,7 +271,7 @@ export default function TeamPage() {
                         .map((tagId, index) => (
                           <span
                             key={index}
-                            className='px-2 py-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 rounded-full text-xs border border-purple-400/30'
+                            className='px-2 py-1 bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-700 rounded-full text-xs'
                           >
                             {getTagName(tagId.trim())}
                           </span>
@@ -288,7 +288,7 @@ export default function TeamPage() {
                         <Button
                           variant='outline'
                           size='sm'
-                          className='border-white/30 text-white hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300'
+                          className='transition-all duration-300'
                         >
                           View Profile
                           <ArrowRight className='w-4 h-4 ml-2' />

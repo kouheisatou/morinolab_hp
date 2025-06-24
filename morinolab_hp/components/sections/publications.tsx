@@ -33,9 +33,10 @@ export function Publications() {
     translateY: 25,
   });
   const buttonAnimation = useFadeInAnimation<HTMLDivElement>({
-    delay: 800,
+    delay: 300,
     duration: 800,
-    translateY: 20,
+    translateY: 40,
+    rootMargin: '0px 0px -50px 0px',
   });
 
   // 固定数のアニメーション用refを事前に作成（最大4件表示）
@@ -199,7 +200,7 @@ export function Publications() {
                               return member ? (
                                 <span
                                   key={member.id}
-                                  className='px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
+                                  className='px-2 py-1 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-700 rounded-full text-xs border border-blue-400/30 whitespace-nowrap overflow-hidden text-ellipsis'
                                 >
                                   {getLocalized(member, 'name', locale)}
                                 </span>
