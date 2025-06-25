@@ -16,7 +16,7 @@ import {
   getStaticPath,
 } from '@/lib/client-content-loader';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
 import { FullPageLoader } from '@/components/ui/full-page-loader';
@@ -244,7 +244,7 @@ export default function TeamPage() {
                   </div>
 
                   {member.memberTypeId === '1' && (
-                    <Link href={`/team/${member.id}`}>
+                    <ScrollAwareLink href={`/team/${member.id}`}>
                       <Button
                         variant='outline'
                         size='sm'
@@ -253,7 +253,7 @@ export default function TeamPage() {
                         View Profile
                         <ArrowRight className='w-4 h-4 ml-2' />
                       </Button>
-                    </Link>
+                    </ScrollAwareLink>
                   )}
 
                   {/* Subtle glow effect on hover */}

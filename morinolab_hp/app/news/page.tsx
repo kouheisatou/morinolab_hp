@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
 import { t } from '@/lib/i18n';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 
 export default function NewsPage() {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
@@ -60,13 +61,13 @@ export default function NewsPage() {
           {/* パンくずリスト */}
           <div className='mb-8'>
             <nav className='flex items-center space-x-2 text-sm'>
-              <Link
+              <ScrollAwareLink
                 href='/'
                 className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
               >
                 <Home className='w-4 h-4 mr-1' />
                 Home
-              </Link>
+              </ScrollAwareLink>
               <ChevronRight className='w-4 h-4 text-gray-500' />
               <span className='text-white font-medium'>
                 {locale === 'ja' ? 'ニュース' : 'News'}
@@ -82,7 +83,7 @@ export default function NewsPage() {
 
           <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
             {newsItems.map((item) => (
-              <Link
+              <ScrollAwareLink
                 key={item.id}
                 href={`/news/${item.id}`}
                 className='block group'
@@ -130,7 +131,7 @@ export default function NewsPage() {
                   {/* Subtle glow effect on hover */}
                   <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
                 </GlassCard>
-              </Link>
+              </ScrollAwareLink>
             ))}
           </div>
 

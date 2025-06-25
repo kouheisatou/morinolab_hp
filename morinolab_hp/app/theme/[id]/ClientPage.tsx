@@ -11,7 +11,7 @@ import {
   Theme,
   getStaticPath,
 } from '@/lib/client-content-loader';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import Image from 'next/image';
 import { Home, ChevronRight } from 'lucide-react';
 import { useLocale } from '@/contexts/locale';
@@ -75,11 +75,11 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
               <p className='text-gray-300 mb-8'>
                 The requested research theme could not be found.
               </p>
-              <Link href='/'>
+              <ScrollAwareLink href='/'>
                 <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white'>
                   Back to Home
                 </Button>
-              </Link>
+              </ScrollAwareLink>
             </div>
           </SectionWrapper>
         </main>
@@ -103,20 +103,20 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
           <div className='max-w-4xl mx-auto'>
             <div className='mb-8'>
               <nav className='flex items-center space-x-2 text-sm mb-6'>
-                <Link
+                <ScrollAwareLink
                   href='/'
                   className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
                 >
                   <Home className='w-4 h-4 mr-1' />
                   Home
-                </Link>
+                </ScrollAwareLink>
                 <ChevronRight className='w-4 h-4 text-gray-500' />
-                <Link
+                <ScrollAwareLink
                   href='/#research'
                   className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
                 >
                   Research
-                </Link>
+                </ScrollAwareLink>
                 <ChevronRight className='w-4 h-4 text-gray-500' />
                 <span className='text-white font-medium'>
                   {getLocalized(theme, 'name', locale)}

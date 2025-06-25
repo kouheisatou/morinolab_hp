@@ -130,8 +130,6 @@ export interface CareerItem {
 // ブラウザ側でファイルを非同期取得する関数
 export async function fetchTextContent(url: string): Promise<string> {
   try {
-    console.log(`Fetching: ${url}`);
-
     // サーバー環境での処理
     if (typeof window === 'undefined') {
       const fs = await import('fs');
@@ -150,9 +148,6 @@ export async function fetchTextContent(url: string): Promise<string> {
 
       try {
         const content = fs.readFileSync(fullPath, 'utf-8');
-        console.log(
-          `Read from filesystem: ${fullPath}: ${content.length} characters`
-        );
         return content;
       } catch (fsError) {
         console.error(`Error reading file ${fullPath}:`, fsError);
@@ -166,7 +161,6 @@ export async function fetchTextContent(url: string): Promise<string> {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const text = await response.text();
-    console.log(`Fetched ${url}: ${text.length} characters`);
     return text;
   } catch (error) {
     console.error(`Error fetching ${url}:`, error);
@@ -176,16 +170,12 @@ export async function fetchTextContent(url: string): Promise<string> {
 
 // 改良されたCSVパーサー
 export function parseCSVContent(content: string): any[] {
-  console.log('Parsing CSV content:', content.substring(0, 200) + '...');
-
   const lines = content.trim().split('\n');
   if (lines.length < 2) {
-    console.log('CSV has less than 2 lines');
     return [];
   }
 
   const headers = parseCSVLine(lines[0]);
-  console.log('CSV headers:', headers);
 
   const rows = lines.slice(1);
   const result = rows.map((row, index) => {
@@ -197,7 +187,6 @@ export function parseCSVContent(content: string): any[] {
     return obj;
   });
 
-  console.log(`Parsed ${result.length} rows from CSV`);
   return result;
 }
 

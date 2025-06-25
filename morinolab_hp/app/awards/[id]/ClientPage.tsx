@@ -27,6 +27,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 
 interface ClientPageProps {
   id: string;
@@ -129,22 +130,22 @@ export default function AwardDetailClientPage({ id }: ClientPageProps) {
           {/* パンくずリスト */}
           <div className='mb-8 px-4'>
             <nav className='flex items-center space-x-2 text-xs sm:text-sm mb-6'>
-              <Link
+              <ScrollAwareLink
                 href='/'
                 className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
               >
                 <Home className='w-3 h-3 sm:w-4 sm:h-4 mr-1' />
                 <span className='hidden sm:inline'>Home</span>
                 <span className='sm:hidden'>ホーム</span>
-              </Link>
+              </ScrollAwareLink>
               <ChevronRight className='w-3 h-3 sm:w-4 sm:h-4 text-gray-500' />
-              <Link
+              <ScrollAwareLink
                 href='/awards'
                 className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
               >
                 <span className='hidden sm:inline'>Awards</span>
                 <span className='sm:hidden'>受賞</span>
-              </Link>
+              </ScrollAwareLink>
               <ChevronRight className='w-3 h-3 sm:w-4 sm:h-4 text-gray-500' />
               <span className='text-white font-medium truncate max-w-[150px] sm:max-w-none'>
                 {getLocalized(award, 'name', locale)}

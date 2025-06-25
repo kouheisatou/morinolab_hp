@@ -169,9 +169,7 @@ export function Hero() {
             size='lg'
             className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'
             onClick={() =>
-              document
-                .getElementById('research')
-                ?.scrollIntoView({ behavior: 'smooth' })
+              document.getElementById('research')?.scrollIntoView()
             }
           >
             {exploreText}
@@ -180,11 +178,7 @@ export function Hero() {
             size='lg'
             variant='outline'
             className='relative overflow-hidden px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 hover:text-white hover:border-transparent hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500'
-            onClick={() =>
-              document
-                .getElementById('team')
-                ?.scrollIntoView({ behavior: 'smooth' })
-            }
+            onClick={() => document.getElementById('team')?.scrollIntoView()}
           >
             {teamText}
           </Button>

@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button';
 import { ParticleBackground } from '@/components/ui/particle-background';
 import { Theme, loadThemes, getImagePath } from '@/lib/client-content-loader';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import Image from 'next/image';
-import { Home, ChevronRight, ExternalLink } from 'lucide-react';
+import { Home, ChevronRight, ExternalLink, Link } from 'lucide-react';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
 import {
@@ -93,13 +93,13 @@ export default function ThemeListPage() {
           {/* パンくずリスト */}
           <div className='mb-8'>
             <nav className='flex items-center space-x-2 text-sm'>
-              <Link
+              <ScrollAwareLink
                 href='/'
                 className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
               >
                 <Home className='w-4 h-4 mr-1' />
                 Home
-              </Link>
+              </ScrollAwareLink>
               <ChevronRight className='w-4 h-4 text-gray-500' />
               <span className='text-white font-medium'>
                 {locale === 'ja' ? '研究テーマ' : 'Research Themes'}
@@ -167,7 +167,10 @@ export default function ThemeListPage() {
                         {getLocalized(theme, 'desc', locale)}
                       </p>
 
-                      <Link href={`/theme/${theme.id}`} className='mt-auto'>
+                      <ScrollAwareLink
+                        href={`/theme/${theme.id}`}
+                        className='mt-auto'
+                      >
                         <Button
                           variant='outline'
                           className='transition-all duration-300 w-full'
@@ -175,7 +178,7 @@ export default function ThemeListPage() {
                           {locale === 'ja' ? '詳しく見る' : 'Learn More'}
                           <ExternalLink className='w-4 h-4 ml-2' />
                         </Button>
-                      </Link>
+                      </ScrollAwareLink>
 
                       {/* Hover グラデーション */}
                       <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Users, ExternalLink, Mail, User, GraduationCap } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import {
   useFadeInAnimation,
   useStaggeredFadeIn,
@@ -55,14 +55,11 @@ export function Team() {
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
-        console.log('Team component: Starting to fetch team data...');
         setLoading(true);
         const [members, tagsData] = await Promise.all([
           loadTeamMembers(),
           loadTags(),
         ]);
-        console.log('Team component: Received members:', members);
-        console.log('Team component: Received tags:', tagsData);
 
         // 先生は別途表示し、学生を6名まで表示
         const professor = members.find((member) => member.memberTypeId === '1');
@@ -78,7 +75,6 @@ export function Team() {
         console.error('Team component: Error loading team:', err);
         setError('Failed to load team data');
       } finally {
-        console.log('Team component: Finished loading');
         setLoading(false);
       }
     };
@@ -192,7 +188,7 @@ export function Team() {
               {/* Subtle glow effect on hover */}
               <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
 
-              <Link href={`/team/${professor.id}`}>
+              <ScrollAwareLink href={`/team/${professor.id}`}>
                 <Button
                   variant='outline'
                   size='sm'
@@ -201,7 +197,7 @@ export function Team() {
                   {locale === 'ja' ? 'プロフィールを見る' : 'View Profile'}
                   <ExternalLink className='w-4 h-4 ml-2' />
                 </Button>
-              </Link>
+              </ScrollAwareLink>
             </GlassCard>
           </div>
         </div>
@@ -301,14 +297,14 @@ export function Team() {
             : 'opacity-0 translate-y-8 scale-95'
         }`}
       >
-        <Link href='/team'>
+        <ScrollAwareLink href='/team'>
           <Button
             size='lg'
             className='bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-semibold'
           >
             {locale === 'ja' ? '全メンバーを見る' : 'Meet Full Team'}
           </Button>
-        </Link>
+        </ScrollAwareLink>
       </div>
     </SectionWrapper>
   );

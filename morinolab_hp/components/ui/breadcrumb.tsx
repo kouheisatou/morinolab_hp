@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLocale } from '@/contexts/locale';
 
 import { cn } from '@/lib/utils';
+import { ScrollAwareLink } from './ScrollAwareLink';
 
 const Breadcrumb = React.forwardRef<
   HTMLElement,
@@ -133,14 +134,14 @@ export const SimpleBreadcrumb: React.FC<SimpleBreadcrumbProps> = ({
       className={`flex items-center space-x-2 text-xs sm:text-sm ${className}`}
       aria-label='Breadcrumb'
     >
-      <Link
+      <ScrollAwareLink
         href='/'
         className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
       >
         <Home className='w-3 h-3 sm:w-4 sm:h-4 mr-1' />
         <span className='hidden sm:inline'>Home</span>
         <span className='sm:hidden'>ホーム</span>
-      </Link>
+      </ScrollAwareLink>
       <ChevronRight className='w-3 h-3 sm:w-4 sm:h-4 text-gray-500' />
       <span className='text-white font-medium'>{currentLabel}</span>
     </nav>

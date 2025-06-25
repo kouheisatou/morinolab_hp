@@ -4,7 +4,7 @@ import { SectionWrapper } from '@/components/ui/section-wrapper';
 import { Button } from '@/components/ui/button';
 import { BookOpen } from 'lucide-react';
 import { useFadeInAnimation } from '@/hooks/use-fade-in-animation';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import { useLocale } from '@/contexts/locale';
 
 export function Lectures() {
@@ -52,7 +52,7 @@ export function Lectures() {
             : 'opacity-0 translate-y-10'
         }`}
       >
-        <Link href='/lectures'>
+        <ScrollAwareLink href='/lectures'>
           <Button
             size='lg'
             className='bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 group'
@@ -60,7 +60,7 @@ export function Lectures() {
             <BookOpen className='w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300' />
             {locale === 'ja' ? '講義一覧を見る' : 'View All Lectures'}
           </Button>
-        </Link>
+        </ScrollAwareLink>
       </div>
     </SectionWrapper>
   );

@@ -4,7 +4,7 @@ import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
 import { Button } from '@/components/ui/button';
 import { Calendar, Award, Users, BookOpen, TrendingUp } from 'lucide-react';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import {
   useFadeInAnimation,
   useStaggeredFadeIn,
@@ -45,20 +45,15 @@ export function News() {
   useEffect(() => {
     const fetchNewsData = async () => {
       try {
-        console.log('News component: Starting to fetch news data...');
         setLoading(true);
         const items = await loadNews();
-        console.log('News component: Received items:', items);
-        console.log('News component: Items length:', items.length);
         // 最新の4件のみ表示
         const slicedItems = items.slice(0, 4);
-        console.log('News component: Sliced items:', slicedItems);
         setNewsItems(slicedItems);
       } catch (err) {
         console.error('News component: Error loading news:', err);
         setError('Failed to load news data');
       } finally {
-        console.log('News component: Finished loading');
         setLoading(false);
       }
     };
@@ -142,7 +137,10 @@ export function News() {
                 }`}
                 style={{ transitionDelay: `${index * 200}ms` }}
               >
-                <Link href={`/news/${item.id}`} className='block h-full group'>
+                <ScrollAwareLink
+                  href={`/news/${item.id}`}
+                  className='block h-full group'
+                >
                   <GlassCard className='p-8 h-full flex flex-col relative overflow-hidden group-hover:scale-[1.02] transition-all duration-300'>
                     <div className='flex items-start space-x-4'>
                       <div
@@ -170,7 +168,7 @@ export function News() {
                     {/* Subtle glow effect on hover */}
                     <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
                   </GlassCard>
-                </Link>
+                </ScrollAwareLink>
               </div>
             );
           })
@@ -185,14 +183,14 @@ export function News() {
             : 'opacity-0 translate-y-8 scale-95'
         }`}
       >
-        <Link href='/news'>
+        <ScrollAwareLink href='/news'>
           <Button
             size='lg'
             className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'
           >
             {locale === 'ja' ? 'すべてのニュースを見る' : 'View All News'}
           </Button>
-        </Link>
+        </ScrollAwareLink>
       </div>
     </SectionWrapper>
   );

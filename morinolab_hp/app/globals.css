@@ -38,10 +38,6 @@ body {
   --background-end-rgb: 255, 255, 255; /* white */
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(

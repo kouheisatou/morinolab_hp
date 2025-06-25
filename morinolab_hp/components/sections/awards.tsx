@@ -4,7 +4,7 @@ import { SectionWrapper } from '@/components/ui/section-wrapper';
 import { Button } from '@/components/ui/button';
 import { Award } from 'lucide-react';
 import { useFadeInAnimation } from '@/hooks/use-fade-in-animation';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import { useLocale } from '@/contexts/locale';
 
 export function Awards() {
@@ -49,7 +49,7 @@ export function Awards() {
         style={buttonAnimation.style}
         className='text-center'
       >
-        <Link href='/awards'>
+        <ScrollAwareLink href='/awards'>
           <Button
             size='lg'
             className='bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 group'
@@ -57,7 +57,7 @@ export function Awards() {
             <Award className='w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300' />
             {locale === 'ja' ? '受賞歴一覧を見る' : 'View All Awards'}
           </Button>
-        </Link>
+        </ScrollAwareLink>
       </div>
     </SectionWrapper>
   );

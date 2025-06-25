@@ -20,7 +20,7 @@ import {
 } from '@/lib/client-content-loader';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
 import { FullPageLoader } from '@/components/ui/full-page-loader';
@@ -101,14 +101,14 @@ export default function AwardsPage() {
         {/* パンくずリスト */}
         <div className='mb-8 px-4'>
           <nav className='flex items-center space-x-2 text-xs sm:text-sm'>
-            <Link
+            <ScrollAwareLink
               href='/'
               className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
             >
               <Home className='w-3 h-3 sm:w-4 sm:h-4 mr-1' />
               <span className='hidden sm:inline'>Home</span>
               <span className='sm:hidden'>ホーム</span>
-            </Link>
+            </ScrollAwareLink>
             <ChevronRight className='w-3 h-3 sm:w-4 sm:h-4 text-gray-500' />
             <span className='text-white font-medium'>
               {locale === 'ja' ? '受賞' : 'Awards'}
@@ -157,7 +157,7 @@ export default function AwardsPage() {
                     className={`flex ${isEven ? 'justify-start' : 'justify-end'}`}
                   >
                     <div className={`w-5/12 ${isEven ? 'pr-8' : 'pl-8'}`}>
-                      <Link
+                      <ScrollAwareLink
                         href={`/awards/${award.id}`}
                         className='block group'
                       >
@@ -241,7 +241,7 @@ export default function AwardsPage() {
                           {/* ホバーエフェクト */}
                           <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
                         </GlassCard>
-                      </Link>
+                      </ScrollAwareLink>
                     </div>
                   </div>
                 </div>
@@ -264,7 +264,10 @@ export default function AwardsPage() {
 
                 return (
                   <div key={award.id} className='relative'>
-                    <Link href={`/awards/${award.id}`} className='block group'>
+                    <ScrollAwareLink
+                      href={`/awards/${award.id}`}
+                      className='block group'
+                    >
                       <GlassCard className='p-4 sm:p-6 relative overflow-hidden group-hover:scale-[1.02] transition-all duration-300'>
                         <div className='flex items-start space-x-3 sm:space-x-4'>
                           {/* アワードアイコン/画像 */}
@@ -343,7 +346,7 @@ export default function AwardsPage() {
                         {/* ホバーエフェクト */}
                         <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
                       </GlassCard>
-                    </Link>
+                    </ScrollAwareLink>
                   </div>
                 );
               })}

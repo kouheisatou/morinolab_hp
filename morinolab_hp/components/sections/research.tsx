@@ -11,7 +11,7 @@ import {
 } from '@/hooks/use-fade-in-animation';
 import { useState, useEffect } from 'react';
 import { loadThemes, Theme, getImagePath } from '@/lib/client-content-loader';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
 
@@ -61,10 +61,8 @@ export function Research() {
   useEffect(() => {
     const fetchThemes = async () => {
       try {
-        console.log('Research component: Starting to fetch themes...');
         setLoading(true);
         const themesData = await loadThemes();
-        console.log('Research component: Received themes:', themesData);
 
         // 取得したテーマ数を保存
         setTotalThemeCount(themesData.length);
@@ -75,7 +73,6 @@ export function Research() {
         console.error('Research component: Error loading themes:', err);
         setError('Failed to load research themes');
       } finally {
-        console.log('Research component: Finished loading');
         setLoading(false);
       }
     };
@@ -199,7 +196,10 @@ export function Research() {
                     </div>
                   )}
 
-                  <Link href={`/theme/${theme.id}`} className='mt-auto'>
+                  <ScrollAwareLink
+                    href={`/theme/${theme.id}`}
+                    className='mt-auto'
+                  >
                     <Button
                       variant='outline'
                       className='transition-all duration-300 w-full'
@@ -207,7 +207,7 @@ export function Research() {
                       {locale === 'ja' ? '詳しく見る' : 'Learn More'}
                       <ExternalLink className='w-4 h-4 ml-2' />
                     </Button>
-                  </Link>
+                  </ScrollAwareLink>
 
                   {/* Subtle glow effect on hover */}
                   <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
@@ -225,13 +225,13 @@ export function Research() {
           style={buttonAnimation.style}
           className='mt-12 text-center'
         >
-          <Link href='/theme'>
+          <ScrollAwareLink href='/theme'>
             <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'>
               {locale === 'ja'
                 ? 'すべての研究テーマを見る'
                 : 'View All Research Themes'}
             </Button>
-          </Link>
+          </ScrollAwareLink>
         </div>
       )}
     </SectionWrapper>

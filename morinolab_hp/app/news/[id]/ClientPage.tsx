@@ -17,6 +17,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 
 interface ClientPageProps {
   id: string;
@@ -97,20 +98,20 @@ export default function NewsDetailClientPage({ id }: ClientPageProps) {
           {/* パンくずリスト */}
           <div className='mb-8'>
             <nav className='flex items-center space-x-2 text-sm mb-6'>
-              <Link
+              <ScrollAwareLink
                 href='/'
                 className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
               >
                 <Home className='w-4 h-4 mr-1' />
                 Home
-              </Link>
+              </ScrollAwareLink>
               <ChevronRight className='w-4 h-4 text-gray-500' />
-              <Link
+              <ScrollAwareLink
                 href='/news'
                 className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
               >
                 News
-              </Link>
+              </ScrollAwareLink>
               <ChevronRight className='w-4 h-4 text-gray-500' />
               <span className='text-white font-medium'>
                 {getLocalized(newsItem, 'name', locale)}

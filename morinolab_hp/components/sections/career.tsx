@@ -12,7 +12,7 @@ import {
 } from '@/lib/client-content-loader';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import { Button } from '@/components/ui/button';
 
 // 背景カラーのマッピング（交互に変えるだけ）
@@ -161,13 +161,13 @@ export function Career() {
         style={buttonAnimation.style}
         className='text-center mt-12'
       >
-        <Link href='/career'>
+        <ScrollAwareLink href='/career'>
           <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'>
             {locale === 'ja'
               ? 'すべての卒業生の進路を見る'
               : 'View All Graduate Paths'}
           </Button>
-        </Link>
+        </ScrollAwareLink>
       </div>
     </SectionWrapper>
   );

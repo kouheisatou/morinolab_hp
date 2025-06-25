@@ -1,8 +1,6 @@
 'use client';
 
-import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
-import { Button } from '@/components/ui/button';
 import { ParticleBackground } from '@/components/ui/particle-background';
 import { Navbar } from '@/components/navigation/navbar';
 import { Footer } from '@/components/navigation/footer';
@@ -18,9 +16,9 @@ import {
   getStaticPath,
 } from '@/lib/client-content-loader';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 
 interface ClientPageProps {
   id: string;
@@ -107,20 +105,20 @@ export default function TeamMemberDetailClientPage({ id }: ClientPageProps) {
             {/* パンくずリスト */}
             <div className='mb-8'>
               <nav className='flex items-center space-x-2 text-sm mb-6'>
-                <Link
+                <ScrollAwareLink
                   href='/'
                   className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
                 >
                   <Home className='w-4 h-4 mr-1' />
                   Home
-                </Link>
+                </ScrollAwareLink>
                 <ChevronRight className='w-4 h-4 text-gray-500' />
-                <Link
+                <ScrollAwareLink
                   href='/team'
                   className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
                 >
                   Team
-                </Link>
+                </ScrollAwareLink>
                 <ChevronRight className='w-4 h-4 text-gray-500' />
                 <span className='text-white font-medium'>
                   {getLocalized(member, 'name', locale)}

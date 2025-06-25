@@ -7,12 +7,17 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { LanguageSwitcher } from '@/components/navigation/language-switcher';
 import { useLocale } from '@/contexts/locale';
+import { useScrollPosition } from '@/contexts/scroll-position';
+import { usePathname } from 'next/navigation';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [currentScrollY, setCurrentScrollY] = useState(0);
   const router = useRouter();
   const { locale } = useLocale();
+  const { getScrollPosition, saveScrollPosition } = useScrollPosition();
+  const pathname = usePathname();
 
   const navItems = [
     { name: locale === 'ja' ? 'ホーム' : 'Home', href: 'home' },
@@ -30,16 +35,28 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 50);
+      setCurrentScrollY(scrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
+    setCurrentScrollY(window.scrollY);
+    setScrolled(window.scrollY > 50);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleNavClick = (href: string) => {
+    saveScrollPosition();
     router.push(`/#${href}`);
+    setTimeout(() => window.scrollTo(0, 0), 0);
     setIsOpen(false);
+  };
+
+  const handleLogoClick = () => {
+    saveScrollPosition();
+    router.push('/#home');
+    setTimeout(() => window.scrollTo(0, 0), 0);
   };
 
   const navRootClasses = cn(
@@ -76,7 +93,7 @@ export function Navbar() {
       <div className='max-w-7xl mx-auto px-4'>
         <div className='flex items-center justify-between h-16'>
           <button
-            onClick={() => router.push('/#home')}
+            onClick={handleLogoClick}
             className='flex items-center space-x-2 group transition-all duration-200 hover:scale-105'
           >
             <Atom className={brandIconClasses} />

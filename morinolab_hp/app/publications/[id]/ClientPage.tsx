@@ -26,6 +26,7 @@ import {
   Home,
   ChevronRight,
 } from 'lucide-react';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 
 interface ClientPageProps {
   id: string;
@@ -123,20 +124,20 @@ export default function PublicationDetailClientPage({ id }: ClientPageProps) {
           {/* Breadcrumb */}
           <div className='mb-8'>
             <nav className='flex items-center space-x-2 text-sm mb-6'>
-              <Link
+              <ScrollAwareLink
                 href='/'
                 className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
               >
                 <Home className='w-4 h-4 mr-1' />
                 Home
-              </Link>
+              </ScrollAwareLink>
               <ChevronRight className='w-4 h-4 text-gray-500' />
-              <Link
+              <ScrollAwareLink
                 href='/publications'
                 className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
               >
                 {locale === 'ja' ? '論文' : 'Publications'}
-              </Link>
+              </ScrollAwareLink>
               <ChevronRight className='w-4 h-4 text-gray-500' />
               <span className='text-white font-medium'>
                 {getLocalized(publication, 'title', locale)}

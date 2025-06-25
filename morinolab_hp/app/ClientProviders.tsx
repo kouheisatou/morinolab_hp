@@ -1,7 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { LocaleProvider } from '@/contexts/locale';
+import { ScrollPositionProvider } from '@/contexts/scroll-position';
+import { ScrollDebugProvider } from '@/components/ScrollDebugProvider';
 
 interface Props {
   children: React.ReactNode;
@@ -9,11 +11,26 @@ interface Props {
 
 /**
  * アプリ全体で使用するクライアントサイドの Provider 群をまとめたコンポーネント。
- * ここでは LocaleProvider のみをラップしていますが、将来的に追加する場合も
- * ここに登録することで一箇所で管理できます。
+ * LocaleProvider、ScrollPositionProvider、ScrollDebugProvider をラップして、
+ * 一箇所で管理できるようにしています。
  */
 export function ClientProviders({ children }: Props) {
-  return <LocaleProvider>{children}</LocaleProvider>;
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      'scrollRestoration' in window.history
+    ) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  return (
+    <LocaleProvider>
+      <ScrollPositionProvider>
+        <ScrollDebugProvider>{children}</ScrollDebugProvider>
+      </ScrollPositionProvider>
+    </LocaleProvider>
+  );
 }
 
 export default ClientProviders;

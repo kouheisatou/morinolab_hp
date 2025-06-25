@@ -4,7 +4,7 @@ import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
-import Link from 'next/link';
+import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import {
   useFadeInAnimation,
   useStaggeredFadeIn,
@@ -55,15 +55,11 @@ export function Publications() {
   useEffect(() => {
     const fetchPublicationsData = async () => {
       try {
-        console.log(
-          'Publications component: Starting to fetch publications data...'
-        );
         setLoading(true);
         const [items, memberItems] = await Promise.all([
           loadPublications(),
           loadTeamMembers(),
         ]);
-        console.log('Publications component: Received items:', items);
         // 最新の4件のみ表示
         const slicedItems = items.slice(0, 4);
         setPublications(slicedItems);
@@ -81,7 +77,6 @@ export function Publications() {
         );
         setError('Failed to load publications data');
       } finally {
-        console.log('Publications component: Finished loading');
         setLoading(false);
       }
     };
@@ -146,7 +141,7 @@ export function Publications() {
                 style={cardAnimation.style}
                 key={publication.id}
               >
-                <Link
+                <ScrollAwareLink
                   href={`/publications/${publication.id}`}
                   className='block group'
                 >
@@ -230,7 +225,7 @@ export function Publications() {
                     {/* Glow effect */}
                     <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
                   </GlassCard>
-                </Link>
+                </ScrollAwareLink>
               </div>
             );
           })
@@ -242,14 +237,14 @@ export function Publications() {
         style={buttonAnimation.style}
         className='text-center mt-12'
       >
-        <Link href='/publications'>
+        <ScrollAwareLink href='/publications'>
           <Button
             size='lg'
             className='bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white px-8 py-4 text-lg font-semibold'
           >
             {locale === 'ja' ? 'すべての論文を見る' : 'View All Publications'}
           </Button>
-        </Link>
+        </ScrollAwareLink>
       </div>
     </SectionWrapper>
   );
