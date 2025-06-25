@@ -96,7 +96,7 @@ export function Publications() {
           <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto'></div>
           <p className='text-white mt-4'>
             {locale === 'ja'
-              ? '出版物を読み込み中...'
+              ? '論文を読み込み中...'
               : 'Loading publications...'}
           </p>
         </div>
@@ -131,7 +131,7 @@ export function Publications() {
           <div className='col-span-2 text-center text-gray-400'>
             <p>
               {locale === 'ja'
-                ? '出版物が見つかりません'
+                ? '論文が見つかりません'
                 : 'No publications found'}
             </p>
           </div>
@@ -247,7 +247,7 @@ export function Publications() {
             size='lg'
             className='bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white px-8 py-4 text-lg font-semibold'
           >
-            {locale === 'ja' ? 'すべての出版物を見る' : 'View All Publications'}
+            {locale === 'ja' ? 'すべての論文を見る' : 'View All Publications'}
           </Button>
         </Link>
       </div>

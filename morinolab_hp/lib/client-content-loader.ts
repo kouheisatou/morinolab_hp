@@ -292,7 +292,7 @@ export async function loadTeamMemberDetail(
   }
 }
 
-// 出版物一覧を取得
+// 論文一覧を取得
 export async function loadPublications(): Promise<Publication[]> {
   const content = await fetchTextContent(
     getStaticPath('/generated_contents/publication/publication.csv')
@@ -300,7 +300,7 @@ export async function loadPublications(): Promise<Publication[]> {
   return parseCSVContent(content) as Publication[];
 }
 
-// 出版物詳細を取得
+// 論文詳細を取得
 export async function loadPublicationDetail(
   id: string
 ): Promise<Publication | null> {

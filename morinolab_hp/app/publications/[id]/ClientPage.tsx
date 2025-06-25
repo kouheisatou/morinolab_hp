@@ -135,7 +135,7 @@ export default function PublicationDetailClientPage({ id }: ClientPageProps) {
                 href='/publications'
                 className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
               >
-                {locale === 'ja' ? '出版物' : 'Publications'}
+                {locale === 'ja' ? '論文' : 'Publications'}
               </Link>
               <ChevronRight className='w-4 h-4 text-gray-500' />
               <span className='text-white font-medium'>

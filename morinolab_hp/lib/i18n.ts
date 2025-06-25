@@ -3,7 +3,7 @@ export const texts = {
   readMore: { ja: '続きを読む', en: 'Read More' },
   loading: { ja: '読み込み中...', en: 'Loading...' },
   clear: { ja: 'クリア', en: 'Clear' },
-  filterPublications: { ja: '出版物をフィルタ', en: 'Filter Publications' },
+  filterPublications: { ja: '論文をフィルタ', en: 'Filter Publications' },
   clearAll: { ja: 'すべてクリア', en: 'Clear All' },
   filterByTag: { ja: 'タグで絞り込む', en: 'Filter by Tag' },
   filterByYear: { ja: '年度で絞り込む', en: 'Filter by Year' },

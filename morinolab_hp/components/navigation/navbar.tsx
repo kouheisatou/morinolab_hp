@@ -22,7 +22,7 @@ export function Navbar() {
     },
     { name: locale === 'ja' ? 'メンバー' : 'Team', href: 'team' },
     { name: locale === 'ja' ? 'ニュース' : 'News', href: 'news' },
-    { name: locale === 'ja' ? '出版物' : 'Publications', href: 'publications' },
+    { name: locale === 'ja' ? '論文' : 'Publications', href: 'publications' },
     { name: locale === 'ja' ? '受賞' : 'Awards', href: 'awards' },
     { name: locale === 'ja' ? 'キャリア' : 'Career', href: 'career' },
     { name: locale === 'ja' ? 'お問い合わせ' : 'Contact', href: 'contact' },
