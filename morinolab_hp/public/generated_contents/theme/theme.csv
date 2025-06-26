@@ -1,16 +1,6 @@
-id,nameJa,nameEn,thumbnail,descJa,descEn
-1,スマートシティ,Smart City,1.jpg,都市の課題をICTで解決する研究,Research on solving urban issues with ICT
-2,医療AI,Medical AI,2.jpg,人工知能を活用した医療診断支援システム,AI-powered medical diagnosis support systems
-3,自動運転,Autonomous Driving,3.jpg,完全自動運転車の実現に向けた技術開発,Technology development for fully autonomous vehicles
-4,持続可能エネルギー,Sustainable Energy,4.jpg,再生可能エネルギーの効率的な管理システム,Efficient management systems for renewable energy
-5,デジタルツイン,Digital Twin,5.jpg,現実世界をデジタル空間で再現する技術,Technology to reproduce the real world in digital space
-6,エッジAI,Edge AI,6.jpg,エッジデバイスでの高速AI処理技術,High-speed AI processing technology on edge devices
-7,プライバシー保護AI,Privacy-Preserving AI,7.jpg,個人情報を保護しながら学習するAI技術,AI technology that learns while protecting personal information
-8,人間拡張技術,Human Augmentation,8.jpg,人間の能力を拡張する技術の研究,Research on technologies that enhance human capabilities
-9,宇宙情報システム,Space Information Systems,9.jpg,宇宙探査と衛星通信のための情報システム,Information systems for space exploration and satellite communication
-10,バイオインフォマティクス,Bioinformatics,10.jpg,生物学的データの解析と予測技術,Analysis and prediction technology for biological data
-11,社会シミュレーション,Social Simulation,11.jpg,社会現象をコンピュータでモデル化,Computer modeling of social phenomena
-12,グリーンコンピューティング,Green Computing,12.jpg,環境に配慮した計算技術の開発,Development of environmentally conscious computing technology
-13,ファイナンシャルテック,Financial Technology,13.jpg,金融業界のデジタル変革技術,Digital transformation technology for the financial industry
-14,教育テクノロジー,Educational Technology,14.jpg,ICTを活用した次世代教育システム,Next-generation educational systems using ICT
-15,災害対策システム,Disaster Management Systems,15.jpg,自然災害の予測と対策支援システム,Natural disaster prediction and response support systems
+id,nameJa,nameEn,thumbnail,descJa,descEn,keyAchievementsJa,keyAchievementsEn
+1,LiDAR,LiDAR,1.png,都市の課題をICTで解決する研究,Research on solving urban issues with ICT,"40% improvement in quantum gate fidelity,Novel error correction protocols,Scalable quantum architecture design","a,b,c"
+2,自動運転,Autonomous,2.png,人工知能を活用した医療診断支援システム,AI-powered medical diagnosis support systems,"Quantum machine learning algorithms,Noise characterization and mitigation,Quantum-classical hybrid systems","a,b,c"
+3,ブロックチェーン,Blockchain Driving,3.png,完全自動運転車の実現に向けた技術開発,Technology development for fully autonomous vehicles,"Secure government communications,Banking and financial security,Healthcare data protection","a,b,c"
+4,量子コンピューティング,Blockchain Driving,4.png,完全自動運転車の実現に向けた技術開発,Technology development for fully autonomous vehicles,"Secure government communications,Banking and financial security,Healthcare data protection","a,b,c"
+5,量子コンピューティング,Blockchain Driving,5.png,完全自動運転車の実現に向けた技術開発,Technology development for fully autonomous vehicles,"Secure government communications,Banking and financial security,Healthcare data protection","a,b,c"

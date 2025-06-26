@@ -293,13 +293,21 @@ export class GitHubService {
         author: this.author,
       });
 
-      // stage all changed files
+      // stage all changed files (add modified/new, remove deleted)
       const statusMatrix = (await git.statusMatrix({ fs, dir: this.dir })) as StatusRow[];
       let hasChanges = false;
       for (const row of statusMatrix) {
-        const [filepath, , worktreeStatus, stageStatus] = row;
-        if (worktreeStatus !== stageStatus) {
-          await git.add({ fs, dir: this.dir, filepath });
+        // row structure: [filepath, HEAD, workdir, stage]
+        const [filepath /* headStatus */, , workdirStatus, stageStatus] = row;
+        // If workdir differs from stage, we need to update the index
+        if (workdirStatus !== stageStatus) {
+          if (workdirStatus === 0) {
+            // File no longer exists in workdir → stage deletion
+            await git.remove({ fs, dir: this.dir, filepath });
+          } else {
+            // File exists/modified → stage addition or modification
+            await git.add({ fs, dir: this.dir, filepath });
+          }
           hasChanges = true;
         }
       }

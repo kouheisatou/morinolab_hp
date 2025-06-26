@@ -35,7 +35,7 @@ jobs:
             morinolab_cms/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run ESLint for all projects
         run: npm run lint_all
@@ -59,7 +59,7 @@ jobs:
             morinolab_cms/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run format check for all projects
         run: npm run format_all
@@ -85,10 +85,12 @@ jobs:
             morinolab_cms/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run generate_contents script
         run: npm run generate_contents
+        env:
+          NEXT_PUBLIC_BASE_PATH: ''
 
       - name: Commit and push generated contents
         uses: EndBug/add-and-commit@v9
@@ -118,18 +120,12 @@ jobs:
             morinolab_cms/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Generate .env.local
-        run: |
-          cat <<'EOF' > morinolab_hp/.env
-          NEXT_PUBLIC_HERO_OVERLAY_THRESHOLD=0.4
-          NEXT_PUBLIC_NAV_BREAKPOINT=1100
-          NEXT_PUBLIC_BASE_PREFIX="/morinolab_hp"
-          EOF
+        run: npm install
 
       - name: Build Next.js static site
         run: npm run build:morinolab_hp
+        env:
+          NEXT_PUBLIC_BASE_PATH: ''
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
