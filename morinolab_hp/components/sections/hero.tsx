@@ -13,6 +13,13 @@ import { useLocale } from '@/contexts/locale';
 import { loadThemes, Theme, getImagePath } from '@/lib/client-content-loader';
 import { getLocalized } from '@/lib/utils';
 import Image from 'next/image';
+import { M_PLUS_Rounded_1c } from 'next/font/google';
+
+const mplusRounded = M_PLUS_Rounded_1c({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  display: 'swap',
+});
 
 export function Hero() {
   const [scrollY, setScrollY] = useState(0);
@@ -91,10 +98,26 @@ export function Hero() {
             style={titleAnimation.style}
             className='text-6xl md:text-8xl font-bold text-foreground leading-tight'
           >
-            {titlePart1}
-            <span className='bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent'>
-              {titlePart2}
-            </span>
+            {locale === 'ja' ? (
+              <>
+                <span className={mplusRounded.className}>{titlePart1}</span>
+                <span
+                  className={
+                    mplusRounded.className +
+                    ' bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent'
+                  }
+                >
+                  {titlePart2}
+                </span>
+              </>
+            ) : (
+              <>
+                {titlePart1}
+                <span className='bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent'>
+                  {titlePart2}
+                </span>
+              </>
+            )}
           </h1>
 
           <p
@@ -113,7 +136,7 @@ export function Hero() {
           className='flex justify-center'
         >
           <Image
-            src={getImagePath('/img/group_photo_2024.jpeg')}
+            src={getImagePath('/img/lab-group2023.png')}
             alt='Morino Lab Group 2024'
             width={1200}
             height={650}

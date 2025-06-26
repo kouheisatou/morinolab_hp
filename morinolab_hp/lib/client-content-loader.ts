@@ -24,14 +24,9 @@ export async function parseMarkdown(markdown: string): Promise<string> {
 
 // basePathを取得する関数
 function getBasePath(): string {
-  if (typeof window === 'undefined') {
-    // Node.js (server-side)
-    return process.env.NEXT_PUBLIC_BASE_PATH || '';
-  } else {
-    // Browser (client-side)
-    // @ts-ignore
-    return window.NEXT_PUBLIC_BASE_PATH || '';
-  }
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  if (!basePath) return '';
+  return basePath.startsWith('/') ? basePath : `/${basePath}`;
 }
 
 // 静的ファイルのパスにbasePathを付与する関数

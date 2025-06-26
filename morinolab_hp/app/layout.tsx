@@ -1,9 +1,14 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, M_PLUS_Rounded_1c } from 'next/font/google';
 import ClientProviders from './ClientProviders';
 
 const inter = Inter({ subsets: ['latin'] });
+const mplusRounded = M_PLUS_Rounded_1c({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'MorinoLab - Quantum Computing Research',
