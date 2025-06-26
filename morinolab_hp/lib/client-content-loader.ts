@@ -1,5 +1,10 @@
 import { marked } from 'marked';
 
+// basePath is controlled by the NEXT_PUBLIC_BASE_PATH environment variable.
+// On the server, it uses process.env.NEXT_PUBLIC_BASE_PATH.
+// On the client, it uses window.NEXT_PUBLIC_BASE_PATH (injected at build time by Next.js).
+// If unset, it defaults to ''.
+
 // マークダウンをHTMLに変換する関数
 export async function parseMarkdown(markdown: string): Promise<string> {
   try {
@@ -19,15 +24,27 @@ export async function parseMarkdown(markdown: string): Promise<string> {
 
 // basePathを取得する関数
 function getBasePath(): string {
-  return '/morinolab_hp';
+  if (typeof window === 'undefined') {
+    // Node.js (server-side)
+    return process.env.NEXT_PUBLIC_BASE_PATH || '';
+  } else {
+    // Browser (client-side)
+    // @ts-ignore
+    return window.NEXT_PUBLIC_BASE_PATH || '';
+  }
 }
 
 // 静的ファイルのパスにbasePathを付与する関数
 function getStaticPath(path: string): string {
   const basePath = getBasePath();
+  if (!basePath) return path;
   // 既にbasePathが含まれている場合は追加しない
   if (basePath && path.startsWith(basePath)) {
     return path;
+  }
+  // Avoid double slashes
+  if (basePath.endsWith('/') && path.startsWith('/')) {
+    return `${basePath}${path.slice(1)}`;
   }
   return `${basePath}${path}`;
 }

@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: '/morinolab_hp',
-  assetPrefix: '/morinolab_hp/',
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '/',
   output: "export",
   trailingSlash: true,
   eslint: {
