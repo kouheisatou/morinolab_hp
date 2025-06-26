@@ -225,13 +225,25 @@ export function Research() {
           style={buttonAnimation.style}
           className='mt-12 text-center'
         >
-          <ScrollAwareLink href='/theme'>
-            <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'>
-              {locale === 'ja'
-                ? 'すべての研究テーマを見る'
-                : 'View All Research Themes'}
-            </Button>
-          </ScrollAwareLink>
+          <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+            <ScrollAwareLink href='/theme'>
+              <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 text-lg font-semibold'>
+                {locale === 'ja'
+                  ? 'すべての研究テーマを見る'
+                  : 'View All Research Themes'}
+              </Button>
+            </ScrollAwareLink>
+            <ScrollAwareLink href='/publications'>
+              <Button
+                variant='outline'
+                className='relative overflow-hidden px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 hover:text-white hover:border-transparent hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500'
+              >
+                {locale === 'ja'
+                  ? 'すべての論文を見る'
+                  : 'View All Publications'}
+              </Button>
+            </ScrollAwareLink>
+          </div>
         </div>
       )}
     </SectionWrapper>

@@ -48,8 +48,12 @@ export function Navbar() {
 
   const handleNavClick = (href: string) => {
     saveScrollPosition();
-    router.push(`/#${href}`);
-    setTimeout(() => window.scrollTo(0, 0), 0);
+    if (href === 'publications') {
+      router.push('/publications');
+    } else {
+      router.push(`/#${href}`);
+      setTimeout(() => window.scrollTo(0, 0), 0);
+    }
     setIsOpen(false);
   };
 

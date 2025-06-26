@@ -7,7 +7,6 @@ import { Hero } from '@/components/sections/hero';
 import { Research } from '@/components/sections/research';
 import { Team } from '@/components/sections/team';
 import { News } from '@/components/sections/news';
-import { Publications } from '@/components/sections/publications';
 import { Awards } from '@/components/sections/awards';
 import { Career } from '@/components/sections/career';
 import { Contact } from '@/components/sections/contact';
@@ -25,7 +24,6 @@ export default function Home() {
         <Research />
         <News />
         <Team />
-        <Publications />
         <section className='max-w-7xl mx-auto px-4 py-20'>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-12'>
             <Awards />

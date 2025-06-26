@@ -80,6 +80,9 @@ export function ParticleBackground() {
       // refから最新のscrollY値を取得
       const currentScrollY = scrollYRef.current;
 
+      // スクロールが0の時は薄くする倍率
+      const thinAlphaMultiplier = currentScrollY === 0 ? 1.0 : 0.2;
+
       // Create dynamic background gradients based on scroll (減らした係数)
       const scrollOffset = currentScrollY * 0.05; // 0.1 から 0.05 に減少
       const gradient1 = ctx.createRadialGradient(
@@ -92,7 +95,7 @@ export function ParticleBackground() {
       );
       gradient1.addColorStop(
         0,
-        `rgba(59, 130, 246, ${Math.max(0, 0.1 - scrollOffset * 0.0005)})` // アルファ値をスクロールで減少させて青→白へ
+        `rgba(59, 130, 246, ${Math.max(0, 0.1 - scrollOffset * 0.0005)})`
       );
       gradient1.addColorStop(1, 'rgba(59, 130, 246, 0)');
 
@@ -106,7 +109,7 @@ export function ParticleBackground() {
       );
       gradient2.addColorStop(
         0,
-        `rgba(139, 92, 246, ${Math.max(0, 0.1 - scrollOffset * 0.0005)})` // アルファ値をスクロールで減少させて青→白へ
+        `rgba(139, 92, 246, ${Math.max(0, 0.1 - scrollOffset * 0.0005)})`
       );
       gradient2.addColorStop(1, 'rgba(139, 92, 246, 0)');
 
@@ -147,7 +150,8 @@ export function ParticleBackground() {
         const scrollInfluence =
           Math.abs(Math.sin(currentScrollY * 0.005)) * 0.3 + 0.7; // 0.01 から 0.005、範囲も調整
         const dynamicSize = particle.size * scrollInfluence;
-        const dynamicOpacity = particle.opacity * scrollInfluence;
+        const dynamicOpacity =
+          particle.opacity * scrollInfluence * thinAlphaMultiplier;
 
         // Draw particle with enhanced effects
         ctx.beginPath();
@@ -209,7 +213,8 @@ export function ParticleBackground() {
 
           if (distance < 200) {
             const scrollInfluence =
-              Math.abs(Math.sin(currentScrollY * 0.005)) * 0.2 + 0.1; // 0.01 から 0.005、範囲も調整
+              (Math.abs(Math.sin(currentScrollY * 0.005)) * 0.2 + 0.1) *
+              thinAlphaMultiplier;
             const opacity = scrollInfluence * (1 - distance / 200);
 
             ctx.beginPath();
