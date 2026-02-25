@@ -71,11 +71,11 @@ export function ScrollPositionProvider({ children }: Props) {
     return scrollPositions.current.get(path) || 0;
   };
 
-  // パス名が変更されたときの処理（保存処理は削除、復元のみ）
   React.useEffect(() => {
     if (previousPathname.current && previousPathname.current !== pathname) {
-      // 画面遷移（新しいページのスクロール位置を復元）
-      restoreScrollPosition();
+      if (!window.location.hash) {
+        restoreScrollPosition();
+      }
     }
     previousPathname.current = pathname;
   }, [pathname]);

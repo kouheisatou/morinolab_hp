@@ -11,9 +11,9 @@ const mplusRounded = M_PLUS_Rounded_1c({
 });
 
 export const metadata: Metadata = {
-  title: 'MorinoLab - Quantum Computing Research',
+  title: '森野研究室 - 移動通信ネットワーク研究室',
   description:
-    'Pioneering the future of quantum computing through innovative research and cutting-edge technology development.',
+    '移動通信ネットワーク研究室（森野研究室）の公式ウェブサイトです。ネットワーク分野の研究に取り組んでいます。',
 };
 
 export default function RootLayout({
@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
+    <html lang='ja'>
       <body className={inter.className}>
         <ClientProviders>{children}</ClientProviders>
       </body>

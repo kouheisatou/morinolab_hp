@@ -4,30 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a37f8681-52e3-40fc-b87b-902a015e7d8a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/app/awards/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/awards/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/career/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/career/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/news/[id]/ClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/news/[id]/ClientPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/news/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/news/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/publications/[id]/ClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/publications/[id]/ClientPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/publications/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/publications/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/team/[id]/ClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/team/[id]/ClientPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/team/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/team/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/theme/[id]/ClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/theme/[id]/ClientPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/theme/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/theme/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/navigation/footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/navigation/footer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/navigation/navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/navigation/navbar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/sections/awards.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/awards.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/sections/career.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/career.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/sections/contact.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/contact.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/sections/hero.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/hero.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/sections/news.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/news.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/sections/research.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/research.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/sections/team.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/team.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
-    </list>
+    <list default="true" id="a37f8681-52e3-40fc-b87b-902a015e7d8a" name="Changes" comment="Add GitHub Actions workflow for deploying to GitHub Pages" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -121,8 +98,41 @@
       <updated>1771933988522</updated>
       <workItem from="1771933989609" duration="7000" />
       <workItem from="1771934002754" duration="3223000" />
-      <workItem from="1771993107328" duration="1093000" />
+      <workItem from="1771993107328" duration="7636000" />
     </task>
+    <task id="LOCAL-00001" summary="Refactor layout and styles for Home, News, and Career sections; enhance responsiveness and visual hierarchy">
+      <option name="closed" value="true" />
+      <created>1771994892088</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1771994892088</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Update .gitignore to include additional log files and IDE configurations; refine local env file patterns">
+      <option name="closed" value="true" />
+      <created>1771994985607</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1771994985607</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Add various award and research article entries to article.md">
+      <option name="closed" value="true" />
+      <created>1772035025713</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1772035025714</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Add GitHub Actions workflow for deploying to GitHub Pages">
+      <option name="closed" value="true" />
+      <created>1772037459440</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1772037459440</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,6 +160,13 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Refactor layout and styles for Home, News, and Career sections; enhance responsiveness and visual hierarchy" />
+    <MESSAGE value="Update .gitignore to include additional log files and IDE configurations; refine local env file patterns" />
+    <MESSAGE value="Add various award and research article entries to article.md" />
+    <MESSAGE value="Add GitHub Actions workflow for deploying to GitHub Pages" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add GitHub Actions workflow for deploying to GitHub Pages" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

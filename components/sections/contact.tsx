@@ -39,7 +39,7 @@ export function Contact() {
                   <h5 className='text-sm font-bold text-slate-400 uppercase tracking-wider mb-1'>Laboratory</h5>
                   <p className='text-slate-700 font-medium leading-relaxed'>
                     {locale === 'ja'
-                      ? '芝浦工業大学 工学部 情報工学科 森野博章研究室'
+                      ? '芝浦工業大学 工学部 情報・通信工学課程 森野博章研究室'
                       : 'Morino Laboratory, Shibaura Institute of Technology'}
                   </p>
                 </div>
@@ -90,7 +90,7 @@ export function Contact() {
               <ul className='space-y-4'>
                 <li className='flex items-center text-slate-700 font-medium'>
                   <div className='w-2 h-2 bg-primary rounded-full mr-3'></div>
-                  {locale === 'ja' ? '有楽町線 豊洲駅 1c出口 徒歩7分' : '7-min walk from Toyosu Stn. (Yurakucho Line)'}
+                  {locale === 'ja' ? '有楽町線 豊洲駅 1aまたは3番出口 徒歩7分' : '7-min walk from Toyosu Stn. Exit 1a/3 (Yurakucho Line)'}
                 </li>
                 <li className='flex items-center text-slate-700 font-medium'>
                   <div className='w-2 h-2 bg-primary rounded-full mr-3'></div>
@@ -98,7 +98,7 @@ export function Contact() {
                 </li>
                 <li className='flex items-center text-slate-700 font-medium'>
                   <div className='w-2 h-2 bg-primary rounded-full mr-3'></div>
-                  {locale === 'ja' ? 'JR 越中島駅 徒歩15分' : '15-min walk from Etchujima Stn. (JR Line)'}
+                  {locale === 'ja' ? 'JR京葉線 越中島駅 2番出口 徒歩15分' : '15-min walk from Etchujima Stn. Exit 2 (JR Keiyo Line)'}
                 </li>
               </ul>
             </div>

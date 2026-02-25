@@ -33,8 +33,8 @@ export function Navbar() {
   }, []);
 
   const handleNavClick = (href: string) => {
-    saveScrollPosition();
     if (href === 'publications') {
+      saveScrollPosition();
       router.push('/publications');
     } else if (pathname === '/') {
       const element = document.getElementById(href);

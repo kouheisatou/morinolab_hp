@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Navbar } from '@/components/navigation/navbar';
 import { Footer } from '@/components/navigation/footer';
 import { Hero } from '@/components/sections/hero';
@@ -11,6 +12,16 @@ import { Career } from '@/components/sections/career';
 import { Contact } from '@/components/sections/contact';
 
 export default function Home() {
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      const el = document.getElementById(hash);
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 200);
+      }
+    }
+  }, []);
+
   return (
     <div className='min-h-screen bg-white flex flex-col'>
       <Navbar />
