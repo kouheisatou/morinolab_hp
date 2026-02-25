@@ -1,3 +1,5 @@
-# データサイエンス (Data Science)
+# LiDAR (LiDAR)
 
-データを用いて新たな科学的知見や社会的価値を引き出すためのアプローチ。統計学、情報科学、対象分野の専門知識を融合し、問題解決を目指します。
+LiDAR（Light Detection and Ranging）は、レーザー光を使って周囲の3次元情報を取得するセンシング技術です。自動運転、ロボティクス、人物検出など幅広い応用分野があります。
+
+LiDAR (Light Detection and Ranging) is a sensing technology that uses laser light to acquire 3D information about the surroundings. It has wide application areas including autonomous driving, robotics, and person detection.

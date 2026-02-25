@@ -1,20 +1,12 @@
-# 5G通信における教育システム
+# Person Identification Using Wi-Fi CSI Focusing on Door Opening and Closing Motions Based on Per-Channel Similarity Estimation
+
+**著者**: Kazuki Iwase, Hiroaki Morino
+**発表場所**: ICCE2024（2024年1月）
 
 ## 概要
 
-この論文では、5G通信技術を活用した新しい教育システムの可能性について探ります。特に、超低遅延通信を活かした遠隔教育とVR/AR教材に焦点を当てています。
+チャネルごとの類似度推定に基づいて、ドアの開閉動作時のWi-Fi CSIから個人を識別する手法を提案した国際会議論文です。
 
-## 研究内容
+## キーワード
 
-- 5Gを活用したリアルタイム遠隔授業システム
-- VR/AR技術による体験型学習コンテンツの開発
-- 学習データの高速収集と分析
-
-## 著者
-
-- 森田真弓
-- 遠藤誠
-
-## 出版日
-
-2024年3月10日
+Wi-Fi CSI、個人識別、ドア開閉動作、チャネル相関

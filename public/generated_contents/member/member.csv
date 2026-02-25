@@ -1,21 +1,22 @@
 id,nameJa,nameEn,thumbnail,descJa,descEn,tagIds,memberTypeId,gradYear
-1,森野博章,Hiroaki Morino,1.jpg,情報工学の教授。機械学習と深層学習の研究に従事,Professor of Information Engineering. Research on machine learning and deep learning,"1,2,6",1,
-2,山田太郎,Taro Yamada,2.jpg,機械学習を専門とする博士課程学生,Doctoral student specializing in machine learning,"1,2,5",5,2025
-3,田中花子,Hanako Tanaka,3.jpg,自然言語処理の准教授。対話システムの研究,Associate Professor in NLP. Research on dialogue systems,"3,6,22",2,
-4,佐藤次郎,Jiro Sato,4.jpg,コンピュータビジョンを専門とする助教,Assistant Professor specializing in computer vision,"4,6,15",3,
-5,鈴木美咲,Misaki Suzuki,5.jpg,データサイエンスの修士2年生,Master's 2nd year student in data science,"5,1,24",6,2024
-6,高橋健太,Kenta Takahashi,6.jpg,IoTシステムの研究に従事する修士1年生,Master's 1st year student working on IoT systems,"8,16,26",7,2025
-7,渡辺あゆみ,Ayumi Watanabe,7.jpg,サイバーセキュリティの博士課程学生,Doctoral student in cybersecurity,"10,23,25",5,2026
-8,伊藤雅人,Masato Ito,8.jpg,ロボティクスの学部4年生,4th year undergraduate in robotics,"7,6,27",8,2024
-9,中村真理,Mari Nakamura,9.jpg,量子コンピューティングの研究員,Research fellow in quantum computing,"12,27,28",10,
-10,小林達也,Tatsuya Kobayashi,10.jpg,ブロックチェーン技術の専門家,Blockchain technology specialist,"9,18,25",11,
-11,山口聡子,Satoko Yamaguchi,11.jpg,バイオインフォマティクスのポスドク,Postdoc in bioinformatics,"13,5,28",11,
-12,松本大輔,Daisuke Matsumoto,12.jpg,AR/VR技術の学部3年生,3rd year undergraduate in AR/VR technology,"15,4,22",9,2025
-13,岡田智美,Tomomi Okada,13.jpg,エッジコンピューティングの修士1年生,Master's 1st year in edge computing,"16,8,11",7,2025
-14,清水正樹,Masaki Shimizu,14.jpg,5G通信システムの博士課程学生,Doctoral student in 5G communication systems,"17,26,16",5,2025
-15,加藤千春,Chiharu Kato,15.jpg,フィンテックアプリケーションの研究,Research on FinTech applications,"18,9,23",6,2024
-16,石川裕太,Yuta Ishikawa,16.jpg,教育工学の客員研究員,Visiting researcher in educational technology,"21,22,6",12,
-17,西村春香,Haruka Nishimura,17.jpg,ヘルステックソリューションの開発,Development of HealthTech solutions,"19,6,5",7,2025
-18,橋本拓海,Takumi Hashimoto,18.jpg,AgriTechの学部4年生,4th year undergraduate in AgriTech,"20,8,5",8,2024
-19,森田真弓,Mayumi Morita,19.jpg,HCIデザインの修士2年生,Master's 2nd year in HCI design,"22,4,21",6,2024
-20,藤田光一,Koichi Fujita,20.jpg,分散システムアーキテクチャの専門家,Expert in distributed system architecture,"25,26,23",1,
+1,森野博章,Hiroaki Morino,1.jpg,芝浦工業大学 工学部 情報・通信工学課程 教授。モバイル情報通信ネットワーク分野の研究に従事,Professor at Shibaura Institute of Technology. Research on mobile information communication networks,"1,2,3,4",1,
+2,今村就,Naru Imamura,2.jpg,Vehicle crowdsensingによる道路状況監視の参加インセンティブ設計に関する研究を行っています,Research on participation incentive design for road condition monitoring using vehicle crowdsensing,"4,13,14",2,2025
+3,佐々木敦史,Atsushi Sasaki,3.jpg,WiFi CSIを用いたドア開閉動作時の個人識別に関する研究を行っています,Research on person identification based on door opening and closing motions using Wi-Fi CSI,"11,12,16",2,2025
+4,乙戸慎太郎,Shintaro Oto,4.jpg,デスクワーク環境での3次元点群を用いた着座姿勢判別に関する研究を行っています,Research on seated posture discrimination using 3D point clouds in desk work environments,"5,6,15",2,2025
+5,石田竜太,Ryota Ishida,5.jpg,複数の3次元LiDARを用いた歩道上の前方不注意歩行者の検出に関する研究を行っています,Research on detection of inattentive pedestrians on sidewalks using multiple 3D LiDARs,"5,6,16",2,2025
+6,佐藤衡平,Kohei Sato,6.jpg,ブロックチェーン上のペイメントチャネルネットワークにおける低遅延・秘匿性両立法の研究を行っています,Research on methods for achieving both low latency and privacy in blockchain payment channel networks,"9,10,7",2,2025
+7,磯谷敦,Atsushi Isotani,7.jpg,3次元点群データのリアルタイム検出技術に関する研究を行っています,Research on real-time detection technology for 3D point cloud data,"5,6,7",3,2026
+8,坂井日向,Hinata Sakai,8.jpg,少数のLiDARによる人流データからの人数推定システムに関する研究を行っています,Research on a people counting system from pedestrian flow data using a small number of LiDARs,"5,6,16",3,2026
+9,田上稜偉,Ryoi Tagami,9.jpg,3次元点群への電子透かし技術開発に関する研究を行っています,Research on digital watermarking technology development for 3D point clouds,"5,6,8",3,2026
+10,池延一輝,Kazuki Ikenobu,10.jpg,電子透かしの攻撃耐性評価に関する研究を行っています,Research on attack resistance evaluation of digital watermarking,"8,6",4,2025
+11,奥田真治,Shinji Okuda,11.jpg,車両センシングにおける報酬最適化に関する研究を行っています,Research on reward optimization in vehicular sensing,"14,13",4,2025
+12,鈴木敬達,Takanori Suzuki,12.jpg,3次元点群による人の抽出・行動判別に関する研究を行っています,Research on human extraction and behavior discrimination using 3D point clouds,"5,6,12",4,2025
+13,静拓実,Hiromi Shizuka,13.jpg,V2X協調車速制御への強化学習応用に関する研究を行っています,Research on application of reinforcement learning to V2X cooperative vehicle speed control,"4,7,13",4,2025
+14,青栁真佳,Mika Aoyagi,14.jpg,3次元点群を用いた集団人数推定に関する研究を行っています,Research on crowd counting estimation using 3D point clouds,"5,6,16",4,2025
+15,伊藤彰宏,Akihiro Ito,15.jpg,ペイメントチャネルネットワークの攻撃耐性評価に関する研究を行っています,Research on attack resistance evaluation of payment channel networks,"9,10",4,2025
+16,川村大志,Hiroshi Kawamura,16.jpg,高速道路渋滞の早期検出精度向上に関する研究を行っています,Research on improving the accuracy of early detection of highway congestion,"13,7",4,2025
+17,小林瑞宜,Mizuki Kobayashi,17.jpg,LiDARによる人流人数推定に関する研究を行っています,Research on pedestrian flow counting using LiDAR,"5,6,16",4,2025
+18,今野智耀,Tomoaki Konno,18.jpg,入力系列選択が予測精度に与える影響評価に関する研究を行っています,Research on evaluation of the effect of input sequence selection on prediction accuracy,"7,13",4,2025
+19,塩川瑞己,Mizuki Shiokawa,19.jpg,3次元点群による人の姿勢判別に関する研究を行っています,Research on human posture discrimination using 3D point clouds,"5,6,15",4,2025
+20,塚田涼介,Ryosuke Tsukada,20.jpg,渋滞緩和のための制御開始時刻決定法に関する研究を行っています,Research on control start time determination method for congestion mitigation,"13,4",4,2025
+21,牧野光希,Koki Makino,21.jpg,ペイメントチャネルグループ形成法開発に関する研究を行っています,Research on development of payment channel group formation methods,"9,10",4,2025

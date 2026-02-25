@@ -1,14 +1,12 @@
-# 分散型ブロックチェーンのスケーラビリティ
+# Reward Design in Vehicular Crowdsensing Focused on Improving Time-Efficiency of Sensing
+
+**著者**: Kaho Ishikawa, Hiroaki Morino, Andrew Morris, Asma Adnane
+**発表場所**: ICCE2025
 
 ## 概要
 
-この論文では、分散型ブロックチェーンシステムのスケーラビリティに関する研究を紹介します。特に、トランザクション処理速度の向上に焦点を当てています。
+車両センシング（Vehicular Crowdsensing）において、センシングの時間効率を向上させることに焦点を当てた報酬設計手法を提案した国際会議論文です。
 
-## 著者
+## キーワード
 
-- 渡辺あゆみ
-- 山口聡子
-
-## 出版日
-
-2024年4月10日
+Vehicular Crowdsensing、報酬設計、時間効率、インセンティブ

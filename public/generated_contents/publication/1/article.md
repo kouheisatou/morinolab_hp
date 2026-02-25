@@ -1,14 +1,12 @@
-# 深層学習による画像認識
+# Wi-Fi CSI-Based Person Identification based on Analyzing Door Opening and Closing Motions
+
+**著者**: Atsushi Sasaki, Kazuki Iwase, Hiroaki Morino
+**掲載誌**: IEEE Access (Submitted, 2025)
 
 ## 概要
 
-この論文では、深層学習を用いた画像認識技術の最新の進展について紹介します。特に、畳み込みニューラルネットワーク（CNN）の応用に焦点を当てています。
+Wi-Fi CSI（Channel State Information）を用いて、ドアの開閉動作から個人を識別する手法を提案した論文です。チャネルごとの類似度推定に基づく解析を行い、非接触・非侵襲の個人認証システムを実現します。
 
-## 著者
+## キーワード
 
-- 森野博章
-- 山田太郎
-
-## 出版日
-
-2024年6月1日
+Wi-Fi CSI、個人識別、ドア開閉動作、チャネル状態情報

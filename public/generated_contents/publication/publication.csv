@@ -1,16 +1,31 @@
 id,authorMemberIds,tagIds,titleJa,titleEn,publicationNameJa,publicationNameEn,thumbnail,publishedDate
-1,"1,2","1,2,4",深層学習による画像認識,Image Recognition with Deep Learning,情報処理学会論文誌,IPSJ Journal,1.jpg,2024/01/01
-2,"3,4","3,6,22",対話システムにおける自然言語理解,Natural Language Understanding in Dialogue Systems,言語処理学会論文誌,Journal of Natural Language Processing,2.jpg,2024/01/01
-3,"1,5,7","1,5,10",機械学習によるサイバー攻撃検知,Cyber Attack Detection using Machine Learning,情報セキュリティ論文誌,Journal of Information Security,3.jpg,2020/01/01
-4,"8,9","7,6,27",自律移動ロボットの経路計画アルゴリズム,Path Planning Algorithms for Autonomous Mobile Robots,ロボット学会誌,Journal of Robotics Society,4.jpg,2021/01/01
-5,"10,11","9,18,25",分散型ブロックチェーンのスケーラビリティ,Scalability of Distributed Blockchain Systems,コンピュータシステム論文誌,Journal of Computer Systems,5.jpg,2024/01/01
-6,"2,5","1,2,5",深層強化学習によるゲームAI,Game AI using Deep Reinforcement Learning,人工知能学会論文誌,Journal of Artificial Intelligence,6.jpg,2023/01/01
-7,"14,16","17,26,21",5G通信における教育システム,Educational Systems in 5G Communication,教育工学会論文誌,Journal of Educational Technology,7.jpg,2024/01/01
-8,"12,15","15,4,18",AR技術を用いたフィンテックアプリケーション,FinTech Applications using AR Technology,情報通信学会論文誌,Journal of Information and Communication,8.jpg,2024/01/01
-9,"17,19","19,22,6",ヘルスケアにおけるHCIデザイン,HCI Design in Healthcare,ヒューマンインタフェース学会論文誌,Journal of Human Interface Society,9.jpg,2024/01/01
-10,"18,20","20,8,25",IoTベースの農業監視システム,IoT-based Agricultural Monitoring System,農業情報学会論文誌,Journal of Agricultural Informatics,10.jpg,2021/01/01
-11,"6,13","8,16,11",エッジコンピューティングによるリアルタイム処理,Real-time Processing with Edge Computing,分散システム論文誌,Journal of Distributed Systems,11.jpg,2021/01/01
-12,"4,12","4,15,22",コンピュータビジョンとAR技術の融合,Integration of Computer Vision and AR Technology,画像処理学会論文誌,Journal of Image Processing,12.jpg,2022/01/01
-13,"9,11","12,27,28",量子機械学習による最適化問題,Optimization Problems using Quantum Machine Learning,量子情報学会論文誌,Journal of Quantum Information,13.jpg,2022/01/01
-14,"1,3,20","6,23,25",AIを活用したソフトウェア自動生成,Automatic Software Generation using AI,ソフトウェア工学会論文誌,Journal of Software Engineering,14.jpg,2022/01/01
-15,"7,10","10,9,23",ブロックチェーンセキュリティの新手法,New Methods for Blockchain Security,暗号と情報セキュリティ論文誌,Journal of Cryptography and Information Security,15.jpg,2022/01/01
+1,3,11,Wi-Fi CSIを用いたドア開閉動作による個人識別,Wi-Fi CSI-Based Person Identification based on Analyzing Door Opening and Closing Motions,IEEE Access,IEEE Access,1.jpg,2025-03
+2,6,10,Reducing Privacy-Latency Tradeoff in Payment Channel Networks: A Group Capacity Solution,Reducing Privacy-Latency Tradeoff in Payment Channel Networks: A Group Capacity Solution,IEEE Access,IEEE Access,2.jpg,2025-03
+3,6,10,Routing Method Resolving Privacy-Latency Dilemma in Blockchain Payment Channel Networks,Routing Method Resolving Privacy-Latency Dilemma in Blockchain Payment Channel Networks,ICMU2025,ICMU2025,3.jpg,2025-01
+4,6,10,ペイメントチャネルネットワークにおける送金の秘匿を考慮した中継経路決定手法,Relay Routing Method Considering Payment Privacy in Payment Channel Networks,電子情報通信学会論文誌B,IEICE Transactions on Communications,4.jpg,2025-03
+5,1,14,Reward Design in Vehicular Crowdsensing Focused on Improving Time-Efficiency of Sensing,Reward Design in Vehicular Crowdsensing Focused on Improving Time-Efficiency of Sensing,ICCE2025,ICCE2025,5.jpg,2025-01
+6,1,4,Delay-Resilient Cooperative Velocity Control for Mitigating Congestion Based on Machine Learning,Delay-Resilient Cooperative Velocity Control for Mitigating Congestion Based on Machine Learning,IEEE Vehicular Networking Conference,IEEE Vehicular Networking Conference,6.jpg,2024-05
+7,1,11,Wi-Fi CSIを用いたドア開閉動作による個人識別（チャネル相関分析に基づく）,Person Identification Using Wi-Fi CSI Focusing on Door Opening and Closing Motions Based on Per-Channel Similarity Estimation,ICCE2024,ICCE2024,7.jpg,2024-01
+8,1,11,Wi-Fi CSIを用いたドア開閉動作による個人識別,Person Identification Using Wi-Fi CSI Focusing on Door Opening and Closing Motions,ICMU2023,ICMU2023,8.jpg,2023-11
+9,1,16,スマートウォッチを用いた本の閲覧行動認識,Recognition of browsing a book using smartwatches toward inferring interest,ICCE-Berlin 2024,ICCE-Berlin 2024,9.jpg,2023-09
+10,1,13,V2Xを用いた減速制御による交通渋滞緩和,Traffic congestion mitigation by deceleration control with short-term velocity forecasting using V2X,PerVehicle 2023,PerVehicle 2023,10.jpg,2023-03
+11,1,16,スマートウォッチを用いた大腿部角度に着目した動作状態認識,Motion State Recognition Focusing on a Person's Angle of Thigh for supporting evacuation route estimation in disaster relief,Sensors and Materials,Sensors and Materials,11.jpg,2021-01
+12,1,4,車両通信を用いた車線変更制御による渋滞緩和効果の評価,Performance study of the lane change control using vehicle communications for alleviating congestion,PerVehicle 2021,PerVehicle 2021,12.jpg,2021-03
+13,1,4,V2Xシステムを用いた車線変更制御によるサグ部渋滞緩和効果の評価,Evaluation of congestion mitigation effect at sags brought by lane change control using RVC system,PerVehicle 2020,PerVehicle 2020,13.jpg,2020-03
+14,1,7,動的アントコロニーシステムを用いた負荷分散グリッドコンピューティング,Load balancing using dynamic ant colony system based fault tolerance in grid computing,International Journal of Communication Networks and Information Security,International Journal Communication Networks and Information Security,14.jpg,2019-08
+15,1,2,スマートフォンの回転ベクトルセンサを用いた建物内階段昇降距離推定,Estimating Distance of Going Up and down Stairs in a Building Using the Smartphone's Rotation Vector Sensor,ICMU,ICMU,15.jpg,2018-10
+16,1,2,空間的アクセス局所性を考慮した無線メッシュ網の分散型キャッシュ置換ポリシー,Decentralized cache replacement policy for wireless mesh networks considering on spatial access locality,ITC-CSCC,ITC-CSCC,16.jpg,2018-07
+17,1,1,通信処理を考慮したバックグラウンドタスクの一括実行スケジューリングによるAndroid端末の省電力化,Power Saving of Android Terminals by Batch Execution Scheduling of Background Tasks,電子情報通信学会論文誌B,IEICE Transactions on Communications,17.jpg,2018-05
+18,1,3,遅延挿入型P2PTVトラフィック局所化（中継能力考慮）,Delay Insertion Based P2PTV Traffic Localization Considering Peer's Relaying Capability,IEICE Transactions on Communications,IEICE Transactions on Communications,18.jpg,2017-10
+19,1,7,動的ACOに基づくフォールトトレランスグリッドスケジューリング,Dynamic ACO-based fault tolerance in grid computing,International Journal of Grid and Distributed Computing,International Journal of Grid and Distributed Computing,19.jpg,2017-12
+20,1,4,長距離無線システムを用いた車両間情報伝達によるサグ部渋滞解消支援,Performance Study of Inter-Vehicle Information Dissemination Using Long Range Wireless System for Assisting Congestion Resolution at Sags,IEEE VNC,IEEE Vehicular Networking Conference,20.jpg,2017-11
+21,1,3,P2PTVトラフィック局所化（利用帯域考慮）,Delay Insertion Based P2PTV Traffic Localization Considering Available Bandwidth of Logical Link,APNOMS2015,APNOMS2015,21.jpg,2015-08
+22,1,3,遅延挿入型P2PTVトラフィック局所化（ASレベルトポロジ使用）,Delay-Insertion-Based P2PTV Traffic Localization Using AS-Level Topology Information,IEICE Transactions on Communications,IEICE Transactions on Communications,22.jpg,2015-11
+23,1,2,移動送信端末に対応する無線メッシュ網のクロスレイヤマルチキャストルーチング,Cross-Layer Multicast Routing for Wireless Mesh Networks Supporting Mobile Sources,電子情報通信学会論文誌,IEICE Transactions,23.jpg,2015-11
+24,1,4,異種無線システムによる車両間通信を用いたサグ部渋滞解消支援,Assisting Solution of Traffic Congestion At Sags Using Inter-Vehicle Communication with Heterogeneous Wireless Systems,IEEE VNC 2015,IEEE VNC 2015,24.jpg,2015-11
+25,1,2,無線メッシュ網の負荷分散マルチパスルーティング,Load balanced multipath routing for wireless mesh networks: A step-by-step rate control approach,AHSP 2009,AHSP 2009,25.jpg,2009-03
+26,1,1,アドホックネットワーク経路制御プロトコル（近傍ノード情報利用）,Ad hoc routing protocol with flooding control using unidirectional links,PIMRC 2007,PIMRC 2007,26.jpg,2007-09
+27,1,1,近傍ノード情報に基づくフラッディング適応中継制御によるアドホックネットワークルーチングプロトコル,Ad Hoc Network Routing Protocol Using Neighbor Node Information,電子情報通信学会論文誌,IEICE Transactions,27.jpg,2007-05
+28,1,1,片方向リンクを考慮したフラッディング領域制限型アドホックルーチング,Unidirectional Ad Hoc Routing with Area-Controlled Flooding,電子情報通信学会論文誌,IEICE Transactions,28.jpg,2006-08
+29,1,9,グループに基づく無線メッシュネットワーク2層マルチキャスト,Group based two layer multicast for wireless mesh networks supporting mobile sources,ASON 2013,ASON 2013,29.jpg,2013-12
+30,1,16,P2Pストリーミングツリー構築における信頼性に関する研究,A study on reliable peer-to-peer streaming tree construction using records of peer's duration,HUT-ICCE 2008,HUT-ICCE 2008,30.jpg,2008-06

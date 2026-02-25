@@ -1,16 +1,22 @@
 id,nameJa,nameEn,thumbnail,memberIds,date
-1,優秀研究賞,Excellence Research Award,1.jpg,"1,2",2024-03-15
-2,国際会議最優秀論文賞,Best Paper Award at International Conference,2.jpg,"3,4",2024-05-20
-3,若手研究者奨励賞,Young Researcher Encouragement Award,3.jpg,"5",2024-04-10
-4,産学連携貢献賞,Industry-Academia Collaboration Award,4.jpg,"1,10,20",2024-02-28
-5,IEEE論文賞,IEEE Paper Award,5.jpg,"7,9",2024-01-15
-6,情報処理学会功績賞,IPSJ Merit Award,6.jpg,"1",2023-12-05
-7,学生優秀発表賞,Student Excellent Presentation Award,7.jpg,"12,15",2023-11-20
-8,国際共同研究賞,International Collaboration Award,8.jpg,"11,16",2023-10-30
-9,革新技術賞,Innovation Technology Award,9.jpg,"8,14",2023-09-15
-10,社会実装優秀賞,Social Implementation Excellence Award,10.jpg,"17,18,19",2023-08-25
-11,ベストデモンストレーション賞,Best Demonstration Award,11.jpg,"6,13",2023-07-10
-12,オープンソース貢献賞,Open Source Contribution Award,12.jpg,"2,11",2023-06-18
-13,セキュリティ技術賞,Security Technology Award,13.jpg,"7,10",2023-05-22
-14,AI応用研究賞,AI Application Research Award,14.jpg,"1,5,9",2023-04-14
-15,学術振興賞,Academic Promotion Award,15.jpg,"3,4,20",2023-03-08 
+1,芝浦工業大学ビジネスモデルコンテスト(SMBC) 最優秀賞・研究室奨励賞,SIT Business Model Contest Best Award and Lab Encouragement Award,1.jpg,,2025-03
+2,情報処理学会ITS研究会優秀発表賞,IPSJ ITS Research Group Best Presentation Award,2.jpg,,2024-11
+3,古田賞,Furuta Award,3.jpg,4,2023-03
+4,有元史郎記念賞,Arimoto Shiro Memorial Award,4.jpg,,2019-03
+5,MIKA2019 若手部門 優秀ポスター賞,MIKA2019 Young Researcher Best Poster Award,5.jpg,,2019-11
+6,ICEIC 2019 Best Paper Award Bronze Prize,ICEIC 2019 Best Paper Award Bronze Prize,6.jpg,1,2019-01
+7,古田賞,Furuta Award,7.jpg,,2017-03
+8,電子情報通信学会東京支部学生会学生奨励賞,IEICE Tokyo Section Student Encouragement Award,8.jpg,,2017-03
+9,電子情報通信学会 MoNA研究会優秀発表賞・若手研究奨励賞,IEICE MoNA Research Group Best Presentation Award and Young Researcher Encouragement Award,9.jpg,,2017-11
+10,電子情報通信学会 MoNA研究会若手研究奨励賞,IEICE MoNA Research Group Young Researcher Encouragement Award,10.jpg,,2017-11
+11,芝浦工業大学 教育賞,SIT Education Award,11.jpg,1,2016-03
+12,古田賞,Furuta Award,12.jpg,,2016-03
+13,芝浦工業大学 梅本魁記念賞,SIT Umemoto Kai Memorial Award,13.jpg,1,2014-03
+14,電子情報通信学会 ASN研究会若手研究奨励賞,IEICE ASN Research Group Young Researcher Encouragement Award,14.jpg,,2014-11
+15,芝浦工業大学工学部通信工学科総代,SIT Faculty of Engineering Representative,15.jpg,,2014-03
+16,有元史郎記念賞,Arimoto Shiro Memorial Award,16.jpg,,2014-03
+17,Best Paper Award (IS-CANDAR 2013),Best Paper Award (IS-CANDAR 2013),17.jpg,1,2013-12
+18,情報処理学会 MBL研究会優秀発表賞,IPSJ MBL Research Group Best Presentation Award,18.jpg,,2013-11
+19,電子情報通信学会 MoMuC研究会若手研究奨励賞,IEICE MoMuC Research Group Young Researcher Encouragement Award,19.jpg,,2012-11
+20,電子情報通信学会 MoMuC研究会若手研究奨励賞,IEICE MoMuC Research Group Young Researcher Encouragement Award,20.jpg,,2011-11
+21,古田賞,Furuta Award,21.jpg,,2010-03

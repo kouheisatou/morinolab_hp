@@ -1,3 +1,5 @@
-# 自然言語処理 (Natural Language Processing)
+# P2P通信 (P2P Communication)
 
-人間の言語（自然言語）をコンピュータに理解させ、処理・生成させる技術。対話システム、機械翻訳、情報抽出などの研究に取り組んでいます。
+P2P通信（ピアツーピア通信）は、中央サーバを経由せず端末同士が直接通信する方式です。コンテンツ配信やファイル共有、ライブストリーミングへの応用研究を行っています。
+
+P2P (Peer-to-Peer) communication is a method where terminals communicate directly without going through a central server. We research applications in content distribution, file sharing, and live streaming.

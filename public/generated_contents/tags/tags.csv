@@ -1,6 +1,17 @@
 id,nameJa,nameEn
-1,機械学習,Machine Learning
-2,深層学習,Deep Learning
-3,自然言語処理,Natural Language Processing
-4,コンピュータビジョン,Computer Vision
-5,データサイエンス,Data Science
+1,モバイル通信,Mobile Communication
+2,無線メッシュネットワーク,Wireless Mesh Network
+3,P2P通信,P2P Communication
+4,車両通信・V2X,Vehicular Communication / V2X
+5,LiDAR,LiDAR
+6,3次元点群,3D Point Cloud
+7,機械学習,Machine Learning
+8,電子透かし,Digital Watermarking
+9,ブロックチェーン,Blockchain
+10,ペイメントチャネルネットワーク,Payment Channel Network
+11,Wi-Fi CSI,Wi-Fi CSI
+12,個人識別,Person Identification
+13,交通渋滞制御,Traffic Congestion Control
+14,クラウドセンシング,Crowdsensing
+15,姿勢推定,Posture Estimation
+16,センシング,Sensing

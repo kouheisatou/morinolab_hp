@@ -1,7 +1,5 @@
----
-title: 新規記事
----
+# ペイメントチャネルネットワーク (Payment Channel Network)
 
-# 見出し
+ペイメントチャネルネットワークは、ブロックチェーン上でオフチェーン決済を実現する技術です。プライバシーと低遅延を両立する中継経路決定手法の研究を行っています。
 
-ここに本文を書いてください
+Payment Channel Networks are technologies that enable off-chain payments on blockchains. We research relay routing methods that balance privacy and low latency.
