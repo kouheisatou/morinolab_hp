@@ -5,297 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a37f8681-52e3-40fc-b87b-902a015e7d8a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/build_cms_binaries.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GITHUB_INTEGRATION_SUMMARY.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GITHUB_OAUTH_IMPLEMENTATION.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/1/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/10.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/10/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/11.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/11/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/12.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/12/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/13.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/13/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/14.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/14/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/15.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/15/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/16.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/17.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/18.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/2/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/3/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/4/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/5/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/6/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/7.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/7/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/8.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/8/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/9/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/award/award.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/career/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/career/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/career/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/career/4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/career/5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/career/6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/career/career.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/1/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/1/media/image1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/10.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/10/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/11.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/11/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/12.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/12/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/13.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/13/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/14.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/14/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/15.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/15/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/16.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/17.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/18.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/2/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/3/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/4/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/5/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/6/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/7.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/7/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/8.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/8/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/9/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/lecture/lecture.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/1/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/1/media/image1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/10.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/10/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/11.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/11/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/12.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/12/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/13.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/13/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/14.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/14/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/15.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/15/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/16.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/16/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/17.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/17/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/18.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/18/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/19/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/2/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/2/media/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/2/media/image1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/20/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/3/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/4/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/5/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/6/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/7.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/7/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/8.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/8/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/9/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/member/member.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/membertype/1/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/membertype/membertype.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/1/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/1/media/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/1/media/image1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/1/media/office.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/1/media/office_1.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/1/media/thumb_1750093989859.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/10.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/10/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/11.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/11/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/12.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/12/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/13.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/13/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/14.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/14/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/15.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/15/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/16.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/17.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/18.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/2/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/3/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/4/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/5/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/6/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/7.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/7/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/8.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/8/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/9/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/news/news.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/1/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/1/media/image1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/10.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/10/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/11.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/11/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/12.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/12/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/13.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/13/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/14.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/14/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/15.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/15/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/16.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/17.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/18.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/2/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/3/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/4/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/5/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/6/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/7.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/7/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/8.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/8/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/9/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/publication/publication.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/1/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/10/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/11/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/12/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/13/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/14/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/15/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/16/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/17/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/18/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/19/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/2/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/20/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/21/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/22/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/23/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/24/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/25/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/26/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/27/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/28/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/29/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/3/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/4/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/5/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/6/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/7/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/8/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/9/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/tags/tags.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/1/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/1/media/image1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/2/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/3/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/4/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/5/article.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contents/theme/theme.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/morinolab_cms_api_reference.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/morinolab_cms_technical_guide.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/morinolab_cms_user_guide.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fix-animations.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/.eslintrc.cjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/.prettierrc.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/Sango-JA-CPAL.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/build.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/copy-deps.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/dist/github-service.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/dist/main.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/dist/preload.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/dist/renderer/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/forge.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/images/icon.icns" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/images/icon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/images/icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/jest.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/application/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/application/usecases/CloneRepository.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/application/usecases/CommitAndPush.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/application/usecases/PullLatest.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/domain/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/domain/models/Article.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/domain/models/ContentType.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/domain/models/RepositoryInfo.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/domain/ports/IContentRepository.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/domain/ports/IGitRepository.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/github-service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/infrastructure/GitRepository.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/infrastructure/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/infrastructure/local/ContentRepository.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/main.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/preload.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/presentation/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/src/renderer/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/tests/CloneRepositoryUseCase.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/tests/CommitAndPushUseCase.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/tests/PullLatestUseCase.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_cms/tsconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_hp/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/morinolab_hp/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/morinolab_hp/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/morinolab_hp/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/awards/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/awards/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/career/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/career/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/news/[id]/ClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/news/[id]/ClientPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/news/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/news/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/publications/[id]/ClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/publications/[id]/ClientPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/publications/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/publications/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/team/[id]/ClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/team/[id]/ClientPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/team/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/team/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/theme/[id]/ClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/theme/[id]/ClientPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/theme/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/theme/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/navigation/footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/navigation/footer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/navigation/navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/navigation/navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/sections/awards.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/awards.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/sections/career.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/career.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/sections/contact.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/contact.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/sections/hero.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/hero.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/sections/news.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/news.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/sections/research.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/research.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/sections/team.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/sections/team.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -345,6 +76,8 @@
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "main",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -356,6 +89,21 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager" selected="npm.Next.js: server-side">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -373,6 +121,7 @@
       <updated>1771933988522</updated>
       <workItem from="1771933989609" duration="7000" />
       <workItem from="1771934002754" duration="3223000" />
+      <workItem from="1771993107328" duration="1093000" />
     </task>
     <servers />
   </component>

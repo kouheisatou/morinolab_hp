@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ParticleBackground } from '@/components/ui/particle-background';
 import { Navbar } from '@/components/navigation/navbar';
 import { Footer } from '@/components/navigation/footer';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
@@ -13,7 +12,7 @@ import {
 } from '@/lib/client-content-loader';
 import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 import Image from 'next/image';
-import { Home, ChevronRight } from 'lucide-react';
+import { Home, ChevronRight, ArrowLeft } from 'lucide-react';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
 
@@ -38,139 +37,104 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
           setLoading(false);
         }
       };
-
       fetchThemeDetail();
     }
   }, [id]);
 
-  if (loading) {
-    return (
-      <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
-        <ParticleBackground />
-        <Navbar />
-        <main className='flex-1'>
-          <SectionWrapper className='py-32'>
-            <div className='text-center'>
-              <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-cyan-400 mx-auto'></div>
-              <p className='text-white mt-4'>Loading...</p>
-            </div>
-          </SectionWrapper>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  if (loading) return null;
 
   if (!theme) {
     return (
-      <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
-        <ParticleBackground />
+      <div className='min-h-screen bg-white flex flex-col'>
         <Navbar />
-        <main className='flex-1'>
-          <SectionWrapper className='py-32'>
-            <div className='text-center'>
-              <h1 className='text-4xl font-bold text-white mb-4'>
-                Theme Not Found
-              </h1>
-              <p className='text-gray-300 mb-8'>
-                The requested research theme could not be found.
-              </p>
-              <ScrollAwareLink href='/'>
-                <Button className='bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white'>
-                  Back to Home
-                </Button>
-              </ScrollAwareLink>
-            </div>
-          </SectionWrapper>
+        <main className='flex-1 flex items-center justify-center pt-20'>
+          <div className='text-center'>
+            <h1 className='text-2xl font-black text-slate-900 mb-4'>Research Theme Not Found</h1>
+            <ScrollAwareLink href='/'>
+              <Button className='bg-primary text-white font-bold'>Back to Home</Button>
+            </ScrollAwareLink>
+          </div>
         </main>
         <Footer />
       </div>
     );
   }
 
-  // サムネイル画像パス
-  const thumbnailSrc = getStaticPath(
-    `/generated_contents/theme/${theme.thumbnail}`
-  );
+  const thumbnailSrc = getStaticPath(`/generated_contents/theme/${theme.thumbnail}`);
 
   return (
-    <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
-      <ParticleBackground />
+    <div className='min-h-screen bg-white flex flex-col'>
       <Navbar />
 
-      <main className='flex-1'>
-        <SectionWrapper className='py-32'>
-          <div className='max-w-4xl mx-auto'>
-            <div className='mb-8'>
-              <nav className='flex items-center space-x-2 text-sm mb-6'>
-                <ScrollAwareLink
-                  href='/'
-                  className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
-                >
-                  <Home className='w-4 h-4 mr-1' />
-                  Home
-                </ScrollAwareLink>
-                <ChevronRight className='w-4 h-4 text-gray-500' />
-                <ScrollAwareLink
-                  href='/#research'
-                  className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
-                >
-                  Research
-                </ScrollAwareLink>
-                <ChevronRight className='w-4 h-4 text-gray-500' />
-                <span className='text-white font-medium'>
+      <main className='flex-1 pt-20'>
+        <div className='bg-slate-50 border-b border-slate-100 py-12'>
+          <div className='max-w-4xl mx-auto px-4'>
+            <nav className='flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-slate-400 mb-8'>
+              <ScrollAwareLink href='/' className='hover:text-primary transition-colors'>Home</ScrollAwareLink>
+              <ChevronRight className='w-3 h-3' />
+              <ScrollAwareLink href='/theme' className='hover:text-primary transition-colors'>Research</ScrollAwareLink>
+              <ChevronRight className='w-3 h-3' />
+              <span className='text-slate-900 truncate max-w-[200px]'>
+                {getLocalized(theme, 'name', locale)}
+              </span>
+            </nav>
+
+            <div className='flex items-start gap-6'>
+              <div className='w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl shadow-lg flex items-center justify-center flex-shrink-0 p-2 border border-slate-100'>
+                <Image
+                  src={thumbnailSrc}
+                  alt={getLocalized(theme, 'name', locale)}
+                  width={80}
+                  height={80}
+                  className='object-contain w-full h-full'
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = getStaticPath('/img/noimage_theme.png');
+                  }}
+                />
+              </div>
+              <div>
+                <h1 className='text-3xl md:text-5xl font-black text-slate-900 leading-tight tracking-tight mb-0'>
                   {getLocalized(theme, 'name', locale)}
-                </span>
-              </nav>
+                </h1>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <SectionWrapper className='py-16'>
+          <article className='max-w-4xl mx-auto'>
+            <div className='mb-16'>
+              <h2 className='text-xl font-black text-slate-900 uppercase tracking-tight mb-6 flex items-center'>
+                <span className='w-8 h-1 bg-primary mr-3'></span>
+                {locale === 'ja' ? '研究概要' : 'Research Overview'}
+              </h2>
+              <p className='text-xl text-slate-600 leading-relaxed font-medium'>
+                {getLocalized(theme, 'desc', locale)}
+              </p>
             </div>
 
-            <article className='bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden'>
-              <div className='relative bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-8 md:p-12'>
-                <div className='flex items-start space-x-6'>
-                  {/* サムネイル画像をアイコンエリアに表示 */}
-                  <div className='w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden flex-shrink-0'>
-                    <Image
-                      src={thumbnailSrc}
-                      alt={getLocalized(theme, 'name', locale)}
-                      width={80}
-                      height={80}
-                      className='object-cover w-full h-full'
-                      onError={(e) => {
-                        const img = e.currentTarget as HTMLImageElement;
-                        img.src = getStaticPath('/img/noimage_theme.png');
-                      }}
-                    />
-                  </div>
-                  <div className='flex-1'>
-                    <h1 className='text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight'>
-                      {getLocalized(theme, 'name', locale)}
-                    </h1>
-                  </div>
-                </div>
-              </div>
+            {theme.content && (
+              <div
+                className='prose prose-slate prose-lg max-w-none 
+                  prose-headings:text-slate-900 prose-headings:font-black
+                  prose-p:text-slate-600 prose-p:leading-relaxed
+                  prose-strong:text-slate-900
+                  prose-a:text-primary prose-a:font-bold hover:prose-a:underline'
+                dangerouslySetInnerHTML={{
+                  __html: theme.content,
+                }}
+              />
+            )}
 
-              <div className='p-8 md:p-12 space-y-12'>
-                <div>
-                  <h2 className='text-2xl font-bold text-white mb-4 border-b border-cyan-400/30 pb-2'>
-                    {locale === 'ja' ? '研究概要' : 'Research Overview'}
-                  </h2>
-                  <p className='text-gray-200 leading-relaxed text-lg'>
-                    {getLocalized(theme, 'desc', locale)}
-                  </p>
-                </div>
-
-                {/* 詳細記事 */}
-                {theme.content && (
-                  <div
-                    className='prose prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:text-foreground prose-p:text-gray-700'
-                    dangerouslySetInnerHTML={{
-                      __html: theme.content,
-                    }}
-                  />
-                )}
-              </div>
-            </article>
-          </div>
+            <div className='mt-20 pt-10 border-t border-slate-100'>
+              <ScrollAwareLink href='/#research'>
+                <button className='flex items-center text-sm font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group'>
+                  <ArrowLeft className='w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform' />
+                  Back to Research
+                </button>
+              </ScrollAwareLink>
+            </div>
+          </article>
         </SectionWrapper>
       </main>
 

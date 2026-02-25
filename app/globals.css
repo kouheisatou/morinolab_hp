@@ -2,78 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base reset styles */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  line-height: 1.5;
-  -webkit-text-size-adjust: 100%;
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    'Noto Sans',
-    sans-serif;
-}
-
-body {
-  line-height: inherit;
-}
-
-:root {
-  /* Dark-text on white background */
-  --foreground-rgb: 30, 41, 59; /* slate-800 */
-  --background-start-rgb: 255, 255, 255; /* white */
-  --background-end-rgb: 255, 255, 255; /* white */
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-    135deg,
-    rgb(var(--background-start-rgb)) 0%,
-    rgb(var(--background-end-rgb)) 100%
-  );
-  min-height: 100vh;
-}
-
 @layer base {
   :root {
-    --background: 0 0% 100%; /* white */
-    --foreground: 222.2 20% 20%; /* near-black slate */
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 20% 20%;
+    --card-foreground: 222.2 47.4% 11.2%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 20% 20%;
-    --primary: 222.2 47.4% 11.2%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 210 100% 34%; /* #005BAC */
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --ring: 210 100% 34%;
     --radius: 0.5rem;
   }
 }
@@ -83,124 +32,45 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Custom scrollbar */
+/* シンプルで細いスクロールバー */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.5);
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.8);
+  background: #94a3b8;
 }
 
-/* Smooth animations */
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
+/* リンクの基本スタイル */
+a {
+  @apply transition-colors duration-200;
 }
 
-@keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
-  }
+/* セクションのパディング */
+section {
+  @apply py-16 md:py-24;
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+/* タイトルの装飾（青いアンダーラインなど） */
+.section-title {
+  @apply text-3xl md:text-4xl font-bold text-slate-900 mb-8 relative inline-block;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 4s ease-in-out infinite;
-}
-
-/* Glass morphism effect */
-.glass-morphism {
-  backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Gradient text effect */
-.gradient-text {
-  background: linear-gradient(45deg, #3b82f6, #06b6d4, #8b5cf6);
-  background-size: 300% 300%;
-  animation: gradient-shift 5s ease infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/*  Utility overrides (minimal): force old dark gradient classes white */
-/* ------------------------------------------------------------------ */
-@layer utilities {
-  /* Any component that still has bg-gradient-to-* from-slate-900 to-slate-800 */
-  .from-slate-900,
-  .from-slate-800 {
-    --tw-gradient-from: #ffffff var(--tw-gradient-from-position);
-    --tw-gradient-stops:
-      var(--tw-gradient-from), var(--tw-gradient-to, rgba(255, 255, 255, 0));
-  }
-  .to-slate-800,
-  .to-slate-900 {
-    --tw-gradient-to: #ffffff var(--tw-gradient-to-position);
-  }
-
-  /* Dark-theme text helpers: ensure readability on white */
-  /* Default: convert white text to dark gray to remain visible on white bg */
-  .text-white {
-    color: rgb(30 41 59) !important;
-  }
-  /* BUT keep white inside interactive colored buttons or gradient areas */
-  button.text-white,
-  .bg-gradient-to-r.text-white {
-    color: #ffffff !important;
-  }
-
-  .text-gray-300 {
-    color: rgb(71 85 105) !important;
-  }
-  .text-gray-400 {
-    color: rgb(100 116 139) !important;
-  }
-  .text-blue-300 {
-    color: rgb(29 78 216) !important;
-  }
-
-  .navbar-dark .text-white {
-    color: #ffffff !important;
-  }
+.section-title::after {
+  content: '';
+  @apply absolute -bottom-2 left-0 w-12 h-1 bg-primary;
 }

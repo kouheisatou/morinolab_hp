@@ -6,14 +6,10 @@ import {
   NewsItem,
   getStaticPath,
 } from '@/lib/client-content-loader';
-import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
-import { Button } from '@/components/ui/button';
-import { ParticleBackground } from '@/components/ui/particle-background';
 import { Navbar } from '@/components/navigation/navbar';
 import { Footer } from '@/components/navigation/footer';
-import { Calendar, Home, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+import { Calendar, Home, ChevronRight, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
@@ -26,62 +22,35 @@ interface ClientPageProps {
 export default function NewsDetailClientPage({ id }: ClientPageProps) {
   const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { locale } = useLocale();
 
   useEffect(() => {
     const fetchNewsDetail = async () => {
       if (!id) return;
-
       try {
         setLoading(true);
         const item = await loadNewsDetail(id);
         setNewsItem(item);
       } catch (err) {
-        setError('Failed to load news detail');
         console.error('Error loading news detail:', err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchNewsDetail();
   }, [id]);
 
-  if (loading) {
-    return (
-      <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
-        <ParticleBackground />
-        <Navbar />
-        <main className='flex-1'>
-          <SectionWrapper className='py-32'>
-            <div className='text-center'>
-              <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-cyan-400 mx-auto'></div>
-              <p className='text-white mt-4'>Loading news...</p>
-            </div>
-          </SectionWrapper>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  if (loading) return null;
 
-  if (error || !newsItem) {
+  if (!newsItem) {
     return (
-      <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
-        <ParticleBackground />
+      <div className='min-h-screen bg-white flex flex-col'>
         <Navbar />
-        <main className='flex-1'>
-          <SectionWrapper className='py-32'>
-            <div className='text-center'>
-              <h1 className='text-4xl font-bold text-white mb-4'>
-                News Not Found
-              </h1>
-              <p className='text-red-400'>
-                {error || 'The requested news article could not be found.'}
-              </p>
-            </div>
-          </SectionWrapper>
+        <main className='flex-1 flex items-center justify-center pt-20'>
+          <div className='text-center'>
+            <h1 className='text-2xl font-black text-slate-900 mb-4'>News Not Found</h1>
+            <ScrollAwareLink href='/news' className='text-primary font-bold hover:underline'>Return to News</ScrollAwareLink>
+          </div>
         </main>
         <Footer />
       </div>
@@ -89,88 +58,70 @@ export default function NewsDetailClientPage({ id }: ClientPageProps) {
   }
 
   return (
-    <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
-      <ParticleBackground />
+    <div className='min-h-screen bg-white flex flex-col'>
       <Navbar />
 
-      <main className='flex-1'>
-        <SectionWrapper className='py-32'>
-          {/* パンくずリスト */}
-          <div className='mb-8'>
-            <nav className='flex items-center space-x-2 text-sm mb-6'>
-              <ScrollAwareLink
-                href='/'
-                className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
-              >
-                <Home className='w-4 h-4 mr-1' />
-                Home
-              </ScrollAwareLink>
-              <ChevronRight className='w-4 h-4 text-gray-500' />
-              <ScrollAwareLink
-                href='/news'
-                className='text-gray-400 hover:text-cyan-400 transition-colors duration-200'
-              >
-                News
-              </ScrollAwareLink>
-              <ChevronRight className='w-4 h-4 text-gray-500' />
-              <span className='text-white font-medium'>
+      <main className='flex-1 pt-20'>
+        <div className='bg-slate-50 border-b border-slate-100 py-12'>
+          <div className='max-w-4xl mx-auto px-4'>
+            <nav className='flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-slate-400 mb-8'>
+              <ScrollAwareLink href='/' className='hover:text-primary transition-colors'>Home</ScrollAwareLink>
+              <ChevronRight className='w-3 h-3' />
+              <ScrollAwareLink href='/news' className='hover:text-primary transition-colors'>News</ScrollAwareLink>
+              <ChevronRight className='w-3 h-3' />
+              <span className='text-slate-900 truncate max-w-[200px]'>
                 {getLocalized(newsItem, 'name', locale)}
               </span>
             </nav>
-          </div>
 
-          {/* Article Container */}
-          <article className='max-w-4xl mx-auto bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden'>
-            {/* Hero Image */}
-            <div className='relative h-64 md:h-80 lg:h-96 overflow-hidden'>
+            <div className='flex items-center text-primary text-xs font-black uppercase tracking-widest mb-4'>
+              <Calendar className='w-4 h-4 mr-2' />
+              {new Date(newsItem.date).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+              })}
+            </div>
+
+            <h1 className='text-3xl md:text-5xl font-black text-slate-900 leading-tight tracking-tight mb-0'>
+              {getLocalized(newsItem, 'name', locale)}
+            </h1>
+          </div>
+        </div>
+
+        <SectionWrapper className='py-16'>
+          <article className='max-w-4xl mx-auto'>
+            {/* Featured Image */}
+            <div className='relative aspect-video rounded-3xl overflow-hidden mb-12 shadow-2xl shadow-slate-200'>
               <Image
-                src={getStaticPath(
-                  `/generated_contents/news/${newsItem.thumbnail}`
-                )}
+                src={getStaticPath(`/generated_contents/news/${newsItem.thumbnail}`)}
                 alt={getLocalized(newsItem, 'name', locale)}
                 fill
                 className='object-cover'
+                priority
                 onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.src = getStaticPath('/img/noimage_news.png');
+                  (e.currentTarget as HTMLImageElement).src = getStaticPath('/img/noimage_news.png');
                 }}
               />
-              <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent' />
             </div>
 
-            {/* Article Content */}
-            <div className='p-8 md:p-12'>
-              {/* Date */}
-              <div className='flex items-center space-x-2 mb-6'>
-                <Calendar className='w-4 h-4 text-cyan-400' />
-                <time className='text-cyan-400 text-sm font-medium'>
-                  {new Date(newsItem.date).toLocaleDateString(
-                    locale === 'ja' ? 'ja-JP' : 'en-US',
-                    {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    }
-                  )}
-                </time>
-              </div>
+            {/* Content */}
+            <div
+              className='prose prose-slate prose-lg max-w-none 
+                prose-headings:text-slate-900 prose-headings:font-black prose-headings:tracking-tight
+                prose-p:text-slate-600 prose-p:leading-relaxed
+                prose-strong:text-slate-900 prose-strong:font-bold
+                prose-a:text-primary prose-a:font-bold prose-a:no-underline hover:prose-a:underline'
+              dangerouslySetInnerHTML={{
+                __html: newsItem.content || '<p>No content available.</p>',
+              }}
+            />
 
-              {/* Title */}
-              <header className='mb-8'>
-                <h1 className='text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight'>
-                  {getLocalized(newsItem, 'name', locale)}
-                </h1>
-              </header>
-
-              {/* Content */}
-              <div
-                className='prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-gray-700'
-                dangerouslySetInnerHTML={{
-                  __html:
-                    newsItem.content ||
-                    '<p class="text-gray-400">No content available.</p>',
-                }}
-              />
+            <div className='mt-20 pt-10 border-t border-slate-100'>
+              <ScrollAwareLink href='/news'>
+                <button className='flex items-center text-sm font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group'>
+                  <ArrowLeft className='w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform' />
+                  Back to News
+                </button>
+              </ScrollAwareLink>
             </div>
           </article>
         </SectionWrapper>

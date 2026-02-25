@@ -1,18 +1,14 @@
 'use client';
 
-import { GlassCard } from '@/components/ui/glass-card';
 import { SectionWrapper } from '@/components/ui/section-wrapper';
-import { ParticleBackground } from '@/components/ui/particle-background';
 import { Navbar } from '@/components/navigation/navbar';
 import { Footer } from '@/components/navigation/footer';
-import { Calendar, Newspaper, Home, ChevronRight } from 'lucide-react';
+import { Calendar, ChevronRight, ArrowRight } from 'lucide-react';
 import { NewsItem, loadNews, getStaticPath } from '@/lib/client-content-loader';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { useLocale } from '@/contexts/locale';
 import { getLocalized } from '@/lib/utils';
-import { t } from '@/lib/i18n';
 import { ScrollAwareLink } from '@/components/ui/ScrollAwareLink';
 
 export default function NewsPage() {
@@ -31,113 +27,76 @@ export default function NewsPage() {
         setLoading(false);
       }
     };
-
     fetchNews();
   }, []);
 
-  if (loading) {
-    return (
-      <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800'>
-        <ParticleBackground />
-        <Navbar />
-        <SectionWrapper className='py-32'>
-          <div className='text-center'>
-            <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-cyan-400 mx-auto'></div>
-            <p className='text-white mt-4'>Loading...</p>
-          </div>
-        </SectionWrapper>
-        <Footer />
-      </div>
-    );
-  }
+  if (loading) return null;
 
   return (
-    <div className='min-h-screen relative overflow-x-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col'>
-      <ParticleBackground />
+    <div className='min-h-screen bg-white flex flex-col'>
       <Navbar />
 
-      <main className='flex-1'>
-        <SectionWrapper className='py-32'>
-          {/* パンくずリスト */}
-          <div className='mb-8'>
-            <nav className='flex items-center space-x-2 text-sm'>
-              <ScrollAwareLink
-                href='/'
-                className='flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200'
-              >
-                <Home className='w-4 h-4 mr-1' />
-                Home
-              </ScrollAwareLink>
-              <ChevronRight className='w-4 h-4 text-gray-500' />
-              <span className='text-white font-medium'>
-                {locale === 'ja' ? 'ニュース' : 'News'}
-              </span>
+      <main className='flex-1 pt-20'>
+        <div className='bg-slate-50 border-b border-slate-100 py-12'>
+          <div className='max-w-7xl mx-auto px-4'>
+            <nav className='flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-slate-400 mb-6'>
+              <ScrollAwareLink href='/' className='hover:text-primary transition-colors'>Home</ScrollAwareLink>
+              <ChevronRight className='w-3 h-3' />
+              <span className='text-slate-900'>{locale === 'ja' ? 'ニュース' : 'News'}</span>
             </nav>
-          </div>
-
-          <div className='text-center mb-16'>
-            <h1 className='text-5xl font-bold text-white mb-6'>
+            <h1 className='text-4xl md:text-5xl font-black text-slate-900 tracking-tight'>
               {locale === 'ja' ? '最新ニュース' : 'Latest News'}
             </h1>
           </div>
+        </div>
 
+        <SectionWrapper className='py-16'>
           <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
             {newsItems.map((item) => (
               <ScrollAwareLink
                 key={item.id}
                 href={`/news/${item.id}`}
-                className='block group'
+                className='group block'
               >
-                <GlassCard className='p-6 h-full flex flex-col relative overflow-hidden group-hover:scale-[1.02] transition-all duration-300'>
-                  <div className='aspect-video relative mb-4 rounded-lg overflow-hidden bg-gradient-to-br from-blue-500/20 to-cyan-500/20'>
+                <div className='bg-white border border-slate-100 rounded-2xl overflow-hidden hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all h-full flex flex-col'>
+                  <div className='aspect-video relative overflow-hidden bg-slate-100'>
                     <Image
-                      src={getStaticPath(
-                        `/generated_contents/news/${item.id}.jpg`
-                      )}
-                      alt={item.nameJa}
+                      src={getStaticPath(`/generated_contents/news/${item.id}.jpg`)}
+                      alt={getLocalized(item, 'name', locale)}
                       fill
-                      className='object-cover group-hover:scale-110 transition-transform duration-300'
+                      className='object-cover group-hover:scale-105 transition-transform duration-500'
                       onError={(e) => {
-                        e.currentTarget.src = getStaticPath(
-                          '/img/noimage_news.png'
-                        );
+                        (e.currentTarget as HTMLImageElement).src = getStaticPath('/img/noimage_news.png');
                       }}
                     />
-                    <div className='absolute top-3 left-3'>
-                      <div className='w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
-                        <Newspaper className='w-5 h-5 text-white' />
-                      </div>
-                    </div>
                   </div>
 
-                  <div className='flex items-center space-x-2 mb-3'>
-                    <Calendar className='w-4 h-4 text-gray-400' />
-                    <span className='text-gray-400 text-sm'>
+                  <div className='p-6 flex flex-col flex-1'>
+                    <div className='flex items-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-3'>
+                      <Calendar className='w-3 h-3 mr-2 text-primary/60' />
                       {new Date(item.date).toLocaleDateString(
                         locale === 'ja' ? 'ja-JP' : 'en-US',
-                        {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        }
+                        { year: 'numeric', month: 'long', day: 'numeric' }
                       )}
-                    </span>
+                    </div>
+
+                    <h3 className='text-lg font-bold text-slate-900 group-hover:text-primary transition-colors mb-4 line-clamp-2 leading-snug'>
+                      {getLocalized(item, 'name', locale)}
+                    </h3>
+
+                    <div className='mt-auto flex items-center text-primary text-xs font-bold uppercase tracking-widest'>
+                      {locale === 'ja' ? '続きを読む' : 'Read More'}
+                      <ArrowRight className='w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform' />
+                    </div>
                   </div>
-
-                  <h3 className='text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors duration-300 line-clamp-2'>
-                    {getLocalized(item, 'name', locale)}
-                  </h3>
-
-                  {/* Subtle glow effect on hover */}
-                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
-                </GlassCard>
+                </div>
               </ScrollAwareLink>
             ))}
           </div>
 
           {newsItems.length === 0 && (
-            <div className='text-center py-12'>
-              <p className='text-gray-400 text-lg'>No news items found.</p>
+            <div className='text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-200'>
+              <p className='text-slate-400 font-bold uppercase tracking-widest'>No news items found.</p>
             </div>
           )}
         </SectionWrapper>
