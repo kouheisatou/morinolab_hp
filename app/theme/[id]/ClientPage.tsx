@@ -68,7 +68,7 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
 
       <main className='flex-1 pt-20'>
         <div className='bg-slate-50 border-b border-slate-100 py-12'>
-          <div className='max-w-4xl mx-auto px-4'>
+          <div className='max-w-7xl mx-auto px-4'>
             <nav className='flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-slate-400 mb-8'>
               <ScrollAwareLink href='/' className='hover:text-primary transition-colors'>Home</ScrollAwareLink>
               <ChevronRight className='w-3 h-3' />
@@ -102,7 +102,7 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
         </div>
 
         <SectionWrapper className='py-16'>
-          <article className='max-w-4xl mx-auto'>
+          <article className='max-w-5xl mx-auto'>
             <div className='mb-16'>
               <h2 className='text-xl font-black text-slate-900 uppercase tracking-tight mb-6 flex items-center'>
                 <span className='w-8 h-1 bg-primary mr-3'></span>
@@ -128,7 +128,7 @@ export default function ThemeDetailClientPage({ id }: ClientPageProps) {
 
             <div className='mt-20 pt-10 border-t border-slate-100'>
               <ScrollAwareLink href='/#research'>
-                <button className='flex items-center text-sm font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group'>
+                <button className='flex items-center text-xs font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group'>
                   <ArrowLeft className='w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform' />
                   Back to Research
                 </button>

@@ -77,7 +77,7 @@ export default function TeamMemberDetailClientPage({ id }: ClientPageProps) {
 
       <main className='flex-1 pt-20'>
         <div className='bg-slate-50 border-b border-slate-100 py-12'>
-          <div className='max-w-4xl mx-auto px-4'>
+          <div className='max-w-7xl mx-auto px-4'>
             <nav className='flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-slate-400 mb-10'>
               <ScrollAwareLink href='/' className='hover:text-primary transition-colors'>Home</ScrollAwareLink>
               <ChevronRight className='w-3 h-3' />
@@ -128,7 +128,7 @@ export default function TeamMemberDetailClientPage({ id }: ClientPageProps) {
         </div>
 
         <SectionWrapper className='py-16'>
-          <div className='max-w-4xl mx-auto space-y-16'>
+          <div className='max-w-5xl mx-auto space-y-16'>
             {/* About Section */}
             <div>
               <h2 className='text-xl font-black text-slate-900 uppercase tracking-tight mb-6 flex items-center'>
